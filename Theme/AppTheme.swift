@@ -22,7 +22,7 @@ struct MeshBackgroundView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private var blobOpacity: Double {
-        colorScheme == .dark ? 0.18 : 0.25
+        colorScheme == .dark ? 0.25 : 0.35
     }
 
     var body: some View {
