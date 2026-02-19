@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct GamesListView: View {
-    @ObservedObject var viewModel: GamesViewModel
+    @StateObject private var viewModel = GamesViewModel()
     @Environment(\.modelContext) private var modelContext
     @State private var showingAddSheet = false
     
@@ -264,7 +264,7 @@ struct GameSearchResultRow: View {
 
 #Preview {
     NavigationStack {
-        GamesListView(viewModel: GamesViewModel())
+        GamesListView()
     }
     .modelContainer(for: ResourceEntity.self, inMemory: true)
 }

@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct SeriesListView: View {
-    @ObservedObject var viewModel: SeriesViewModel
+    @StateObject private var viewModel = SeriesViewModel()
     @Environment(\.modelContext) private var modelContext
     @State private var showingAddSheet = false
     
@@ -258,7 +258,7 @@ struct SeriesSearchResultRow: View {
 
 #Preview {
     NavigationStack {
-        SeriesListView(viewModel: SeriesViewModel())
+        SeriesListView()
     }
     .modelContainer(for: ResourceEntity.self, inMemory: true)
 }

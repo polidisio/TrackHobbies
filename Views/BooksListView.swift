@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct BooksListView: View {
-    @ObservedObject var viewModel: BooksViewModel
+    @StateObject private var viewModel = BooksViewModel()
     @Environment(\.modelContext) private var modelContext
     @State private var showingAddSheet = false
     
@@ -163,7 +163,7 @@ struct RatingView: View {
 
 #Preview {
     NavigationStack {
-        BooksListView(viewModel: BooksViewModel())
+        BooksListView()
     }
     .modelContainer(for: ResourceEntity.self, inMemory: true)
 }

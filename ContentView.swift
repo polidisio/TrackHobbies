@@ -2,24 +2,20 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @StateObject private var booksViewModel = BooksViewModel()
-    @StateObject private var seriesViewModel = SeriesViewModel()
-    @StateObject private var gamesViewModel = GamesViewModel()
-    
     var body: some View {
         TabView {
             NavigationStack {
-                BooksListView(viewModel: booksViewModel)
+                BooksListView()
             }
             .tabItem { Label("Libros", systemImage: "book") }
             
             NavigationStack {
-                SeriesListView(viewModel: seriesViewModel)
+                SeriesListView()
             }
             .tabItem { Label("Series", systemImage: "tv") }
             
             NavigationStack {
-                GamesListView(viewModel: gamesViewModel)
+                GamesListView()
             }
             .tabItem { Label("Juegos", systemImage: "gamecontroller") }
         }
