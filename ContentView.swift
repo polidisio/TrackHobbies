@@ -1,32 +1,32 @@
 import SwiftUI
+import SwiftData
 
-// Minimal placeholder content view to bootstrap the UI structure.
 struct ContentView: View {
+    @StateObject private var booksViewModel = BooksViewModel()
+    @StateObject private var seriesViewModel = SeriesViewModel()
+    @StateObject private var gamesViewModel = GamesViewModel()
+    
     var body: some View {
         TabView {
-            // Libros
-            NavigationView {
-                Text("Libros - mock").navigationTitle("Libros")
+            NavigationStack {
+                BooksListView(viewModel: booksViewModel)
             }
             .tabItem { Label("Libros", systemImage: "book") }
-
-            // Series
-            NavigationView {
-                Text("Series - mock").navigationTitle("Series")
+            
+            NavigationStack {
+                SeriesListView(viewModel: seriesViewModel)
             }
             .tabItem { Label("Series", systemImage: "tv") }
-
-            // Juegos
-            NavigationView {
-                Text("Juegos - mock").navigationTitle("Juegos")
+            
+            NavigationStack {
+                GamesListView(viewModel: gamesViewModel)
             }
             .tabItem { Label("Juegos", systemImage: "gamecontroller") }
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
+        .modelContainer(for: ResourceEntity.self, inMemory: true)
 }

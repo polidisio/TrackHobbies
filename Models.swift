@@ -1,18 +1,8 @@
 import Foundation
+import SwiftData
 
-// Core domain models (structs for MVP). Persistence layer (Core Data) will be wired later.
-
-enum ResourceType: String, Codable {
-    case book
-    case series
-    case game
-}
-
-enum ProgressStatus: String, Codable {
-    case notStarted = "not_started"
-    case inProgress = "in_progress"
-    case completed = "completed"
-}
+// Enums moved to Models/Enums.swift
+// ResourceType and ProgressStatus are defined there
 
 struct PendingItem: Identifiable, Codable {
     var id: UUID

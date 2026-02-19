@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct TrackHobbiesApp: App {
@@ -6,5 +7,6 @@ struct TrackHobbiesApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: ResourceEntity.self)
     }
 }

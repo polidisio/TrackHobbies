@@ -23,6 +23,7 @@ targets:
     sources:
       - path: AppMain.swift
       - path: ContentView.swift
+      - path: Models
       - path: Models.swift
       - path: NotionExporter.swift
       - path: Services

@@ -8,15 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		0197958054C4C81249FF47FC /* AppMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4C44E78580E5B462231EDB /* AppMain.swift */; };
+		08E9134A93D93763C729B7F6 /* BookSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B070DFC2A83979228FAC5F /* BookSearchView.swift */; };
+		0D0FA0B548FE03A9FEA0B9F7 /* PersistenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0943B922500B4A7858940E9 /* PersistenceModels.swift */; };
+		1377446252E04497E8B4DAA9 /* GamesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0EA95A31022D1EC1054E3 /* GamesViewModel.swift */; };
+		391A3147AFCFD73A1D07E728 /* BooksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DB05985D411C8630D894E /* BooksViewModel.swift */; };
 		5408F68A23355FAD38EEBEB3 /* ResourceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D49B2828E8F69D4F6BB745 /* ResourceRow.swift */; };
+		65E9720D89AC26C312F6C4A8 /* SeriesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */; };
 		7389D513C5010B31C853AF73 /* CloudKitSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441E5E569E3EEA04439B42BE /* CloudKitSync.swift */; };
 		7AB91F9EBC9EE43E4A7E4DF0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FCCD7217BD5FBDDCDC4D118 /* Assets.xcassets */; };
 		7E56D230D9E9943C9D30FC7A /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5614B28A7A2090611799F9C /* CSVExporter.swift */; };
 		81CD7D5CBD4CD4E850308256 /* RAWGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66158E6B18878E77DDC2F56 /* RAWGService.swift */; };
 		9264A47612DBE72008569833 /* NotionExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAC75538CAA0FB17999251 /* NotionExporter.swift */; };
+		9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6F3E46BC82D75258505DD8 /* Enums.swift */; };
 		AAF2BED57C4F5761EFCB9479 /* OpenLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C478C7A0C7C8EF3BFED7829 /* OpenLibraryService.swift */; };
 		B5DBFC979CB7C8B2523DBF21 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99C66782E12E70C840E990B /* Models.swift */; };
 		BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E2B31E64D28666005361AC /* ContentView.swift */; };
+		DA49E9B8C7B150C407F43A0B /* SeriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A895F8F404163A29E1FD657C /* SeriesViewModel.swift */; };
+		E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F5971818241D6508505936 /* BooksListView.swift */; };
+		E9A34AE83D6FB87C70BEECAB /* GamesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */; };
 		FF6B05939503189A4F95F60A /* TVMazeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D453C5A1873F779D55CCB4 /* TVMazeService.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,17 +43,26 @@
 		13126788DA7403E0C607C55F /* TrackHobbies.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TrackHobbies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C478C7A0C7C8EF3BFED7829 /* OpenLibraryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenLibraryService.swift; sourceTree = "<group>"; };
 		28D453C5A1873F779D55CCB4 /* TVMazeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMazeService.swift; sourceTree = "<group>"; };
+		28F5971818241D6508505936 /* BooksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksListView.swift; sourceTree = "<group>"; };
 		441E5E569E3EEA04439B42BE /* CloudKitSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSync.swift; sourceTree = "<group>"; };
 		61E2B31E64D28666005361AC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		6D6F3E46BC82D75258505DD8 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		6E4DB05985D411C8630D894E /* BooksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksViewModel.swift; sourceTree = "<group>"; };
 		6FAD522156108FA8AC2873AD /* TrackHobbiesTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrackHobbiesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FB0EA95A31022D1EC1054E3 /* GamesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesViewModel.swift; sourceTree = "<group>"; };
 		74E34312BE003E8C9332C8D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7DEAC75538CAA0FB17999251 /* NotionExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionExporter.swift; sourceTree = "<group>"; };
 		7E4C44E78580E5B462231EDB /* AppMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMain.swift; sourceTree = "<group>"; };
 		7FCCD7217BD5FBDDCDC4D118 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		87B070DFC2A83979228FAC5F /* BookSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSearchView.swift; sourceTree = "<group>"; };
 		A5614B28A7A2090611799F9C /* CSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
+		A895F8F404163A29E1FD657C /* SeriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesViewModel.swift; sourceTree = "<group>"; };
 		A99C66782E12E70C840E990B /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		B0943B922500B4A7858940E9 /* PersistenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceModels.swift; sourceTree = "<group>"; };
 		C3D49B2828E8F69D4F6BB745 /* ResourceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceRow.swift; sourceTree = "<group>"; };
+		C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesListView.swift; sourceTree = "<group>"; };
 		F66158E6B18878E77DDC2F56 /* RAWGService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAWGService.swift; sourceTree = "<group>"; };
+		FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -56,6 +74,7 @@
 				61E2B31E64D28666005361AC /* ContentView.swift */,
 				A99C66782E12E70C840E990B /* Models.swift */,
 				7DEAC75538CAA0FB17999251 /* NotionExporter.swift */,
+				5A6414D1648BB5475DD0D90F /* Models */,
 				A211DDD4130EA251F539B033 /* Services */,
 				6FE0DD38AAB774D3E740C259 /* Sync */,
 				8D34B3DF276A7D424A6A419D /* Tests */,
@@ -64,6 +83,15 @@
 				862DC228F115AC57283F0265 /* Views */,
 				EF3402485EC31D04A870DA22 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		5A6414D1648BB5475DD0D90F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6D6F3E46BC82D75258505DD8 /* Enums.swift */,
+				B0943B922500B4A7858940E9 /* PersistenceModels.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		6FE0DD38AAB774D3E740C259 /* Sync */ = {
@@ -77,7 +105,11 @@
 		862DC228F115AC57283F0265 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				87B070DFC2A83979228FAC5F /* BookSearchView.swift */,
+				28F5971818241D6508505936 /* BooksListView.swift */,
+				C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */,
 				C3D49B2828E8F69D4F6BB745 /* ResourceRow.swift */,
+				FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -93,6 +125,9 @@
 		963397EB84040E242CCB43C2 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				6E4DB05985D411C8630D894E /* BooksViewModel.swift */,
+				6FB0EA95A31022D1EC1054E3 /* GamesViewModel.swift */,
+				A895F8F404163A29E1FD657C /* SeriesViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -219,14 +254,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				0197958054C4C81249FF47FC /* AppMain.swift in Sources */,
+				08E9134A93D93763C729B7F6 /* BookSearchView.swift in Sources */,
+				E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */,
+				391A3147AFCFD73A1D07E728 /* BooksViewModel.swift in Sources */,
 				7E56D230D9E9943C9D30FC7A /* CSVExporter.swift in Sources */,
 				7389D513C5010B31C853AF73 /* CloudKitSync.swift in Sources */,
 				BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */,
+				9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */,
+				E9A34AE83D6FB87C70BEECAB /* GamesListView.swift in Sources */,
+				1377446252E04497E8B4DAA9 /* GamesViewModel.swift in Sources */,
 				B5DBFC979CB7C8B2523DBF21 /* Models.swift in Sources */,
 				9264A47612DBE72008569833 /* NotionExporter.swift in Sources */,
 				AAF2BED57C4F5761EFCB9479 /* OpenLibraryService.swift in Sources */,
+				0D0FA0B548FE03A9FEA0B9F7 /* PersistenceModels.swift in Sources */,
 				81CD7D5CBD4CD4E850308256 /* RAWGService.swift in Sources */,
 				5408F68A23355FAD38EEBEB3 /* ResourceRow.swift in Sources */,
+				65E9720D89AC26C312F6C4A8 /* SeriesListView.swift in Sources */,
+				DA49E9B8C7B150C407F43A0B /* SeriesViewModel.swift in Sources */,
 				FF6B05939503189A4F95F60A /* TVMazeService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
