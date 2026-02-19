@@ -12,7 +12,14 @@ struct TVMazeImage: Decodable {
     let original: String?
 }
 
+struct TVMazeSeason: Decodable {
+    let id: Int
+    let number: Int?
+    let episodeOrder: Int?
+}
+
 struct TVMazeSearchResult {
+    let id: Int
     let title: String
     let imageURL: String?
     let summary: String?
@@ -35,16 +42,32 @@ final class TVMazeService {
                     results = decoded.map { c in
                         let s = c.show
                         let img = s.image?.medium
-                        return TVMazeSearchResult(title: s.name, imageURL: img, summary: s.summary)
+                        return TVMazeSearchResult(id: s.id, title: s.name, imageURL: img, summary: s.summary)
                     }
                 }
             }
             DispatchQueue.main.async { completion(results) }
         }.resume()
     }
+
+    func fetchSeasons(showId: Int, completion: @escaping (Int, Int) -> Void) {
+        let urlStr = "https://api.tvmaze.com/shows/\(showId)/seasons"
+        guard let url = URL(string: urlStr) else { completion(0, 0); return }
+
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            var totalSeasons = 0
+            var totalEpisodes = 0
+            if let data = data {
+                if let seasons = try? JSONDecoder().decode([TVMazeSeason].self, from: data) {
+                    totalSeasons = seasons.count
+                    totalEpisodes = seasons.compactMap { $0.episodeOrder }.reduce(0, +)
+                }
+            }
+            DispatchQueue.main.async { completion(totalSeasons, totalEpisodes) }
+        }.resume()
+    }
 }
 
-// Helper container for TVMaze API response
 struct TVMazeShowContainer: Decodable {
     let show: TVMazeShow
 }

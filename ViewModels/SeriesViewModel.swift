@@ -34,6 +34,15 @@ final class SeriesViewModel: ObservableObject {
         )
         
         context.insert(serie)
+
+        TVMazeService.shared.fetchSeasons(showId: result.id) { totalSeasons, totalEpisodes in
+            if totalSeasons > 0 {
+                serie.totalSeasons = totalSeasons
+            }
+            if totalEpisodes > 0 {
+                serie.totalEpisodes = totalEpisodes
+            }
+        }
         
         do {
             try context.save()

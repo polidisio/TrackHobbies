@@ -19,6 +19,8 @@ final class ResourceEntity {
     var progressPercentage: Double?
     var currentSeason: Int?
     var currentEpisode: Int?
+    var totalSeasons: Int?
+    var totalEpisodes: Int?
     @Relationship(deleteRule: .cascade) var pendings: [PendingItemEntity]?
     
     init(
@@ -37,7 +39,9 @@ final class ResourceEntity {
         totalPages: Int? = nil,
         progressPercentage: Double? = nil,
         currentSeason: Int? = nil,
-        currentEpisode: Int? = nil
+        currentEpisode: Int? = nil,
+        totalSeasons: Int? = nil,
+        totalEpisodes: Int? = nil
     ) {
         self.id = id
         self.type = type.rawValue
@@ -55,6 +59,8 @@ final class ResourceEntity {
         self.progressPercentage = progressPercentage
         self.currentSeason = currentSeason
         self.currentEpisode = currentEpisode
+        self.totalSeasons = totalSeasons
+        self.totalEpisodes = totalEpisodes
     }
     
     var resourceType: ResourceType {

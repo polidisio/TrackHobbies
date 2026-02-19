@@ -31,9 +31,19 @@ final class BooksViewModel: ObservableObject {
             externalId: item.externalId,
             imageURL: item.coverURL,
             authorOrCreator: item.author,
-            status: .notStarted
+            status: .notStarted,
+            totalPages: item.numberOfPages
         )
         context.insert(book)
+
+        if let workKey = item.externalId {
+            OpenLibraryService.shared.fetchWorkDescription(workKey: workKey) { description in
+                if let description = description {
+                    book.summary = description
+                }
+            }
+        }
+
         searchResults = []
         searchQuery = ""
     }

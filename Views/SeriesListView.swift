@@ -111,11 +111,14 @@ struct SeriesRowView: View {
                 
                 if serie.progressStatus == .inProgress {
                     if let season = serie.currentSeason, let episode = serie.currentEpisode {
-                        Text("T\(season) E\(episode)")
+                        let seasonText = serie.totalSeasons != nil ? "T\(season)/\(serie.totalSeasons!)" : "T\(season)"
+                        let episodeText = "E\(episode)"
+                        Text("\(seasonText) \(episodeText)")
                             .font(.caption)
                             .foregroundColor(.blue)
                     } else if let season = serie.currentSeason {
-                        Text("T\(season)")
+                        let seasonText = serie.totalSeasons != nil ? "T\(season)/\(serie.totalSeasons!)" : "T\(season)"
+                        Text(seasonText)
                             .font(.caption)
                             .foregroundColor(.blue)
                     }

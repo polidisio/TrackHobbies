@@ -218,10 +218,16 @@ struct ResourceDetailView: View {
                     Stepper(value: Binding(
                         get: { resource.currentSeason ?? 1 },
                         set: { resource.currentSeason = $0; resource.lastUpdated = Date() }
-                    ), in: 1...99) {
-                        Text("T\(resource.currentSeason ?? 1)")
-                            .font(.title3)
-                            .fontWeight(.semibold)
+                    ), in: 1...(resource.totalSeasons ?? 99)) {
+                        if let total = resource.totalSeasons {
+                            Text("T\(resource.currentSeason ?? 1) de \(total)")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        } else {
+                            Text("T\(resource.currentSeason ?? 1)")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        }
                     }
                 }
 
@@ -232,10 +238,16 @@ struct ResourceDetailView: View {
                     Stepper(value: Binding(
                         get: { resource.currentEpisode ?? 1 },
                         set: { resource.currentEpisode = $0; resource.lastUpdated = Date() }
-                    ), in: 1...999) {
-                        Text("E\(resource.currentEpisode ?? 1)")
-                            .font(.title3)
-                            .fontWeight(.semibold)
+                    ), in: 1...(resource.totalEpisodes ?? 999)) {
+                        if let total = resource.totalEpisodes {
+                            Text("E\(resource.currentEpisode ?? 1) de \(total)")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        } else {
+                            Text("E\(resource.currentEpisode ?? 1)")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        }
                     }
                 }
             }
