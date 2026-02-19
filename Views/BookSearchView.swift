@@ -30,8 +30,7 @@ struct BookSearchView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Buscar" : "Manual") {
                         if showingManualEntry && !manualTitle.isEmpty {
-                            viewModel.setModelContext(modelContext)
-                            viewModel.addBook(title: manualTitle, author: manualAuthor.isEmpty ? nil : manualAuthor)
+                            viewModel.addBook(title: manualTitle, author: manualAuthor.isEmpty ? nil : manualAuthor, context: modelContext)
                             isPresented = false
                         } else {
                             showingManualEntry.toggle()
@@ -40,9 +39,6 @@ struct BookSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
-        }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
         }
     }
     
@@ -83,8 +79,7 @@ struct BookSearchView: View {
                         subtitle: item.author,
                         imageURL: item.coverURL
                     ) {
-                        viewModel.setModelContext(modelContext)
-                        viewModel.addBook(from: item)
+                        viewModel.addBook(from: item, context: modelContext)
                         isPresented = false
                     }
                 }

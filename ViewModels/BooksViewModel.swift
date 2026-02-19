@@ -47,9 +47,7 @@ final class BooksViewModel: ObservableObject {
         }
     }
     
-    func addBook(from item: OpenLibraryItem) {
-        guard let context = modelContext else { return }
-        
+    func addBook(from item: OpenLibraryItem, context: ModelContext) {
         let book = ResourceEntity(
             type: .book,
             title: item.title,
@@ -71,9 +69,7 @@ final class BooksViewModel: ObservableObject {
         }
     }
     
-    func addBook(title: String, author: String?) {
-        guard let context = modelContext else { return }
-        
+    func addBook(title: String, author: String?, context: ModelContext) {
         let book = ResourceEntity(
             type: .book,
             title: title,

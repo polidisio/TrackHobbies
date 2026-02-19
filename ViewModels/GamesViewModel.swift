@@ -49,9 +49,7 @@ final class GamesViewModel: ObservableObject {
         }
     }
     
-    func addGame(from item: RAWGGameItem) {
-        guard let context = modelContext else { return }
-        
+    func addGame(from item: RAWGGameItem, context: ModelContext) {
         let game = ResourceEntity(
             type: .game,
             title: item.title,
@@ -72,9 +70,7 @@ final class GamesViewModel: ObservableObject {
         }
     }
     
-    func addGame(title: String) {
-        guard let context = modelContext else { return }
-        
+    func addGame(title: String, context: ModelContext) {
         let game = ResourceEntity(
             type: .game,
             title: title,

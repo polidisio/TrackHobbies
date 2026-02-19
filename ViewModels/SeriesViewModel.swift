@@ -47,9 +47,7 @@ final class SeriesViewModel: ObservableObject {
         }
     }
     
-    func addSeries(from result: TVMazeSearchResult) {
-        guard let context = modelContext else { return }
-        
+    func addSeries(from result: TVMazeSearchResult, context: ModelContext) {
         let serie = ResourceEntity(
             type: .series,
             title: result.title,
@@ -70,9 +68,7 @@ final class SeriesViewModel: ObservableObject {
         }
     }
     
-    func addSeries(title: String, summary: String? = nil) {
-        guard let context = modelContext else { return }
-        
+    func addSeries(title: String, summary: String? = nil, context: ModelContext) {
         let serie = ResourceEntity(
             type: .series,
             title: title,

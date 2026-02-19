@@ -140,8 +140,7 @@ struct GameSearchView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
                         if showingManualEntry && !manualTitle.isEmpty {
-                            viewModel.setModelContext(modelContext)
-                            viewModel.addGame(title: manualTitle)
+                            viewModel.addGame(title: manualTitle, context: modelContext)
                             isPresented = false
                         } else {
                             showingManualEntry.toggle()
@@ -150,9 +149,6 @@ struct GameSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
-        }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
         }
     }
     
@@ -199,8 +195,7 @@ struct GameSearchView: View {
                         title: item.title,
                         imageURL: item.imageURL
                     ) {
-                        viewModel.setModelContext(modelContext)
-                        viewModel.addGame(from: item)
+                        viewModel.addGame(from: item, context: modelContext)
                         isPresented = false
                     }
                 }

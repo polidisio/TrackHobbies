@@ -141,8 +141,7 @@ struct SeriesSearchView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
                         if showingManualEntry && !manualTitle.isEmpty {
-                            viewModel.setModelContext(modelContext)
-                            viewModel.addSeries(title: manualTitle)
+                            viewModel.addSeries(title: manualTitle, context: modelContext)
                             isPresented = false
                         } else {
                             showingManualEntry.toggle()
@@ -151,9 +150,6 @@ struct SeriesSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
-        }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
         }
     }
     
@@ -193,8 +189,7 @@ struct SeriesSearchView: View {
                         title: item.title,
                         imageURL: item.imageURL
                     ) {
-                        viewModel.setModelContext(modelContext)
-                        viewModel.addSeries(from: item)
+                        viewModel.addSeries(from: item, context: modelContext)
                         isPresented = false
                     }
                 }
