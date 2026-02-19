@@ -40,6 +40,7 @@ final class BooksViewModel: ObservableObject {
             OpenLibraryService.shared.fetchWorkDescription(workKey: workKey) { description in
                 if let description = description {
                     book.summary = description
+                    try? context.save()
                 }
             }
         }
