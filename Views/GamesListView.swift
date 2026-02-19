@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import SwiftData
 
 struct GamesListView: View {
     @StateObject private var viewModel = GamesViewModel()
@@ -118,6 +119,7 @@ struct GameRowView: View {
 struct GameSearchView: View {
     @ObservedObject var viewModel: GamesViewModel
     @Binding var isPresented: Bool
+    @Environment(\.modelContext) private var modelContext
     @State private var manualTitle = ""
     @State private var showingManualEntry = false
     
@@ -142,6 +144,7 @@ struct GameSearchView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
                         if showingManualEntry && !manualTitle.isEmpty {
+                            viewModel.setModelContext(modelContext)
                             viewModel.addGame(title: manualTitle)
                             isPresented = false
                         } else {
@@ -151,6 +154,9 @@ struct GameSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
+        }
+        .onAppear {
+            viewModel.setModelContext(modelContext)
         }
     }
     
@@ -197,6 +203,7 @@ struct GameSearchView: View {
                         title: item.title,
                         imageURL: item.imageURL
                     ) {
+                        viewModel.setModelContext(modelContext)
                         viewModel.addGame(from: item)
                         isPresented = false
                     }

@@ -1,8 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct BookSearchView: View {
     @ObservedObject var viewModel: BooksViewModel
     @Binding var isPresented: Bool
+    @Environment(\.modelContext) private var modelContext
     @State private var manualTitle = ""
     @State private var manualAuthor = ""
     @State private var showingManualEntry = false
@@ -28,6 +30,7 @@ struct BookSearchView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Buscar" : "Manual") {
                         if showingManualEntry && !manualTitle.isEmpty {
+                            viewModel.setModelContext(modelContext)
                             viewModel.addBook(title: manualTitle, author: manualAuthor.isEmpty ? nil : manualAuthor)
                             isPresented = false
                         } else {
@@ -37,6 +40,9 @@ struct BookSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
+        }
+        .onAppear {
+            viewModel.setModelContext(modelContext)
         }
     }
     
@@ -77,6 +83,7 @@ struct BookSearchView: View {
                         subtitle: item.author,
                         imageURL: item.coverURL
                     ) {
+                        viewModel.setModelContext(modelContext)
                         viewModel.addBook(from: item)
                         isPresented = false
                     }

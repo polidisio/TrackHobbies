@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import SwiftData
 
 struct SeriesListView: View {
     @StateObject private var viewModel = SeriesViewModel()
@@ -119,6 +120,7 @@ struct SeriesRowView: View {
 struct SeriesSearchView: View {
     @ObservedObject var viewModel: SeriesViewModel
     @Binding var isPresented: Bool
+    @Environment(\.modelContext) private var modelContext
     @State private var manualTitle = ""
     @State private var showingManualEntry = false
     
@@ -143,6 +145,7 @@ struct SeriesSearchView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
                         if showingManualEntry && !manualTitle.isEmpty {
+                            viewModel.setModelContext(modelContext)
                             viewModel.addSeries(title: manualTitle)
                             isPresented = false
                         } else {
@@ -152,6 +155,9 @@ struct SeriesSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
+        }
+        .onAppear {
+            viewModel.setModelContext(modelContext)
         }
     }
     
@@ -191,6 +197,7 @@ struct SeriesSearchView: View {
                         title: item.title,
                         imageURL: item.imageURL
                     ) {
+                        viewModel.setModelContext(modelContext)
                         viewModel.addSeries(from: item)
                         isPresented = false
                     }
