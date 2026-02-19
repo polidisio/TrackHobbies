@@ -35,18 +35,22 @@ final class BooksViewModel: ObservableObject {
             totalPages: item.numberOfPages
         )
         context.insert(book)
+        searchResults = []
+        searchQuery = ""
 
         if let workKey = item.externalId {
-            OpenLibraryService.shared.fetchWorkDescription(workKey: workKey) { description in
+            Task {
+                let description = await withCheckedContinuation { continuation in
+                    OpenLibraryService.shared.fetchWorkDescription(workKey: workKey) { desc in
+                        continuation.resume(returning: desc)
+                    }
+                }
                 if let description = description {
                     book.summary = description
                     try? context.save()
                 }
             }
         }
-
-        searchResults = []
-        searchQuery = ""
     }
     
     func addBook(title: String, author: String?, context: ModelContext) {
