@@ -200,7 +200,7 @@ struct BookSearchView: View {
                     .foregroundColor(.secondary)
                     .padding()
             } else {
-                List(viewModel.searchResults, id: \.title) { item in
+                List(viewModel.searchResults, id: \.externalId) { item in
                     BookSearchResultRow(
                         title: item.title,
                         subtitle: item.author,

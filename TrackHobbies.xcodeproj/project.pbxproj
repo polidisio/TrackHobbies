@@ -19,6 +19,7 @@
 		7AB91F9EBC9EE43E4A7E4DF0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FCCD7217BD5FBDDCDC4D118 /* Assets.xcassets */; };
 		7E56D230D9E9943C9D30FC7A /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5614B28A7A2090611799F9C /* CSVExporter.swift */; };
 		81CD7D5CBD4CD4E850308256 /* RAWGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66158E6B18878E77DDC2F56 /* RAWGService.swift */; };
+		86FC04BEB4191B0486B895BD /* GoogleBooksService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */; };
 		9264A47612DBE72008569833 /* NotionExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DEAC75538CAA0FB17999251 /* NotionExporter.swift */; };
 		9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6F3E46BC82D75258505DD8 /* Enums.swift */; };
 		AAF2BED57C4F5761EFCB9479 /* OpenLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C478C7A0C7C8EF3BFED7829 /* OpenLibraryService.swift */; };
@@ -47,6 +48,7 @@
 		28D453C5A1873F779D55CCB4 /* TVMazeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMazeService.swift; sourceTree = "<group>"; };
 		28F5971818241D6508505936 /* BooksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksListView.swift; sourceTree = "<group>"; };
 		441E5E569E3EEA04439B42BE /* CloudKitSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSync.swift; sourceTree = "<group>"; };
+		5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksService.swift; sourceTree = "<group>"; };
 		61E2B31E64D28666005361AC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6D6F3E46BC82D75258505DD8 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		6E4DB05985D411C8630D894E /* BooksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksViewModel.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 		A211DDD4130EA251F539B033 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */,
 				1C478C7A0C7C8EF3BFED7829 /* OpenLibraryService.swift */,
 				F66158E6B18878E77DDC2F56 /* RAWGService.swift */,
 				28D453C5A1873F779D55CCB4 /* TVMazeService.swift */,
@@ -270,6 +273,7 @@
 				9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */,
 				E9A34AE83D6FB87C70BEECAB /* GamesListView.swift in Sources */,
 				1377446252E04497E8B4DAA9 /* GamesViewModel.swift in Sources */,
+				86FC04BEB4191B0486B895BD /* GoogleBooksService.swift in Sources */,
 				B5DBFC979CB7C8B2523DBF21 /* Models.swift in Sources */,
 				9264A47612DBE72008569833 /* NotionExporter.swift in Sources */,
 				AAF2BED57C4F5761EFCB9479 /* OpenLibraryService.swift in Sources */,

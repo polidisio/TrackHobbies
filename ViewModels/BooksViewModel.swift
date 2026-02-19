@@ -4,7 +4,7 @@ import SwiftData
 
 @MainActor
 final class BooksViewModel: ObservableObject {
-    @Published var searchResults: [OpenLibraryItem] = []
+    @Published var searchResults: [GoogleBookItem] = []
     @Published var isLoading = false
     @Published var searchQuery = ""
     
@@ -16,7 +16,7 @@ final class BooksViewModel: ObservableObject {
         
         isLoading = true
         
-        OpenLibraryService.shared.search(title: searchQuery) { [weak self] results in
+        GoogleBooksService.shared.search(title: searchQuery) { [weak self] results in
             Task { @MainActor in
                 self?.searchResults = results
                 self?.isLoading = false
@@ -24,7 +24,7 @@ final class BooksViewModel: ObservableObject {
         }
     }
     
-    func addBook(from item: OpenLibraryItem, context: ModelContext) {
+    func addBook(from item: GoogleBookItem, context: ModelContext) {
         let book = ResourceEntity(
             type: .book,
             title: item.title,
