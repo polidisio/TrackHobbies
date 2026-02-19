@@ -187,6 +187,12 @@ struct GameRowView: View {
                     if let rating = game.userRating {
                         RatingView(rating: rating)
                     }
+
+                    if game.reviewComment != nil && !(game.reviewComment ?? "").isEmpty {
+                        Image(systemName: "text.quote")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 dateLabel(start: game.startDate, end: game.endDate)

@@ -371,6 +371,16 @@ struct ResourceDetailView: View {
                     resource.lastUpdated = Date()
                 }
             ))
+
+            TextField("Escribe un comentario...", text: Binding(
+                get: { resource.reviewComment ?? "" },
+                set: {
+                    resource.reviewComment = $0.isEmpty ? nil : $0
+                    resource.lastUpdated = Date()
+                }
+            ), axis: .vertical)
+            .lineLimit(3...6)
+            .textFieldStyle(.roundedBorder)
         }
         .padding()
         .background(Color(.systemGroupedBackground))

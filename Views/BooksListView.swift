@@ -188,6 +188,12 @@ struct BookRowView: View {
                     if let rating = book.userRating {
                         RatingView(rating: rating)
                     }
+
+                    if book.reviewComment != nil && !(book.reviewComment ?? "").isEmpty {
+                        Image(systemName: "text.quote")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 if book.progressStatus == .inProgress {

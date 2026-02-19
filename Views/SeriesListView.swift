@@ -188,6 +188,12 @@ struct SeriesRowView: View {
                     if let rating = serie.userRating {
                         RatingView(rating: rating)
                     }
+
+                    if serie.reviewComment != nil && !(serie.reviewComment ?? "").isEmpty {
+                        Image(systemName: "text.quote")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 if serie.progressStatus == .inProgress {
