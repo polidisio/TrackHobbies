@@ -201,6 +201,8 @@ struct BookRowView: View {
                             .foregroundColor(.blue)
                     }
                 }
+
+                dateLabel(start: book.startDate, end: book.endDate)
             }
 
             Spacer()
@@ -424,6 +426,26 @@ struct RatingView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
+    }
+}
+
+@ViewBuilder
+func dateLabel(start: Date?, end: Date?) -> some View {
+    let formatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.locale = Locale(identifier: "es")
+        return f
+    }()
+
+    if let s = start, let e = end {
+        Text("\(formatter.string(from: s)) - \(formatter.string(from: e))")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+    } else if let s = start {
+        Text("Desde \(formatter.string(from: s))")
+            .font(.caption2)
+            .foregroundColor(.secondary)
     }
 }
 

@@ -13,6 +13,7 @@ struct ResourceDetailView: View {
                 if resource.progressStatus == .inProgress {
                     trackingSection
                 }
+                datesSection
                 if resource.progressStatus == .completed || resource.progressStatus == .archived {
                     ratingSection
                 }
@@ -75,6 +76,25 @@ struct ResourceDetailView: View {
                     let oldStatus = resource.progressStatus
                     resource.progressStatus = newStatus
                     resource.lastUpdated = Date()
+
+                    // Auto-set startDate when moving to inProgress
+                    if newStatus == .inProgress && resource.startDate == nil {
+                        resource.startDate = Date()
+                    }
+                    // Auto-set endDate when completing
+                    if newStatus == .completed {
+                        resource.endDate = Date()
+                    }
+                    // Clear endDate if moving back from completed
+                    if oldStatus == .completed && newStatus == .inProgress {
+                        resource.endDate = nil
+                    }
+                    // Clear both dates if going back to wishlist/notStarted
+                    if newStatus == .wishlist || newStatus == .notStarted {
+                        resource.startDate = nil
+                        resource.endDate = nil
+                    }
+                    // Clear rating if leaving completed/archived
                     if oldStatus == .completed && newStatus != .completed && newStatus != .archived {
                         resource.userRating = nil
                     }
@@ -136,6 +156,7 @@ struct ResourceDetailView: View {
                                 resource.lastUpdated = Date()
                                 if let current = resource.currentPage, let total = resource.totalPages, total > 0, current >= total {
                                     resource.progressStatus = .completed
+                                    resource.endDate = Date()
                                 }
                             }
                         ), format: .number)
@@ -154,6 +175,7 @@ struct ResourceDetailView: View {
                                 resource.lastUpdated = Date()
                                 if let current = resource.currentPage, let total = resource.totalPages, total > 0, current >= total {
                                     resource.progressStatus = .completed
+                                    resource.endDate = Date()
                                 }
                             }
                         ), format: .number)
@@ -190,6 +212,7 @@ struct ResourceDetailView: View {
                             resource.lastUpdated = Date()
                             if $0 >= 100 {
                                 resource.progressStatus = .completed
+                                resource.endDate = Date()
                             }
                         }
                     ), in: 0...100, step: 1)
@@ -280,6 +303,50 @@ struct ResourceDetailView: View {
         .padding()
         .background(Color(.systemGroupedBackground))
         .cornerRadius(12)
+    }
+
+    @ViewBuilder
+    private var datesSection: some View {
+        if resource.startDate != nil || resource.endDate != nil {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Fechas")
+                    .font(.headline)
+
+                if resource.startDate != nil {
+                    DatePicker(
+                        "Inicio",
+                        selection: Binding(
+                            get: { resource.startDate ?? Date() },
+                            set: { resource.startDate = $0; resource.lastUpdated = Date() }
+                        ),
+                        displayedComponents: .date
+                    )
+                    .environment(\.locale, Locale(identifier: "es"))
+                }
+
+                if resource.endDate != nil {
+                    DatePicker(
+                        "Fin",
+                        selection: Binding(
+                            get: { resource.endDate ?? Date() },
+                            set: { resource.endDate = $0; resource.lastUpdated = Date() }
+                        ),
+                        displayedComponents: .date
+                    )
+                    .environment(\.locale, Locale(identifier: "es"))
+                }
+
+                if let start = resource.startDate, let end = resource.endDate {
+                    let days = Calendar.current.dateComponents([.day], from: start, to: end).day ?? 0
+                    Text("\(days) días")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding()
+            .background(Color(.systemGroupedBackground))
+            .cornerRadius(12)
+        }
     }
 
     private var ratingSection: some View {

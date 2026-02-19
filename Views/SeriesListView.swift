@@ -204,6 +204,8 @@ struct SeriesRowView: View {
                             .foregroundColor(.blue)
                     }
                 }
+
+                dateLabel(start: serie.startDate, end: serie.endDate)
             }
 
             Spacer()

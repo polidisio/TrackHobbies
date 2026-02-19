@@ -188,6 +188,8 @@ struct GameRowView: View {
                         RatingView(rating: rating)
                     }
                 }
+
+                dateLabel(start: game.startDate, end: game.endDate)
             }
 
             Spacer()
