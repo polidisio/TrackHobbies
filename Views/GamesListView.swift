@@ -6,23 +6,72 @@ struct GamesListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<ResourceEntity> { $0.type == "game" }, sort: \.lastUpdated, order: .reverse) private var games: [ResourceEntity]
     @State private var showingAddSheet = false
-    
+    @State private var archivedExpanded = false
+
+    private var wishlistGames: [ResourceEntity] { games.filter { $0.progressStatus == .wishlist } }
+    private var notStartedGames: [ResourceEntity] { games.filter { $0.progressStatus == .notStarted } }
+    private var inProgressGames: [ResourceEntity] { games.filter { $0.progressStatus == .inProgress } }
+    private var completedGames: [ResourceEntity] { games.filter { $0.progressStatus == .completed } }
+    private var archivedGames: [ResourceEntity] { games.filter { $0.progressStatus == .archived } }
+
     var body: some View {
         List {
             if games.isEmpty {
                 emptyStateView
             } else {
-                ForEach(games) { game in
-                    NavigationLink(destination: ResourceDetailView(resource: game)) {
-                        GameRowView(game: game)
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                modelContext.delete(game)
-                            } label: {
-                                Label("Eliminar", systemImage: "trash")
-                            }
+                if !wishlistGames.isEmpty {
+                    Section("Pendientes") {
+                        ForEach(wishlistGames) { game in
+                            gameRow(game)
                         }
+                    }
+                }
+
+                if !notStartedGames.isEmpty {
+                    Section("Sin empezar") {
+                        ForEach(notStartedGames) { game in
+                            gameRow(game)
+                        }
+                    }
+                }
+
+                if !inProgressGames.isEmpty {
+                    Section("En progreso") {
+                        ForEach(inProgressGames) { game in
+                            gameRow(game)
+                        }
+                    }
+                }
+
+                if !completedGames.isEmpty {
+                    Section("Completados") {
+                        ForEach(completedGames) { game in
+                            gameRow(game)
+                                .swipeActions(edge: .leading) {
+                                    Button {
+                                        game.progressStatus = .archived
+                                        game.lastUpdated = Date()
+                                    } label: {
+                                        Label("Archivar", systemImage: "archivebox")
+                                    }
+                                    .tint(.gray)
+                                }
+                        }
+                    }
+                }
+
+                if !archivedGames.isEmpty {
+                    Section {
+                        DisclosureGroup(isExpanded: $archivedExpanded) {
+                            ForEach(archivedGames) { game in
+                                gameRow(game)
+                            }
+                        } label: {
+                            Text("Archivados (\(archivedGames.count))")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
                 }
             }
         }
@@ -41,17 +90,30 @@ struct GamesListView: View {
             GameSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
         }
     }
-    
+
+    private func gameRow(_ game: ResourceEntity) -> some View {
+        NavigationLink(destination: ResourceDetailView(resource: game)) {
+            GameRowView(game: game)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                modelContext.delete(game)
+            } label: {
+                Label("Eliminar", systemImage: "trash")
+            }
+        }
+    }
+
     private var emptyStateView: some View {
         VStack(spacing: 16) {
             Image(systemName: "gamecontroller")
                 .font(.system(size: 60))
                 .foregroundColor(.secondary)
-            
+
             Text("No hay juegos")
                 .font(.headline)
                 .foregroundColor(.secondary)
-            
+
             Text("Toca + para añadir tu primer juego")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -65,7 +127,7 @@ struct GamesListView: View {
 
 struct GameRowView: View {
     let game: ResourceEntity
-    
+
     var body: some View {
         HStack(spacing: 12) {
             AsyncImage(url: URL(string: game.imageURL ?? "")) { phase in
@@ -88,27 +150,27 @@ struct GameRowView: View {
             }
             .frame(width: 48, height: 64)
             .cornerRadius(6)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(game.title)
                     .font(.headline)
                     .lineLimit(2)
-                
+
                 if let time = game.timeSpentHours, time > 0 {
                     Text("\(Int(time))h jugadas")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                
+
                 HStack(spacing: 8) {
                     StatusBadge(status: game.progressStatus)
-                    
+
                     if let rating = game.userRating {
                         RatingView(rating: rating)
                     }
                 }
             }
-            
+
             Spacer()
         }
         .padding(.vertical, 4)
@@ -121,7 +183,7 @@ struct GameSearchView: View {
     @Binding var isPresented: Bool
     @State private var manualTitle = ""
     @State private var showingManualEntry = false
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -139,7 +201,7 @@ struct GameSearchView: View {
                         isPresented = false
                     }
                 }
-                
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
                         if showingManualEntry && !manualTitle.isEmpty {
@@ -154,7 +216,7 @@ struct GameSearchView: View {
             }
         }
     }
-    
+
     private var searchSection: some View {
         VStack(spacing: 16) {
             VStack(spacing: 8) {
@@ -162,7 +224,7 @@ struct GameSearchView: View {
                     .textFieldStyle(.roundedBorder)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-                
+
                 HStack {
                     TextField("Buscar por título...", text: $viewModel.searchQuery)
                         .textFieldStyle(.roundedBorder)
@@ -170,7 +232,7 @@ struct GameSearchView: View {
                         .onSubmit {
                             viewModel.searchGames()
                         }
-                    
+
                     Button {
                         viewModel.searchGames()
                     } label: {
@@ -184,7 +246,7 @@ struct GameSearchView: View {
                 }
             }
             .padding()
-            
+
             if viewModel.isLoading {
                 ProgressView("Buscando...")
                     .padding()
@@ -196,17 +258,22 @@ struct GameSearchView: View {
                 List(viewModel.searchResults, id: \.id) { item in
                     GameSearchResultRow(
                         title: item.title,
-                        imageURL: item.imageURL
-                    ) {
-                        viewModel.addGame(from: item, context: modelContext)
-                        isPresented = false
-                    }
+                        imageURL: item.imageURL,
+                        onAdd: {
+                            viewModel.addGame(from: item, context: modelContext)
+                            isPresented = false
+                        },
+                        onWishlist: {
+                            viewModel.addGameToWishlist(from: item, context: modelContext)
+                            isPresented = false
+                        }
+                    )
                 }
                 .listStyle(.plain)
             }
         }
     }
-    
+
     private var manualEntrySection: some View {
         Form {
             Section("Información del juego") {
@@ -220,7 +287,8 @@ struct GameSearchResultRow: View {
     let title: String
     let imageURL: String?
     let onAdd: () -> Void
-    
+    let onWishlist: () -> Void
+
     var body: some View {
         HStack(spacing: 12) {
             AsyncImage(url: URL(string: imageURL ?? "")) { phase in
@@ -243,13 +311,22 @@ struct GameSearchResultRow: View {
             }
             .frame(width: 48, height: 64)
             .cornerRadius(6)
-            
+
             Text(title)
                 .font(.headline)
                 .lineLimit(2)
-            
+
             Spacer()
-            
+
+            Button {
+                onWishlist()
+            } label: {
+                Image(systemName: "bookmark.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(.orange)
+            }
+            .buttonStyle(.plain)
+
             Button {
                 onAdd()
             } label: {

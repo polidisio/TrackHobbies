@@ -13,7 +13,7 @@ struct ResourceDetailView: View {
                 if resource.progressStatus == .inProgress {
                     trackingSection
                 }
-                if resource.progressStatus == .completed {
+                if resource.progressStatus == .completed || resource.progressStatus == .archived {
                     ratingSection
                 }
                 infoSection
@@ -75,7 +75,7 @@ struct ResourceDetailView: View {
                     let oldStatus = resource.progressStatus
                     resource.progressStatus = newStatus
                     resource.lastUpdated = Date()
-                    if oldStatus == .completed && newStatus != .completed {
+                    if oldStatus == .completed && newStatus != .completed && newStatus != .archived {
                         resource.userRating = nil
                     }
                 }
@@ -84,7 +84,7 @@ struct ResourceDetailView: View {
                     Text(status.displayName).tag(status)
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.menu)
         }
         .padding()
         .background(Color(.systemGroupedBackground))

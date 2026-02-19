@@ -6,23 +6,72 @@ struct BooksListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<ResourceEntity> { $0.type == "book" }, sort: \.lastUpdated, order: .reverse) private var books: [ResourceEntity]
     @State private var showingAddSheet = false
+    @State private var archivedExpanded = false
+
+    private var wishlistBooks: [ResourceEntity] { books.filter { $0.progressStatus == .wishlist } }
+    private var notStartedBooks: [ResourceEntity] { books.filter { $0.progressStatus == .notStarted } }
+    private var inProgressBooks: [ResourceEntity] { books.filter { $0.progressStatus == .inProgress } }
+    private var completedBooks: [ResourceEntity] { books.filter { $0.progressStatus == .completed } }
+    private var archivedBooks: [ResourceEntity] { books.filter { $0.progressStatus == .archived } }
 
     var body: some View {
         List {
             if books.isEmpty {
                 emptyStateView
             } else {
-                ForEach(books) { book in
-                    NavigationLink(destination: ResourceDetailView(resource: book)) {
-                        BookRowView(book: book)
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                modelContext.delete(book)
-                            } label: {
-                                Label("Eliminar", systemImage: "trash")
-                            }
+                if !wishlistBooks.isEmpty {
+                    Section("Pendientes") {
+                        ForEach(wishlistBooks) { book in
+                            bookRow(book)
                         }
+                    }
+                }
+
+                if !notStartedBooks.isEmpty {
+                    Section("Sin empezar") {
+                        ForEach(notStartedBooks) { book in
+                            bookRow(book)
+                        }
+                    }
+                }
+
+                if !inProgressBooks.isEmpty {
+                    Section("En progreso") {
+                        ForEach(inProgressBooks) { book in
+                            bookRow(book)
+                        }
+                    }
+                }
+
+                if !completedBooks.isEmpty {
+                    Section("Completados") {
+                        ForEach(completedBooks) { book in
+                            bookRow(book)
+                                .swipeActions(edge: .leading) {
+                                    Button {
+                                        book.progressStatus = .archived
+                                        book.lastUpdated = Date()
+                                    } label: {
+                                        Label("Archivar", systemImage: "archivebox")
+                                    }
+                                    .tint(.gray)
+                                }
+                        }
+                    }
+                }
+
+                if !archivedBooks.isEmpty {
+                    Section {
+                        DisclosureGroup(isExpanded: $archivedExpanded) {
+                            ForEach(archivedBooks) { book in
+                                bookRow(book)
+                            }
+                        } label: {
+                            Text("Archivados (\(archivedBooks.count))")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
                 }
             }
         }
@@ -39,6 +88,19 @@ struct BooksListView: View {
         }
         .sheet(isPresented: $showingAddSheet) {
             BookSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
+        }
+    }
+
+    private func bookRow(_ book: ResourceEntity) -> some View {
+        NavigationLink(destination: ResourceDetailView(resource: book)) {
+            BookRowView(book: book)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                modelContext.delete(book)
+            } label: {
+                Label("Eliminar", systemImage: "trash")
+            }
         }
     }
 
@@ -204,11 +266,16 @@ struct BookSearchView: View {
                     BookSearchResultRow(
                         title: item.title,
                         subtitle: item.author,
-                        imageURL: item.coverURL
-                    ) {
-                        viewModel.addBook(from: item, context: modelContext)
-                        isPresented = false
-                    }
+                        imageURL: item.coverURL,
+                        onAdd: {
+                            viewModel.addBook(from: item, context: modelContext)
+                            isPresented = false
+                        },
+                        onWishlist: {
+                            viewModel.addBookToWishlist(from: item, context: modelContext)
+                            isPresented = false
+                        }
+                    )
                 }
                 .listStyle(.plain)
             }
@@ -230,6 +297,7 @@ struct BookSearchResultRow: View {
     let subtitle: String
     let imageURL: String?
     let onAdd: () -> Void
+    let onWishlist: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -270,6 +338,15 @@ struct BookSearchResultRow: View {
             Spacer()
 
             Button {
+                onWishlist()
+            } label: {
+                Image(systemName: "bookmark.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(.orange)
+            }
+            .buttonStyle(.plain)
+
+            Button {
                 onAdd()
             } label: {
                 Image(systemName: "plus.circle.fill")
@@ -297,17 +374,21 @@ struct StatusBadge: View {
 
     private var backgroundColor: Color {
         switch status {
+        case .wishlist: return Color.orange.opacity(0.2)
         case .notStarted: return Color.gray.opacity(0.2)
         case .inProgress: return Color.blue.opacity(0.2)
         case .completed: return Color.green.opacity(0.2)
+        case .archived: return Color(.systemGray4).opacity(0.5)
         }
     }
 
     private var foregroundColor: Color {
         switch status {
+        case .wishlist: return .orange
         case .notStarted: return .gray
         case .inProgress: return .blue
         case .completed: return .green
+        case .archived: return Color(.systemGray)
         }
     }
 }

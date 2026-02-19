@@ -45,6 +45,26 @@ final class GamesViewModel: ObservableObject {
             print("Error saving game: \(error)")
         }
     }
+
+    func addGameToWishlist(from item: RAWGGameItem, context: ModelContext) {
+        let game = ResourceEntity(
+            type: .game,
+            title: item.title,
+            externalId: item.id,
+            imageURL: item.imageURL,
+            status: .wishlist
+        )
+        
+        context.insert(game)
+        
+        do {
+            try context.save()
+            searchResults = []
+            searchQuery = ""
+        } catch {
+            print("Error saving game: \(error)")
+        }
+    }
     
     func addGame(title: String, context: ModelContext) {
         let game = ResourceEntity(

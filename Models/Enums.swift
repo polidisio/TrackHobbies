@@ -23,15 +23,19 @@ enum ResourceType: String, Codable, CaseIterable {
 }
 
 enum ProgressStatus: String, Codable, CaseIterable {
+    case wishlist = "wishlist"
     case notStarted = "not_started"
     case inProgress = "in_progress"
     case completed = "completed"
+    case archived = "archived"
     
     var displayName: String {
         switch self {
+        case .wishlist: return "Pendiente"
         case .notStarted: return "Sin empezar"
         case .inProgress: return "En progreso"
         case .completed: return "Completado"
+        case .archived: return "Archivado"
         }
     }
 }

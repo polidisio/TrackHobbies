@@ -39,6 +39,22 @@ final class BooksViewModel: ObservableObject {
         searchResults = []
         searchQuery = ""
     }
+
+    func addBookToWishlist(from item: GoogleBookItem, context: ModelContext) {
+        let book = ResourceEntity(
+            type: .book,
+            title: item.title,
+            externalId: item.externalId,
+            imageURL: item.coverURL,
+            summary: item.summary,
+            authorOrCreator: item.author,
+            status: .wishlist,
+            totalPages: item.numberOfPages
+        )
+        context.insert(book)
+        searchResults = []
+        searchQuery = ""
+    }
     
     func addBook(title: String, author: String?, context: ModelContext) {
         let book = ResourceEntity(

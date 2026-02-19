@@ -52,6 +52,35 @@ final class SeriesViewModel: ObservableObject {
             print("Error saving series: \(error)")
         }
     }
+
+    func addSeriesToWishlist(from result: TVMazeSearchResult, context: ModelContext) {
+        let serie = ResourceEntity(
+            type: .series,
+            title: result.title,
+            imageURL: result.imageURL,
+            summary: result.summary,
+            status: .wishlist
+        )
+        
+        context.insert(serie)
+
+        TVMazeService.shared.fetchSeasons(showId: result.id) { totalSeasons, totalEpisodes in
+            if totalSeasons > 0 {
+                serie.totalSeasons = totalSeasons
+            }
+            if totalEpisodes > 0 {
+                serie.totalEpisodes = totalEpisodes
+            }
+        }
+        
+        do {
+            try context.save()
+            searchResults = []
+            searchQuery = ""
+        } catch {
+            print("Error saving series: \(error)")
+        }
+    }
     
     func addSeries(title: String, summary: String? = nil, context: ModelContext) {
         let serie = ResourceEntity(
