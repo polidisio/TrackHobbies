@@ -21,7 +21,9 @@ struct ResourceDetailView: View {
             }
             .padding()
         }
-        .background(AppTheme.pageBackground)
+        .background {
+            MeshBackgroundView()
+        }
         .navigationTitle(resource.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

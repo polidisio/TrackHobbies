@@ -19,83 +19,88 @@ struct SeriesListView: View {
     private var archivedSeries: [ResourceEntity] { series.filter { $0.progressStatus == .archived } }
 
     var body: some View {
-        List {
-            if series.isEmpty {
-                emptyStateView
-            } else {
-                if !wishlistSeries.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $wishlistExpanded) {
-                            ForEach(wishlistSeries) { serie in
-                                seriesRow(serie)
+        ZStack {
+            MeshBackgroundView()
+
+            List {
+                if series.isEmpty {
+                    emptyStateView
+                } else {
+                    if !wishlistSeries.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $wishlistExpanded) {
+                                ForEach(wishlistSeries) { serie in
+                                    seriesRow(serie)
+                                }
+                            } label: {
+                                SectionHeader(status: .wishlist, count: wishlistSeries.count)
                             }
-                        } label: {
-                            SectionHeader(status: .wishlist, count: wishlistSeries.count)
                         }
                     }
-                }
 
-                if !notStartedSeries.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $notStartedExpanded) {
-                            ForEach(notStartedSeries) { serie in
-                                seriesRow(serie)
+                    if !notStartedSeries.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $notStartedExpanded) {
+                                ForEach(notStartedSeries) { serie in
+                                    seriesRow(serie)
+                                }
+                            } label: {
+                                SectionHeader(status: .notStarted, count: notStartedSeries.count)
                             }
-                        } label: {
-                            SectionHeader(status: .notStarted, count: notStartedSeries.count)
                         }
                     }
-                }
 
-                if !inProgressSeries.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $inProgressExpanded) {
-                            ForEach(inProgressSeries) { serie in
-                                seriesRow(serie)
+                    if !inProgressSeries.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $inProgressExpanded) {
+                                ForEach(inProgressSeries) { serie in
+                                    seriesRow(serie)
+                                }
+                            } label: {
+                                SectionHeader(status: .inProgress, count: inProgressSeries.count)
                             }
-                        } label: {
-                            SectionHeader(status: .inProgress, count: inProgressSeries.count)
                         }
                     }
-                }
 
-                if !completedSeries.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $completedExpanded) {
-                            ForEach(completedSeries) { serie in
-                                seriesRow(serie)
-                                    .swipeActions(edge: .leading) {
-                                        Button {
-                                            withAnimation {
-                                                serie.progressStatus = .archived
-                                                serie.lastUpdated = Date()
+                    if !completedSeries.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $completedExpanded) {
+                                ForEach(completedSeries) { serie in
+                                    seriesRow(serie)
+                                        .swipeActions(edge: .leading) {
+                                            Button {
+                                                withAnimation {
+                                                    serie.progressStatus = .archived
+                                                    serie.lastUpdated = Date()
+                                                }
+                                            } label: {
+                                                Label("Archivar", systemImage: "archivebox")
                                             }
-                                        } label: {
-                                            Label("Archivar", systemImage: "archivebox")
+                                            .tint(ProgressStatus.archived.color)
                                         }
-                                        .tint(ProgressStatus.archived.color)
-                                    }
+                                }
+                            } label: {
+                                SectionHeader(status: .completed, count: completedSeries.count)
                             }
-                        } label: {
-                            SectionHeader(status: .completed, count: completedSeries.count)
                         }
                     }
-                }
 
-                if !archivedSeries.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $archivedExpanded) {
-                            ForEach(archivedSeries) { serie in
-                                seriesRow(serie)
+                    if !archivedSeries.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $archivedExpanded) {
+                                ForEach(archivedSeries) { serie in
+                                    seriesRow(serie)
+                                }
+                            } label: {
+                                SectionHeader(status: .archived, count: archivedSeries.count)
                             }
-                        } label: {
-                            SectionHeader(status: .archived, count: archivedSeries.count)
                         }
                     }
                 }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("Series")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

@@ -19,83 +19,88 @@ struct BooksListView: View {
     private var archivedBooks: [ResourceEntity] { books.filter { $0.progressStatus == .archived } }
 
     var body: some View {
-        List {
-            if books.isEmpty {
-                emptyStateView
-            } else {
-                if !wishlistBooks.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $wishlistExpanded) {
-                            ForEach(wishlistBooks) { book in
-                                bookRow(book)
+        ZStack {
+            MeshBackgroundView()
+
+            List {
+                if books.isEmpty {
+                    emptyStateView
+                } else {
+                    if !wishlistBooks.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $wishlistExpanded) {
+                                ForEach(wishlistBooks) { book in
+                                    bookRow(book)
+                                }
+                            } label: {
+                                SectionHeader(status: .wishlist, count: wishlistBooks.count)
                             }
-                        } label: {
-                            SectionHeader(status: .wishlist, count: wishlistBooks.count)
                         }
                     }
-                }
 
-                if !notStartedBooks.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $notStartedExpanded) {
-                            ForEach(notStartedBooks) { book in
-                                bookRow(book)
+                    if !notStartedBooks.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $notStartedExpanded) {
+                                ForEach(notStartedBooks) { book in
+                                    bookRow(book)
+                                }
+                            } label: {
+                                SectionHeader(status: .notStarted, count: notStartedBooks.count)
                             }
-                        } label: {
-                            SectionHeader(status: .notStarted, count: notStartedBooks.count)
                         }
                     }
-                }
 
-                if !inProgressBooks.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $inProgressExpanded) {
-                            ForEach(inProgressBooks) { book in
-                                bookRow(book)
+                    if !inProgressBooks.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $inProgressExpanded) {
+                                ForEach(inProgressBooks) { book in
+                                    bookRow(book)
+                                }
+                            } label: {
+                                SectionHeader(status: .inProgress, count: inProgressBooks.count)
                             }
-                        } label: {
-                            SectionHeader(status: .inProgress, count: inProgressBooks.count)
                         }
                     }
-                }
 
-                if !completedBooks.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $completedExpanded) {
-                            ForEach(completedBooks) { book in
-                                bookRow(book)
-                                    .swipeActions(edge: .leading) {
-                                        Button {
-                                            withAnimation {
-                                                book.progressStatus = .archived
-                                                book.lastUpdated = Date()
+                    if !completedBooks.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $completedExpanded) {
+                                ForEach(completedBooks) { book in
+                                    bookRow(book)
+                                        .swipeActions(edge: .leading) {
+                                            Button {
+                                                withAnimation {
+                                                    book.progressStatus = .archived
+                                                    book.lastUpdated = Date()
+                                                }
+                                            } label: {
+                                                Label("Archivar", systemImage: "archivebox")
                                             }
-                                        } label: {
-                                            Label("Archivar", systemImage: "archivebox")
+                                            .tint(ProgressStatus.archived.color)
                                         }
-                                        .tint(ProgressStatus.archived.color)
-                                    }
+                                }
+                            } label: {
+                                SectionHeader(status: .completed, count: completedBooks.count)
                             }
-                        } label: {
-                            SectionHeader(status: .completed, count: completedBooks.count)
                         }
                     }
-                }
 
-                if !archivedBooks.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $archivedExpanded) {
-                            ForEach(archivedBooks) { book in
-                                bookRow(book)
+                    if !archivedBooks.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $archivedExpanded) {
+                                ForEach(archivedBooks) { book in
+                                    bookRow(book)
+                                }
+                            } label: {
+                                SectionHeader(status: .archived, count: archivedBooks.count)
                             }
-                        } label: {
-                            SectionHeader(status: .archived, count: archivedBooks.count)
                         }
                     }
                 }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("Libros")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

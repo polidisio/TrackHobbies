@@ -19,83 +19,88 @@ struct GamesListView: View {
     private var archivedGames: [ResourceEntity] { games.filter { $0.progressStatus == .archived } }
 
     var body: some View {
-        List {
-            if games.isEmpty {
-                emptyStateView
-            } else {
-                if !wishlistGames.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $wishlistExpanded) {
-                            ForEach(wishlistGames) { game in
-                                gameRow(game)
+        ZStack {
+            MeshBackgroundView()
+
+            List {
+                if games.isEmpty {
+                    emptyStateView
+                } else {
+                    if !wishlistGames.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $wishlistExpanded) {
+                                ForEach(wishlistGames) { game in
+                                    gameRow(game)
+                                }
+                            } label: {
+                                SectionHeader(status: .wishlist, count: wishlistGames.count)
                             }
-                        } label: {
-                            SectionHeader(status: .wishlist, count: wishlistGames.count)
                         }
                     }
-                }
 
-                if !notStartedGames.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $notStartedExpanded) {
-                            ForEach(notStartedGames) { game in
-                                gameRow(game)
+                    if !notStartedGames.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $notStartedExpanded) {
+                                ForEach(notStartedGames) { game in
+                                    gameRow(game)
+                                }
+                            } label: {
+                                SectionHeader(status: .notStarted, count: notStartedGames.count)
                             }
-                        } label: {
-                            SectionHeader(status: .notStarted, count: notStartedGames.count)
                         }
                     }
-                }
 
-                if !inProgressGames.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $inProgressExpanded) {
-                            ForEach(inProgressGames) { game in
-                                gameRow(game)
+                    if !inProgressGames.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $inProgressExpanded) {
+                                ForEach(inProgressGames) { game in
+                                    gameRow(game)
+                                }
+                            } label: {
+                                SectionHeader(status: .inProgress, count: inProgressGames.count)
                             }
-                        } label: {
-                            SectionHeader(status: .inProgress, count: inProgressGames.count)
                         }
                     }
-                }
 
-                if !completedGames.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $completedExpanded) {
-                            ForEach(completedGames) { game in
-                                gameRow(game)
-                                    .swipeActions(edge: .leading) {
-                                        Button {
-                                            withAnimation {
-                                                game.progressStatus = .archived
-                                                game.lastUpdated = Date()
+                    if !completedGames.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $completedExpanded) {
+                                ForEach(completedGames) { game in
+                                    gameRow(game)
+                                        .swipeActions(edge: .leading) {
+                                            Button {
+                                                withAnimation {
+                                                    game.progressStatus = .archived
+                                                    game.lastUpdated = Date()
+                                                }
+                                            } label: {
+                                                Label("Archivar", systemImage: "archivebox")
                                             }
-                                        } label: {
-                                            Label("Archivar", systemImage: "archivebox")
+                                            .tint(ProgressStatus.archived.color)
                                         }
-                                        .tint(ProgressStatus.archived.color)
-                                    }
+                                }
+                            } label: {
+                                SectionHeader(status: .completed, count: completedGames.count)
                             }
-                        } label: {
-                            SectionHeader(status: .completed, count: completedGames.count)
                         }
                     }
-                }
 
-                if !archivedGames.isEmpty {
-                    Section {
-                        DisclosureGroup(isExpanded: $archivedExpanded) {
-                            ForEach(archivedGames) { game in
-                                gameRow(game)
+                    if !archivedGames.isEmpty {
+                        Section {
+                            DisclosureGroup(isExpanded: $archivedExpanded) {
+                                ForEach(archivedGames) { game in
+                                    gameRow(game)
+                                }
+                            } label: {
+                                SectionHeader(status: .archived, count: archivedGames.count)
                             }
-                        } label: {
-                            SectionHeader(status: .archived, count: archivedGames.count)
                         }
                     }
                 }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("Juegos")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
