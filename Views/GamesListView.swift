@@ -6,6 +6,10 @@ struct GamesListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<ResourceEntity> { $0.type == "game" }, sort: \.lastUpdated, order: .reverse) private var games: [ResourceEntity]
     @State private var showingAddSheet = false
+    @State private var wishlistExpanded = true
+    @State private var notStartedExpanded = true
+    @State private var inProgressExpanded = true
+    @State private var completedExpanded = true
     @State private var archivedExpanded = false
 
     private var wishlistGames: [ResourceEntity] { games.filter { $0.progressStatus == .wishlist } }
@@ -20,42 +24,58 @@ struct GamesListView: View {
                 emptyStateView
             } else {
                 if !wishlistGames.isEmpty {
-                    Section("Pendientes") {
-                        ForEach(wishlistGames) { game in
-                            gameRow(game)
+                    Section {
+                        DisclosureGroup(isExpanded: $wishlistExpanded) {
+                            ForEach(wishlistGames) { game in
+                                gameRow(game)
+                            }
+                        } label: {
+                            Text("Pendientes (\(wishlistGames.count))")
                         }
                     }
                 }
 
                 if !notStartedGames.isEmpty {
-                    Section("Sin empezar") {
-                        ForEach(notStartedGames) { game in
-                            gameRow(game)
+                    Section {
+                        DisclosureGroup(isExpanded: $notStartedExpanded) {
+                            ForEach(notStartedGames) { game in
+                                gameRow(game)
+                            }
+                        } label: {
+                            Text("Sin empezar (\(notStartedGames.count))")
                         }
                     }
                 }
 
                 if !inProgressGames.isEmpty {
-                    Section("En progreso") {
-                        ForEach(inProgressGames) { game in
-                            gameRow(game)
+                    Section {
+                        DisclosureGroup(isExpanded: $inProgressExpanded) {
+                            ForEach(inProgressGames) { game in
+                                gameRow(game)
+                            }
+                        } label: {
+                            Text("En progreso (\(inProgressGames.count))")
                         }
                     }
                 }
 
                 if !completedGames.isEmpty {
-                    Section("Completados") {
-                        ForEach(completedGames) { game in
-                            gameRow(game)
-                                .swipeActions(edge: .leading) {
-                                    Button {
-                                        game.progressStatus = .archived
-                                        game.lastUpdated = Date()
-                                    } label: {
-                                        Label("Archivar", systemImage: "archivebox")
+                    Section {
+                        DisclosureGroup(isExpanded: $completedExpanded) {
+                            ForEach(completedGames) { game in
+                                gameRow(game)
+                                    .swipeActions(edge: .leading) {
+                                        Button {
+                                            game.progressStatus = .archived
+                                            game.lastUpdated = Date()
+                                        } label: {
+                                            Label("Archivar", systemImage: "archivebox")
+                                        }
+                                        .tint(.gray)
                                     }
-                                    .tint(.gray)
-                                }
+                            }
+                        } label: {
+                            Text("Completados (\(completedGames.count))")
                         }
                     }
                 }
@@ -68,7 +88,6 @@ struct GamesListView: View {
                             }
                         } label: {
                             Text("Archivados (\(archivedGames.count))")
-                                .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                     }

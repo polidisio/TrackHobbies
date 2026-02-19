@@ -6,6 +6,10 @@ struct BooksListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<ResourceEntity> { $0.type == "book" }, sort: \.lastUpdated, order: .reverse) private var books: [ResourceEntity]
     @State private var showingAddSheet = false
+    @State private var wishlistExpanded = true
+    @State private var notStartedExpanded = true
+    @State private var inProgressExpanded = true
+    @State private var completedExpanded = true
     @State private var archivedExpanded = false
 
     private var wishlistBooks: [ResourceEntity] { books.filter { $0.progressStatus == .wishlist } }
@@ -20,42 +24,58 @@ struct BooksListView: View {
                 emptyStateView
             } else {
                 if !wishlistBooks.isEmpty {
-                    Section("Pendientes") {
-                        ForEach(wishlistBooks) { book in
-                            bookRow(book)
+                    Section {
+                        DisclosureGroup(isExpanded: $wishlistExpanded) {
+                            ForEach(wishlistBooks) { book in
+                                bookRow(book)
+                            }
+                        } label: {
+                            Text("Pendientes (\(wishlistBooks.count))")
                         }
                     }
                 }
 
                 if !notStartedBooks.isEmpty {
-                    Section("Sin empezar") {
-                        ForEach(notStartedBooks) { book in
-                            bookRow(book)
+                    Section {
+                        DisclosureGroup(isExpanded: $notStartedExpanded) {
+                            ForEach(notStartedBooks) { book in
+                                bookRow(book)
+                            }
+                        } label: {
+                            Text("Sin empezar (\(notStartedBooks.count))")
                         }
                     }
                 }
 
                 if !inProgressBooks.isEmpty {
-                    Section("En progreso") {
-                        ForEach(inProgressBooks) { book in
-                            bookRow(book)
+                    Section {
+                        DisclosureGroup(isExpanded: $inProgressExpanded) {
+                            ForEach(inProgressBooks) { book in
+                                bookRow(book)
+                            }
+                        } label: {
+                            Text("En progreso (\(inProgressBooks.count))")
                         }
                     }
                 }
 
                 if !completedBooks.isEmpty {
-                    Section("Completados") {
-                        ForEach(completedBooks) { book in
-                            bookRow(book)
-                                .swipeActions(edge: .leading) {
-                                    Button {
-                                        book.progressStatus = .archived
-                                        book.lastUpdated = Date()
-                                    } label: {
-                                        Label("Archivar", systemImage: "archivebox")
+                    Section {
+                        DisclosureGroup(isExpanded: $completedExpanded) {
+                            ForEach(completedBooks) { book in
+                                bookRow(book)
+                                    .swipeActions(edge: .leading) {
+                                        Button {
+                                            book.progressStatus = .archived
+                                            book.lastUpdated = Date()
+                                        } label: {
+                                            Label("Archivar", systemImage: "archivebox")
+                                        }
+                                        .tint(.gray)
                                     }
-                                    .tint(.gray)
-                                }
+                            }
+                        } label: {
+                            Text("Completados (\(completedBooks.count))")
                         }
                     }
                 }
@@ -68,7 +88,6 @@ struct BooksListView: View {
                             }
                         } label: {
                             Text("Archivados (\(archivedBooks.count))")
-                                .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                     }

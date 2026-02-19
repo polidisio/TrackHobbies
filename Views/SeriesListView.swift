@@ -6,6 +6,10 @@ struct SeriesListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<ResourceEntity> { $0.type == "series" }, sort: \.lastUpdated, order: .reverse) private var series: [ResourceEntity]
     @State private var showingAddSheet = false
+    @State private var wishlistExpanded = true
+    @State private var notStartedExpanded = true
+    @State private var inProgressExpanded = true
+    @State private var completedExpanded = true
     @State private var archivedExpanded = false
 
     private var wishlistSeries: [ResourceEntity] { series.filter { $0.progressStatus == .wishlist } }
@@ -20,42 +24,58 @@ struct SeriesListView: View {
                 emptyStateView
             } else {
                 if !wishlistSeries.isEmpty {
-                    Section("Pendientes") {
-                        ForEach(wishlistSeries) { serie in
-                            seriesRow(serie)
+                    Section {
+                        DisclosureGroup(isExpanded: $wishlistExpanded) {
+                            ForEach(wishlistSeries) { serie in
+                                seriesRow(serie)
+                            }
+                        } label: {
+                            Text("Pendientes (\(wishlistSeries.count))")
                         }
                     }
                 }
 
                 if !notStartedSeries.isEmpty {
-                    Section("Sin empezar") {
-                        ForEach(notStartedSeries) { serie in
-                            seriesRow(serie)
+                    Section {
+                        DisclosureGroup(isExpanded: $notStartedExpanded) {
+                            ForEach(notStartedSeries) { serie in
+                                seriesRow(serie)
+                            }
+                        } label: {
+                            Text("Sin empezar (\(notStartedSeries.count))")
                         }
                     }
                 }
 
                 if !inProgressSeries.isEmpty {
-                    Section("En progreso") {
-                        ForEach(inProgressSeries) { serie in
-                            seriesRow(serie)
+                    Section {
+                        DisclosureGroup(isExpanded: $inProgressExpanded) {
+                            ForEach(inProgressSeries) { serie in
+                                seriesRow(serie)
+                            }
+                        } label: {
+                            Text("En progreso (\(inProgressSeries.count))")
                         }
                     }
                 }
 
                 if !completedSeries.isEmpty {
-                    Section("Completados") {
-                        ForEach(completedSeries) { serie in
-                            seriesRow(serie)
-                                .swipeActions(edge: .leading) {
-                                    Button {
-                                        serie.progressStatus = .archived
-                                        serie.lastUpdated = Date()
-                                    } label: {
-                                        Label("Archivar", systemImage: "archivebox")
+                    Section {
+                        DisclosureGroup(isExpanded: $completedExpanded) {
+                            ForEach(completedSeries) { serie in
+                                seriesRow(serie)
+                                    .swipeActions(edge: .leading) {
+                                        Button {
+                                            serie.progressStatus = .archived
+                                            serie.lastUpdated = Date()
+                                        } label: {
+                                            Label("Archivar", systemImage: "archivebox")
+                                        }
+                                        .tint(.gray)
                                     }
-                                    .tint(.gray)
-                                }
+                            }
+                        } label: {
+                            Text("Completados (\(completedSeries.count))")
                         }
                     }
                 }
@@ -68,7 +88,6 @@ struct SeriesListView: View {
                             }
                         } label: {
                             Text("Archivados (\(archivedSeries.count))")
-                                .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                     }
