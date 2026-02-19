@@ -7,18 +7,19 @@ struct ContentView: View {
             NavigationStack {
                 BooksListView()
             }
-            .tabItem { Label("Libros", systemImage: "book") }
-            
+            .tabItem { Label("Libros", systemImage: "book.fill") }
+
             NavigationStack {
                 SeriesListView()
             }
-            .tabItem { Label("Series", systemImage: "tv") }
-            
+            .tabItem { Label("Series", systemImage: "tv.fill") }
+
             NavigationStack {
                 GamesListView()
             }
-            .tabItem { Label("Juegos", systemImage: "gamecontroller") }
+            .tabItem { Label("Juegos", systemImage: "gamecontroller.fill") }
         }
+        .tint(AppTheme.accent)
     }
 }
 

@@ -30,7 +30,7 @@ struct BooksListView: View {
                                 bookRow(book)
                             }
                         } label: {
-                            Text("Pendientes (\(wishlistBooks.count))")
+                            SectionHeader(status: .wishlist, count: wishlistBooks.count)
                         }
                     }
                 }
@@ -42,7 +42,7 @@ struct BooksListView: View {
                                 bookRow(book)
                             }
                         } label: {
-                            Text("Sin empezar (\(notStartedBooks.count))")
+                            SectionHeader(status: .notStarted, count: notStartedBooks.count)
                         }
                     }
                 }
@@ -54,7 +54,7 @@ struct BooksListView: View {
                                 bookRow(book)
                             }
                         } label: {
-                            Text("En progreso (\(inProgressBooks.count))")
+                            SectionHeader(status: .inProgress, count: inProgressBooks.count)
                         }
                     }
                 }
@@ -66,16 +66,18 @@ struct BooksListView: View {
                                 bookRow(book)
                                     .swipeActions(edge: .leading) {
                                         Button {
-                                            book.progressStatus = .archived
-                                            book.lastUpdated = Date()
+                                            withAnimation {
+                                                book.progressStatus = .archived
+                                                book.lastUpdated = Date()
+                                            }
                                         } label: {
                                             Label("Archivar", systemImage: "archivebox")
                                         }
-                                        .tint(.gray)
+                                        .tint(ProgressStatus.archived.color)
                                     }
                             }
                         } label: {
-                            Text("Completados (\(completedBooks.count))")
+                            SectionHeader(status: .completed, count: completedBooks.count)
                         }
                     }
                 }
@@ -87,8 +89,7 @@ struct BooksListView: View {
                                 bookRow(book)
                             }
                         } label: {
-                            Text("Archivados (\(archivedBooks.count))")
-                                .foregroundColor(.secondary)
+                            SectionHeader(status: .archived, count: archivedBooks.count)
                         }
                     }
                 }
@@ -116,7 +117,9 @@ struct BooksListView: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
-                modelContext.delete(book)
+                withAnimation {
+                    modelContext.delete(book)
+                }
             } label: {
                 Label("Eliminar", systemImage: "trash")
             }
@@ -124,19 +127,21 @@ struct BooksListView: View {
     }
 
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "book")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary)
+        VStack(spacing: 20) {
+            Image(systemName: "book.fill")
+                .font(.system(size: 56))
+                .foregroundStyle(AppTheme.bookColor.opacity(0.4))
 
-            Text("No hay libros")
-                .font(.headline)
-                .foregroundColor(.secondary)
+            VStack(spacing: 6) {
+                Text("No hay libros")
+                    .font(.title3)
+                    .fontWeight(.semibold)
 
-            Text("Toca + para añadir tu primer libro")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+                Text("Toca + para añadir tu primer libro")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 60)
@@ -149,28 +154,9 @@ struct BookRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: book.imageURL ?? "")) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure, .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .overlay {
-                            Image(systemName: "book")
-                                .foregroundColor(.secondary)
-                        }
-                @unknown default:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                }
-            }
-            .frame(width: 48, height: 64)
-            .cornerRadius(6)
+            ResourceThumbnail(url: book.imageURL, icon: "book.fill", color: AppTheme.bookColor)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(book.title)
                     .font(.headline)
                     .lineLimit(2)
@@ -182,7 +168,7 @@ struct BookRowView: View {
                         .lineLimit(1)
                 }
 
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     StatusBadge(status: book.progressStatus)
 
                     if let rating = book.userRating {
@@ -191,20 +177,19 @@ struct BookRowView: View {
 
                     if book.reviewComment != nil && !(book.reviewComment ?? "").isEmpty {
                         Image(systemName: "text.quote")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundColor(.secondary)
                     }
                 }
 
                 if book.progressStatus == .inProgress {
                     if let current = book.currentPage, let total = book.totalPages, total > 0 {
-                        Text("Pág. \(current)/\(total) (\(Int(min(Double(current) / Double(total), 1.0) * 100))%)")
-                            .font(.caption)
-                            .foregroundColor(.blue)
+                        ProgressRow(
+                            text: "Pág. \(current)/\(total)",
+                            value: min(Double(current) / Double(total), 1.0)
+                        )
                     } else if let pct = book.progressPercentage, pct > 0 {
-                        Text("\(Int(pct))%")
-                            .font(.caption)
-                            .foregroundColor(.blue)
+                        ProgressRow(text: "\(Int(pct))%", value: pct / 100)
                     }
                 }
 
@@ -259,41 +244,47 @@ struct BookSearchView: View {
     }
 
     private var searchSection: some View {
-        VStack(spacing: 16) {
-            HStack {
-                TextField("Buscar por título...", text: $viewModel.searchQuery)
-                    .textFieldStyle(.roundedBorder)
-                    .submitLabel(.search)
-                    .onSubmit {
+        VStack(spacing: 0) {
+            HStack(spacing: 10) {
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.secondary)
+                    TextField("Buscar por título...", text: $viewModel.searchQuery)
+                        .submitLabel(.search)
+                        .onSubmit {
+                            viewModel.searchBooks()
+                        }
+                }
+                .padding(10)
+                .background(Color(.tertiarySystemFill))
+                .cornerRadius(10)
+
+                if !viewModel.searchQuery.isEmpty {
+                    Button("Buscar") {
                         viewModel.searchBooks()
                     }
-
-                Button {
-                    viewModel.searchBooks()
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.white)
-                        .padding(8)
-                        .background(Color.blue)
-                        .cornerRadius(8)
+                    .fontWeight(.medium)
                 }
-                .disabled(viewModel.searchQuery.isEmpty)
             }
             .padding()
 
             if viewModel.isLoading {
+                Spacer()
                 ProgressView("Buscando...")
-                    .padding()
+                Spacer()
             } else if viewModel.searchResults.isEmpty && !viewModel.searchQuery.isEmpty {
+                Spacer()
                 Text("No se encontraron resultados")
                     .foregroundColor(.secondary)
-                    .padding()
+                Spacer()
             } else {
                 List(viewModel.searchResults, id: \.externalId) { item in
-                    BookSearchResultRow(
+                    SearchResultRow(
                         title: item.title,
                         subtitle: item.author,
                         imageURL: item.coverURL,
+                        icon: "book.fill",
+                        color: AppTheme.bookColor,
                         onAdd: {
                             viewModel.addBook(from: item, context: modelContext)
                             isPresented = false
@@ -319,37 +310,126 @@ struct BookSearchView: View {
     }
 }
 
-struct BookSearchResultRow: View {
+// MARK: - Shared Components
+
+struct SectionHeader: View {
+    let status: ProgressStatus
+    let count: Int
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: status.icon)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(width: 26, height: 26)
+                .background(status.color, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+
+            Text(status.sectionTitle)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+
+            Spacer()
+
+            Text("\(count)")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+    }
+}
+
+struct ResourceThumbnail: View {
+    let url: String?
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        AsyncImage(url: URL(string: url ?? "")) { phase in
+            switch phase {
+            case .success(let image):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            case .failure, .empty:
+                Rectangle()
+                    .fill(AppTheme.placeholderFill)
+                    .overlay {
+                        Image(systemName: icon)
+                            .font(.title3)
+                            .foregroundStyle(color.opacity(0.5))
+                    }
+            @unknown default:
+                Rectangle()
+                    .fill(AppTheme.placeholderFill)
+            }
+        }
+        .frame(width: AppTheme.thumbnailSize.width, height: AppTheme.thumbnailSize.height)
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.thumbnailRadius, style: .continuous))
+        .shadow(color: AppTheme.subtleShadow, radius: 4, y: 2)
+    }
+}
+
+struct StatusBadge: View {
+    let status: ProgressStatus
+
+    var body: some View {
+        Text(status.displayName)
+            .font(.caption2)
+            .fontWeight(.medium)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .foregroundColor(status.color)
+            .background(status.color.opacity(0.12))
+            .clipShape(Capsule())
+    }
+}
+
+struct RatingView: View {
+    let rating: Double
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Image(systemName: "star.fill")
+                .font(.caption2)
+                .foregroundColor(.yellow)
+            Text(String(format: "%.1f", rating))
+                .font(.caption2)
+                .fontWeight(.medium)
+                .foregroundColor(.secondary)
+        }
+    }
+}
+
+struct ProgressRow: View {
+    let text: String
+    let value: Double
+
+    var body: some View {
+        HStack(spacing: 6) {
+            ProgressView(value: min(value, 1.0))
+                .tint(value >= 1.0 ? .green : AppTheme.accent)
+                .frame(width: 60)
+            Text(text)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+    }
+}
+
+struct SearchResultRow: View {
     let title: String
     let subtitle: String
     let imageURL: String?
+    let icon: String
+    let color: Color
     let onAdd: () -> Void
     let onWishlist: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: imageURL ?? "")) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure, .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .overlay {
-                            Image(systemName: "book")
-                                .foregroundColor(.secondary)
-                        }
-                @unknown default:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                }
-            }
-            .frame(width: 48, height: 64)
-            .cornerRadius(6)
+            ResourceThumbnail(url: imageURL, icon: icon, color: color)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.headline)
                     .lineLimit(2)
@@ -369,7 +449,8 @@ struct BookSearchResultRow: View {
             } label: {
                 Image(systemName: "bookmark.circle.fill")
                     .font(.title2)
-                    .foregroundColor(.orange)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.orange)
             }
             .buttonStyle(.plain)
 
@@ -378,60 +459,12 @@ struct BookSearchResultRow: View {
             } label: {
                 Image(systemName: "plus.circle.fill")
                     .font(.title2)
-                    .foregroundColor(.green)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.green)
             }
             .buttonStyle(.plain)
         }
         .padding(.vertical, 4)
-    }
-}
-
-struct StatusBadge: View {
-    let status: ProgressStatus
-
-    var body: some View {
-        Text(status.displayName)
-            .font(.caption)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .background(backgroundColor)
-            .foregroundColor(foregroundColor)
-            .cornerRadius(4)
-    }
-
-    private var backgroundColor: Color {
-        switch status {
-        case .wishlist: return Color.orange.opacity(0.2)
-        case .notStarted: return Color.gray.opacity(0.2)
-        case .inProgress: return Color.blue.opacity(0.2)
-        case .completed: return Color.green.opacity(0.2)
-        case .archived: return Color(.systemGray4).opacity(0.5)
-        }
-    }
-
-    private var foregroundColor: Color {
-        switch status {
-        case .wishlist: return .orange
-        case .notStarted: return .gray
-        case .inProgress: return .blue
-        case .completed: return .green
-        case .archived: return Color(.systemGray)
-        }
-    }
-}
-
-struct RatingView: View {
-    let rating: Double
-
-    var body: some View {
-        HStack(spacing: 2) {
-            Image(systemName: "star.fill")
-                .font(.caption)
-                .foregroundColor(.yellow)
-            Text(String(format: "%.1f", rating))
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
     }
 }
 

@@ -30,6 +30,7 @@ targets:
       - path: Services
       - path: Sync
       - path: Utils
+      - path: Theme
       - path: Views
       - path: ViewModels
       - path: Assets.xcassets

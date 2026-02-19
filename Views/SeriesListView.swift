@@ -30,7 +30,7 @@ struct SeriesListView: View {
                                 seriesRow(serie)
                             }
                         } label: {
-                            Text("Pendientes (\(wishlistSeries.count))")
+                            SectionHeader(status: .wishlist, count: wishlistSeries.count)
                         }
                     }
                 }
@@ -42,7 +42,7 @@ struct SeriesListView: View {
                                 seriesRow(serie)
                             }
                         } label: {
-                            Text("Sin empezar (\(notStartedSeries.count))")
+                            SectionHeader(status: .notStarted, count: notStartedSeries.count)
                         }
                     }
                 }
@@ -54,7 +54,7 @@ struct SeriesListView: View {
                                 seriesRow(serie)
                             }
                         } label: {
-                            Text("En progreso (\(inProgressSeries.count))")
+                            SectionHeader(status: .inProgress, count: inProgressSeries.count)
                         }
                     }
                 }
@@ -66,16 +66,18 @@ struct SeriesListView: View {
                                 seriesRow(serie)
                                     .swipeActions(edge: .leading) {
                                         Button {
-                                            serie.progressStatus = .archived
-                                            serie.lastUpdated = Date()
+                                            withAnimation {
+                                                serie.progressStatus = .archived
+                                                serie.lastUpdated = Date()
+                                            }
                                         } label: {
                                             Label("Archivar", systemImage: "archivebox")
                                         }
-                                        .tint(.gray)
+                                        .tint(ProgressStatus.archived.color)
                                     }
                             }
                         } label: {
-                            Text("Completados (\(completedSeries.count))")
+                            SectionHeader(status: .completed, count: completedSeries.count)
                         }
                     }
                 }
@@ -87,8 +89,7 @@ struct SeriesListView: View {
                                 seriesRow(serie)
                             }
                         } label: {
-                            Text("Archivados (\(archivedSeries.count))")
-                                .foregroundColor(.secondary)
+                            SectionHeader(status: .archived, count: archivedSeries.count)
                         }
                     }
                 }
@@ -116,7 +117,9 @@ struct SeriesListView: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
-                modelContext.delete(serie)
+                withAnimation {
+                    modelContext.delete(serie)
+                }
             } label: {
                 Label("Eliminar", systemImage: "trash")
             }
@@ -124,19 +127,21 @@ struct SeriesListView: View {
     }
 
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "tv")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary)
+        VStack(spacing: 20) {
+            Image(systemName: "tv.fill")
+                .font(.system(size: 56))
+                .foregroundStyle(AppTheme.seriesColor.opacity(0.4))
 
-            Text("No hay series")
-                .font(.headline)
-                .foregroundColor(.secondary)
+            VStack(spacing: 6) {
+                Text("No hay series")
+                    .font(.title3)
+                    .fontWeight(.semibold)
 
-            Text("Toca + para añadir tu primera serie")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+                Text("Toca + para añadir tu primera serie")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 60)
@@ -149,28 +154,9 @@ struct SeriesRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: serie.imageURL ?? "")) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure, .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .overlay {
-                            Image(systemName: "tv")
-                                .foregroundColor(.secondary)
-                        }
-                @unknown default:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                }
-            }
-            .frame(width: 48, height: 64)
-            .cornerRadius(6)
+            ResourceThumbnail(url: serie.imageURL, icon: "tv.fill", color: AppTheme.seriesColor)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(serie.title)
                     .font(.headline)
                     .lineLimit(2)
@@ -182,7 +168,7 @@ struct SeriesRowView: View {
                         .lineLimit(2)
                 }
 
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     StatusBadge(status: serie.progressStatus)
 
                     if let rating = serie.userRating {
@@ -191,7 +177,7 @@ struct SeriesRowView: View {
 
                     if serie.reviewComment != nil && !(serie.reviewComment ?? "").isEmpty {
                         Image(systemName: "text.quote")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -202,12 +188,12 @@ struct SeriesRowView: View {
                         let episodeText = "E\(episode)"
                         Text("\(seasonText) \(episodeText)")
                             .font(.caption)
-                            .foregroundColor(.blue)
+                            .foregroundColor(AppTheme.accent)
                     } else if let season = serie.currentSeason {
                         let seasonText = serie.totalSeasons != nil ? "T\(season)/\(serie.totalSeasons!)" : "T\(season)"
                         Text(seasonText)
                             .font(.caption)
-                            .foregroundColor(.blue)
+                            .foregroundColor(AppTheme.accent)
                     }
                 }
 
@@ -261,40 +247,47 @@ struct SeriesSearchView: View {
     }
 
     private var searchSection: some View {
-        VStack(spacing: 16) {
-            HStack {
-                TextField("Buscar por título...", text: $viewModel.searchQuery)
-                    .textFieldStyle(.roundedBorder)
-                    .submitLabel(.search)
-                    .onSubmit {
+        VStack(spacing: 0) {
+            HStack(spacing: 10) {
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.secondary)
+                    TextField("Buscar por título...", text: $viewModel.searchQuery)
+                        .submitLabel(.search)
+                        .onSubmit {
+                            viewModel.searchSeries()
+                        }
+                }
+                .padding(10)
+                .background(Color(.tertiarySystemFill))
+                .cornerRadius(10)
+
+                if !viewModel.searchQuery.isEmpty {
+                    Button("Buscar") {
                         viewModel.searchSeries()
                     }
-
-                Button {
-                    viewModel.searchSeries()
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.white)
-                        .padding(8)
-                        .background(Color.blue)
-                        .cornerRadius(8)
+                    .fontWeight(.medium)
                 }
-                .disabled(viewModel.searchQuery.isEmpty)
             }
             .padding()
 
             if viewModel.isLoading {
+                Spacer()
                 ProgressView("Buscando...")
-                    .padding()
+                Spacer()
             } else if viewModel.searchResults.isEmpty && !viewModel.searchQuery.isEmpty {
+                Spacer()
                 Text("No se encontraron resultados")
                     .foregroundColor(.secondary)
-                    .padding()
+                Spacer()
             } else {
                 List(viewModel.searchResults, id: \.title) { item in
-                    SeriesSearchResultRow(
+                    SearchResultRow(
                         title: item.title,
+                        subtitle: "",
                         imageURL: item.imageURL,
+                        icon: "tv.fill",
+                        color: AppTheme.seriesColor,
                         onAdd: {
                             viewModel.addSeries(from: item, context: modelContext)
                             isPresented = false
@@ -316,63 +309,6 @@ struct SeriesSearchView: View {
                 TextField("Título", text: $manualTitle)
             }
         }
-    }
-}
-
-struct SeriesSearchResultRow: View {
-    let title: String
-    let imageURL: String?
-    let onAdd: () -> Void
-    let onWishlist: () -> Void
-
-    var body: some View {
-        HStack(spacing: 12) {
-            AsyncImage(url: URL(string: imageURL ?? "")) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure, .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .overlay {
-                            Image(systemName: "tv")
-                                .foregroundColor(.secondary)
-                        }
-                @unknown default:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                }
-            }
-            .frame(width: 48, height: 64)
-            .cornerRadius(6)
-
-            Text(title)
-                .font(.headline)
-                .lineLimit(2)
-
-            Spacer()
-
-            Button {
-                onWishlist()
-            } label: {
-                Image(systemName: "bookmark.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(.orange)
-            }
-            .buttonStyle(.plain)
-
-            Button {
-                onAdd()
-            } label: {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(.green)
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.vertical, 4)
     }
 }
 

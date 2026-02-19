@@ -30,7 +30,7 @@ struct GamesListView: View {
                                 gameRow(game)
                             }
                         } label: {
-                            Text("Pendientes (\(wishlistGames.count))")
+                            SectionHeader(status: .wishlist, count: wishlistGames.count)
                         }
                     }
                 }
@@ -42,7 +42,7 @@ struct GamesListView: View {
                                 gameRow(game)
                             }
                         } label: {
-                            Text("Sin empezar (\(notStartedGames.count))")
+                            SectionHeader(status: .notStarted, count: notStartedGames.count)
                         }
                     }
                 }
@@ -54,7 +54,7 @@ struct GamesListView: View {
                                 gameRow(game)
                             }
                         } label: {
-                            Text("En progreso (\(inProgressGames.count))")
+                            SectionHeader(status: .inProgress, count: inProgressGames.count)
                         }
                     }
                 }
@@ -66,16 +66,18 @@ struct GamesListView: View {
                                 gameRow(game)
                                     .swipeActions(edge: .leading) {
                                         Button {
-                                            game.progressStatus = .archived
-                                            game.lastUpdated = Date()
+                                            withAnimation {
+                                                game.progressStatus = .archived
+                                                game.lastUpdated = Date()
+                                            }
                                         } label: {
                                             Label("Archivar", systemImage: "archivebox")
                                         }
-                                        .tint(.gray)
+                                        .tint(ProgressStatus.archived.color)
                                     }
                             }
                         } label: {
-                            Text("Completados (\(completedGames.count))")
+                            SectionHeader(status: .completed, count: completedGames.count)
                         }
                     }
                 }
@@ -87,8 +89,7 @@ struct GamesListView: View {
                                 gameRow(game)
                             }
                         } label: {
-                            Text("Archivados (\(archivedGames.count))")
-                                .foregroundColor(.secondary)
+                            SectionHeader(status: .archived, count: archivedGames.count)
                         }
                     }
                 }
@@ -116,7 +117,9 @@ struct GamesListView: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive) {
-                modelContext.delete(game)
+                withAnimation {
+                    modelContext.delete(game)
+                }
             } label: {
                 Label("Eliminar", systemImage: "trash")
             }
@@ -124,19 +127,21 @@ struct GamesListView: View {
     }
 
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "gamecontroller")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary)
+        VStack(spacing: 20) {
+            Image(systemName: "gamecontroller.fill")
+                .font(.system(size: 56))
+                .foregroundStyle(AppTheme.gameColor.opacity(0.4))
 
-            Text("No hay juegos")
-                .font(.headline)
-                .foregroundColor(.secondary)
+            VStack(spacing: 6) {
+                Text("No hay juegos")
+                    .font(.title3)
+                    .fontWeight(.semibold)
 
-            Text("Toca + para añadir tu primer juego")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+                Text("Toca + para añadir tu primer juego")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 60)
@@ -149,28 +154,9 @@ struct GameRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: game.imageURL ?? "")) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure, .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .overlay {
-                            Image(systemName: "gamecontroller")
-                                .foregroundColor(.secondary)
-                        }
-                @unknown default:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                }
-            }
-            .frame(width: 48, height: 64)
-            .cornerRadius(6)
+            ResourceThumbnail(url: game.imageURL, icon: "gamecontroller.fill", color: AppTheme.gameColor)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(game.title)
                     .font(.headline)
                     .lineLimit(2)
@@ -181,7 +167,7 @@ struct GameRowView: View {
                         .foregroundColor(.secondary)
                 }
 
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     StatusBadge(status: game.progressStatus)
 
                     if let rating = game.userRating {
@@ -190,7 +176,7 @@ struct GameRowView: View {
 
                     if game.reviewComment != nil && !(game.reviewComment ?? "").isEmpty {
                         Image(systemName: "text.quote")
-                            .font(.caption)
+                            .font(.caption2)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -245,47 +231,60 @@ struct GameSearchView: View {
     }
 
     private var searchSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 0) {
             VStack(spacing: 8) {
-                TextField("Clave API RAWG (opcional)", text: $viewModel.apiKey)
-                    .textFieldStyle(.roundedBorder)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
+                HStack(spacing: 8) {
+                    Image(systemName: "key.fill")
+                        .foregroundColor(.secondary)
+                    TextField("Clave API RAWG (opcional)", text: $viewModel.apiKey)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+                .padding(10)
+                .background(Color(.tertiarySystemFill))
+                .cornerRadius(10)
 
-                HStack {
-                    TextField("Buscar por título...", text: $viewModel.searchQuery)
-                        .textFieldStyle(.roundedBorder)
-                        .submitLabel(.search)
-                        .onSubmit {
+                HStack(spacing: 10) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.secondary)
+                        TextField("Buscar por título...", text: $viewModel.searchQuery)
+                            .submitLabel(.search)
+                            .onSubmit {
+                                viewModel.searchGames()
+                            }
+                    }
+                    .padding(10)
+                    .background(Color(.tertiarySystemFill))
+                    .cornerRadius(10)
+
+                    if !viewModel.searchQuery.isEmpty {
+                        Button("Buscar") {
                             viewModel.searchGames()
                         }
-
-                    Button {
-                        viewModel.searchGames()
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.white)
-                            .padding(8)
-                            .background(Color.blue)
-                            .cornerRadius(8)
+                        .fontWeight(.medium)
                     }
-                    .disabled(viewModel.searchQuery.isEmpty)
                 }
             }
             .padding()
 
             if viewModel.isLoading {
+                Spacer()
                 ProgressView("Buscando...")
-                    .padding()
+                Spacer()
             } else if viewModel.searchResults.isEmpty && !viewModel.searchQuery.isEmpty {
+                Spacer()
                 Text("No se encontraron resultados")
                     .foregroundColor(.secondary)
-                    .padding()
+                Spacer()
             } else {
                 List(viewModel.searchResults, id: \.id) { item in
-                    GameSearchResultRow(
+                    SearchResultRow(
                         title: item.title,
+                        subtitle: "",
                         imageURL: item.imageURL,
+                        icon: "gamecontroller.fill",
+                        color: AppTheme.gameColor,
                         onAdd: {
                             viewModel.addGame(from: item, context: modelContext)
                             isPresented = false
@@ -307,63 +306,6 @@ struct GameSearchView: View {
                 TextField("Título", text: $manualTitle)
             }
         }
-    }
-}
-
-struct GameSearchResultRow: View {
-    let title: String
-    let imageURL: String?
-    let onAdd: () -> Void
-    let onWishlist: () -> Void
-
-    var body: some View {
-        HStack(spacing: 12) {
-            AsyncImage(url: URL(string: imageURL ?? "")) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure, .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .overlay {
-                            Image(systemName: "gamecontroller")
-                                .foregroundColor(.secondary)
-                        }
-                @unknown default:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                }
-            }
-            .frame(width: 48, height: 64)
-            .cornerRadius(6)
-
-            Text(title)
-                .font(.headline)
-                .lineLimit(2)
-
-            Spacer()
-
-            Button {
-                onWishlist()
-            } label: {
-                Image(systemName: "bookmark.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(.orange)
-            }
-            .buttonStyle(.plain)
-
-            Button {
-                onAdd()
-            } label: {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(.green)
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.vertical, 4)
     }
 }
 
