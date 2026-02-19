@@ -3,12 +3,16 @@ import SwiftData
 
 struct ResourceDetailView: View {
     @Bindable var resource: ResourceEntity
+    @State private var usePages = true
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
                 headerSection
                 progressSection
+                if resource.progressStatus == .inProgress {
+                    trackingSection
+                }
                 if resource.progressStatus == .completed {
                     ratingSection
                 }
@@ -18,6 +22,9 @@ struct ResourceDetailView: View {
         }
         .navigationTitle(resource.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            usePages = resource.totalPages != nil || resource.currentPage != nil
+        }
     }
 
     private var headerSection: some View {
@@ -78,6 +85,167 @@ struct ResourceDetailView: View {
                 }
             }
             .pickerStyle(.segmented)
+        }
+        .padding()
+        .background(Color(.systemGroupedBackground))
+        .cornerRadius(12)
+    }
+
+    @ViewBuilder
+    private var trackingSection: some View {
+        switch resource.resourceType {
+        case .book:
+            bookTrackingSection
+        case .series:
+            seriesTrackingSection
+        case .game:
+            gameTrackingSection
+        }
+    }
+
+    private var bookTrackingSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Seguimiento de lectura")
+                .font(.headline)
+
+            Picker("Modo", selection: $usePages) {
+                Text("Por páginas").tag(true)
+                Text("Por porcentaje").tag(false)
+            }
+            .pickerStyle(.segmented)
+            .onChange(of: usePages) { _, newValue in
+                if newValue {
+                    resource.progressPercentage = nil
+                } else {
+                    resource.currentPage = nil
+                    resource.totalPages = nil
+                }
+                resource.lastUpdated = Date()
+            }
+
+            if usePages {
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Página actual")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        TextField("0", value: Binding(
+                            get: { resource.currentPage ?? 0 },
+                            set: { resource.currentPage = $0 > 0 ? $0 : nil; resource.lastUpdated = Date() }
+                        ), format: .number)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.numberPad)
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Total páginas")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        TextField("0", value: Binding(
+                            get: { resource.totalPages ?? 0 },
+                            set: { resource.totalPages = $0 > 0 ? $0 : nil; resource.lastUpdated = Date() }
+                        ), format: .number)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.numberPad)
+                    }
+                }
+
+                if let current = resource.currentPage, let total = resource.totalPages, total > 0 {
+                    let percentage = min(Double(current) / Double(total), 1.0)
+                    VStack(spacing: 4) {
+                        ProgressView(value: percentage)
+                            .tint(percentage >= 1.0 ? .green : .blue)
+                        Text("Pág. \(current) / \(total) (\(Int(percentage * 100))%)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    let pct = resource.progressPercentage ?? 0
+                    HStack {
+                        Text("Progreso")
+                            .font(.subheadline)
+                        Spacer()
+                        Text("\(Int(pct))%")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Slider(value: Binding(
+                        get: { resource.progressPercentage ?? 0 },
+                        set: { resource.progressPercentage = $0; resource.lastUpdated = Date() }
+                    ), in: 0...100, step: 1)
+                    .tint(pct >= 100 ? .green : .blue)
+
+                    ProgressView(value: pct / 100)
+                        .tint(pct >= 100 ? .green : .blue)
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemGroupedBackground))
+        .cornerRadius(12)
+    }
+
+    private var seriesTrackingSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Seguimiento")
+                .font(.headline)
+
+            HStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Temporada")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Stepper(value: Binding(
+                        get: { resource.currentSeason ?? 1 },
+                        set: { resource.currentSeason = $0; resource.lastUpdated = Date() }
+                    ), in: 1...99) {
+                        Text("T\(resource.currentSeason ?? 1)")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Capítulo")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Stepper(value: Binding(
+                        get: { resource.currentEpisode ?? 1 },
+                        set: { resource.currentEpisode = $0; resource.lastUpdated = Date() }
+                    ), in: 1...999) {
+                        Text("E\(resource.currentEpisode ?? 1)")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                    }
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemGroupedBackground))
+        .cornerRadius(12)
+    }
+
+    private var gameTrackingSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Seguimiento")
+                .font(.headline)
+
+            HStack {
+                Text("Horas jugadas")
+                    .font(.subheadline)
+                Spacer()
+                TextField("0", value: Binding(
+                    get: { resource.timeSpentHours ?? 0 },
+                    set: { resource.timeSpentHours = $0 > 0 ? $0 : nil; resource.lastUpdated = Date() }
+                ), format: .number)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(.decimalPad)
+                .frame(width: 80)
+                Text("h")
+                    .foregroundColor(.secondary)
+            }
         }
         .padding()
         .background(Color(.systemGroupedBackground))

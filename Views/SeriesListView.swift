@@ -108,6 +108,18 @@ struct SeriesRowView: View {
                         RatingView(rating: rating)
                     }
                 }
+                
+                if serie.progressStatus == .inProgress {
+                    if let season = serie.currentSeason, let episode = serie.currentEpisode {
+                        Text("T\(season) E\(episode)")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    } else if let season = serie.currentSeason {
+                        Text("T\(season)")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    }
+                }
             }
             
             Spacer()

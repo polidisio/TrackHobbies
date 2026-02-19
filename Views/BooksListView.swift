@@ -108,6 +108,18 @@ struct BookRowView: View {
                         RatingView(rating: rating)
                     }
                 }
+
+                if book.progressStatus == .inProgress {
+                    if let current = book.currentPage, let total = book.totalPages, total > 0 {
+                        Text("Pág. \(current)/\(total) (\(Int(min(Double(current) / Double(total), 1.0) * 100))%)")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    } else if let pct = book.progressPercentage, pct > 0 {
+                        Text("\(Int(pct))%")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    }
+                }
             }
 
             Spacer()
