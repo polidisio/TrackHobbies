@@ -131,7 +131,13 @@ struct ResourceDetailView: View {
                             .foregroundColor(.secondary)
                         TextField("0", value: Binding(
                             get: { resource.currentPage ?? 0 },
-                            set: { resource.currentPage = $0 > 0 ? $0 : nil; resource.lastUpdated = Date() }
+                            set: {
+                                resource.currentPage = $0 > 0 ? $0 : nil
+                                resource.lastUpdated = Date()
+                                if let current = resource.currentPage, let total = resource.totalPages, total > 0, current >= total {
+                                    resource.progressStatus = .completed
+                                }
+                            }
                         ), format: .number)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.numberPad)
@@ -143,7 +149,13 @@ struct ResourceDetailView: View {
                             .foregroundColor(.secondary)
                         TextField("0", value: Binding(
                             get: { resource.totalPages ?? 0 },
-                            set: { resource.totalPages = $0 > 0 ? $0 : nil; resource.lastUpdated = Date() }
+                            set: {
+                                resource.totalPages = $0 > 0 ? $0 : nil
+                                resource.lastUpdated = Date()
+                                if let current = resource.currentPage, let total = resource.totalPages, total > 0, current >= total {
+                                    resource.progressStatus = .completed
+                                }
+                            }
                         ), format: .number)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.numberPad)
@@ -173,7 +185,13 @@ struct ResourceDetailView: View {
                     }
                     Slider(value: Binding(
                         get: { resource.progressPercentage ?? 0 },
-                        set: { resource.progressPercentage = $0; resource.lastUpdated = Date() }
+                        set: {
+                            resource.progressPercentage = $0
+                            resource.lastUpdated = Date()
+                            if $0 >= 100 {
+                                resource.progressStatus = .completed
+                            }
+                        }
                     ), in: 0...100, step: 1)
                     .tint(pct >= 100 ? .green : .blue)
 
