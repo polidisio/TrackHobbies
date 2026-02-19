@@ -35,12 +35,7 @@ struct SeriesListView: View {
             }
         }
         .sheet(isPresented: $showingAddSheet) {
-            SeriesSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
-                .onChange(of: showingAddSheet) { _, newValue in
-                    if newValue {
-                        viewModel.setModelContext(modelContext)
-                    }
-                }
+            SeriesSearchView(viewModel: viewModel, modelContext: modelContext, isPresented: $showingAddSheet)
         }
     }
     
@@ -120,8 +115,8 @@ struct SeriesRowView: View {
 
 struct SeriesSearchView: View {
     @ObservedObject var viewModel: SeriesViewModel
+    let modelContext: ModelContext
     @Binding var isPresented: Bool
-    @Environment(\.modelContext) private var modelContext
     @State private var manualTitle = ""
     @State private var showingManualEntry = false
     
@@ -156,6 +151,9 @@ struct SeriesSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
+        }
+        .onAppear {
+            viewModel.setModelContext(modelContext)
         }
     }
     

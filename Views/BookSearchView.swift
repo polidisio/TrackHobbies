@@ -3,8 +3,8 @@ import SwiftData
 
 struct BookSearchView: View {
     @ObservedObject var viewModel: BooksViewModel
+    let modelContext: ModelContext
     @Binding var isPresented: Bool
-    @Environment(\.modelContext) private var modelContext
     @State private var manualTitle = ""
     @State private var manualAuthor = ""
     @State private var showingManualEntry = false
@@ -40,6 +40,9 @@ struct BookSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
+        }
+        .onAppear {
+            viewModel.setModelContext(modelContext)
         }
     }
     
@@ -155,8 +158,4 @@ struct SearchResultRow: View {
         }
         .padding(.vertical, 4)
     }
-}
-
-#Preview {
-    BookSearchView(viewModel: BooksViewModel(), isPresented: .constant(true))
 }

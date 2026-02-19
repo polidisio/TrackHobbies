@@ -35,12 +35,7 @@ struct BooksListView: View {
             }
         }
         .sheet(isPresented: $showingAddSheet) {
-            BookSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
-                .onChange(of: showingAddSheet) { _, newValue in
-                    if newValue {
-                        viewModel.setModelContext(modelContext)
-                    }
-                }
+            BookSearchView(viewModel: viewModel, modelContext: modelContext, isPresented: $showingAddSheet)
         }
     }
     

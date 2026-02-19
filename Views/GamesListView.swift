@@ -35,12 +35,7 @@ struct GamesListView: View {
             }
         }
         .sheet(isPresented: $showingAddSheet) {
-            GameSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
-                .onChange(of: showingAddSheet) { _, newValue in
-                    if newValue {
-                        viewModel.setModelContext(modelContext)
-                    }
-                }
+            GameSearchView(viewModel: viewModel, modelContext: modelContext, isPresented: $showingAddSheet)
         }
     }
     
@@ -119,8 +114,8 @@ struct GameRowView: View {
 
 struct GameSearchView: View {
     @ObservedObject var viewModel: GamesViewModel
+    let modelContext: ModelContext
     @Binding var isPresented: Bool
-    @Environment(\.modelContext) private var modelContext
     @State private var manualTitle = ""
     @State private var showingManualEntry = false
     
@@ -155,6 +150,9 @@ struct GameSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
+        }
+        .onAppear {
+            viewModel.setModelContext(modelContext)
         }
     }
     
