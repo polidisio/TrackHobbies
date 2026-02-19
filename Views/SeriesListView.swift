@@ -13,8 +13,10 @@ struct SeriesListView: View {
                 emptyStateView
             } else {
                 ForEach(series) { serie in
-                    SeriesRowView(serie: serie)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    NavigationLink(destination: ResourceDetailView(resource: serie)) {
+                        SeriesRowView(serie: serie)
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 modelContext.delete(serie)
                             } label: {

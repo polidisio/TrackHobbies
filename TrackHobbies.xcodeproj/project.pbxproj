@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0197958054C4C81249FF47FC /* AppMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4C44E78580E5B462231EDB /* AppMain.swift */; };
+		026F588017B6D8E3F82084DC /* ResourceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6F50F0932D624A16148084 /* ResourceDetailView.swift */; };
 		08E9134A93D93763C729B7F6 /* BookSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B070DFC2A83979228FAC5F /* BookSearchView.swift */; };
 		0D0FA0B548FE03A9FEA0B9F7 /* PersistenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0943B922500B4A7858940E9 /* PersistenceModels.swift */; };
 		1377446252E04497E8B4DAA9 /* GamesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0EA95A31022D1EC1054E3 /* GamesViewModel.swift */; };
@@ -65,6 +66,7 @@
 		D5E6567FB320A5958549B53A /* BookStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookStore.swift; sourceTree = "<group>"; };
 		F66158E6B18878E77DDC2F56 /* RAWGService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAWGService.swift; sourceTree = "<group>"; };
 		FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesListView.swift; sourceTree = "<group>"; };
+		FD6F50F0932D624A16148084 /* ResourceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -111,6 +113,7 @@
 				87B070DFC2A83979228FAC5F /* BookSearchView.swift */,
 				28F5971818241D6508505936 /* BooksListView.swift */,
 				C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */,
+				FD6F50F0932D624A16148084 /* ResourceDetailView.swift */,
 				C3D49B2828E8F69D4F6BB745 /* ResourceRow.swift */,
 				FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */,
 			);
@@ -272,6 +275,7 @@
 				AAF2BED57C4F5761EFCB9479 /* OpenLibraryService.swift in Sources */,
 				0D0FA0B548FE03A9FEA0B9F7 /* PersistenceModels.swift in Sources */,
 				81CD7D5CBD4CD4E850308256 /* RAWGService.swift in Sources */,
+				026F588017B6D8E3F82084DC /* ResourceDetailView.swift in Sources */,
 				5408F68A23355FAD38EEBEB3 /* ResourceRow.swift in Sources */,
 				65E9720D89AC26C312F6C4A8 /* SeriesListView.swift in Sources */,
 				DA49E9B8C7B150C407F43A0B /* SeriesViewModel.swift in Sources */,

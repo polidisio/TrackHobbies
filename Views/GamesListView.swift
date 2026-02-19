@@ -13,8 +13,10 @@ struct GamesListView: View {
                 emptyStateView
             } else {
                 ForEach(games) { game in
-                    GameRowView(game: game)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    NavigationLink(destination: ResourceDetailView(resource: game)) {
+                        GameRowView(game: game)
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 modelContext.delete(game)
                             } label: {

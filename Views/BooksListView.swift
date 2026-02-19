@@ -13,8 +13,10 @@ struct BooksListView: View {
                 emptyStateView
             } else {
                 ForEach(books) { book in
-                    BookRowView(book: book)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    NavigationLink(destination: ResourceDetailView(resource: book)) {
+                        BookRowView(book: book)
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 modelContext.delete(book)
                             } label: {
