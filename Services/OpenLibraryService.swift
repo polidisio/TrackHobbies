@@ -6,6 +6,7 @@ struct OpenLibraryDoc: Decodable {
     let cover_i: Int?
     let key: String?
     let number_of_pages_median: Int?
+    let description: String?
 }
 
 struct OpenLibraryResponse: Decodable {
@@ -49,6 +50,7 @@ struct OpenLibraryItem {
     let coverURL: String?
     let externalId: String?
     let numberOfPages: Int?
+    let summary: String?
 }
 
 final class OpenLibraryService {
@@ -61,7 +63,7 @@ final class OpenLibraryService {
         }
         components.queryItems = [
             URLQueryItem(name: "title", value: title),
-            URLQueryItem(name: "fields", value: "key,title,author_name,cover_i,number_of_pages_median"),
+            URLQueryItem(name: "fields", value: "key,title,author_name,cover_i,number_of_pages_median,description"),
             URLQueryItem(name: "limit", value: "20")
         ]
         guard let url = components.url else { completion([]); return }
@@ -86,7 +88,8 @@ final class OpenLibraryService {
                                 author: author,
                                 coverURL: coverURL,
                                 externalId: externalId,
-                                numberOfPages: d.number_of_pages_median
+                                numberOfPages: d.number_of_pages_median,
+                                summary: d.description
                             )
                         }
                     }

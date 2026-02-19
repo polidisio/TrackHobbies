@@ -30,6 +30,7 @@ final class BooksViewModel: ObservableObject {
             title: item.title,
             externalId: item.externalId,
             imageURL: item.coverURL,
+            summary: item.summary,
             authorOrCreator: item.author,
             status: .notStarted,
             totalPages: item.numberOfPages
@@ -37,20 +38,6 @@ final class BooksViewModel: ObservableObject {
         context.insert(book)
         searchResults = []
         searchQuery = ""
-
-        if let workKey = item.externalId {
-            Task {
-                let description = await withCheckedContinuation { continuation in
-                    OpenLibraryService.shared.fetchWorkDescription(workKey: workKey) { desc in
-                        continuation.resume(returning: desc)
-                    }
-                }
-                if let description = description {
-                    book.summary = description
-                    try? context.save()
-                }
-            }
-        }
     }
     
     func addBook(title: String, author: String?, context: ModelContext) {
