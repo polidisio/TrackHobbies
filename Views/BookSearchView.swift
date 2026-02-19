@@ -41,9 +41,6 @@ struct BookSearchView: View {
                 }
             }
         }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
-        }
     }
     
     private var searchSection: some View {

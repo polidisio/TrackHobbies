@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import SwiftData
 
 struct GamesListView: View {
     @StateObject private var viewModel = GamesViewModel()
@@ -37,9 +36,11 @@ struct GamesListView: View {
         }
         .sheet(isPresented: $showingAddSheet) {
             GameSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
-        }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
+                .onChange(of: showingAddSheet) { _, newValue in
+                    if newValue {
+                        viewModel.setModelContext(modelContext)
+                    }
+                }
         }
     }
     
@@ -154,9 +155,6 @@ struct GameSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
-        }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
         }
     }
     

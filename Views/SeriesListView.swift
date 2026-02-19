@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import SwiftData
 
 struct SeriesListView: View {
     @StateObject private var viewModel = SeriesViewModel()
@@ -37,9 +36,11 @@ struct SeriesListView: View {
         }
         .sheet(isPresented: $showingAddSheet) {
             SeriesSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
-        }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
+                .onChange(of: showingAddSheet) { _, newValue in
+                    if newValue {
+                        viewModel.setModelContext(modelContext)
+                    }
+                }
         }
     }
     
@@ -155,9 +156,6 @@ struct SeriesSearchView: View {
                     .disabled(showingManualEntry && manualTitle.isEmpty)
                 }
             }
-        }
-        .onAppear {
-            viewModel.setModelContext(modelContext)
         }
     }
     
