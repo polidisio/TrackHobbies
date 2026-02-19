@@ -7,6 +7,6 @@ struct TrackHobbiesApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: ResourceEntity.self)
+        .modelContainer(DataStore.shared.modelContainer)
     }
 }

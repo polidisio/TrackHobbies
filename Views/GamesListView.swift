@@ -4,18 +4,19 @@ import SwiftData
 struct GamesListView: View {
     @StateObject private var viewModel = GamesViewModel()
     @Environment(\.modelContext) private var modelContext
+    @Query(filter: #Predicate<ResourceEntity> { $0.type == "game" }, sort: \.lastUpdated, order: .reverse) private var games: [ResourceEntity]
     @State private var showingAddSheet = false
     
     var body: some View {
         List {
-            if viewModel.games.isEmpty {
+            if games.isEmpty {
                 emptyStateView
             } else {
-                ForEach(viewModel.games) { game in
+                ForEach(games) { game in
                     GameRowView(game: game)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
-                                viewModel.deleteGame(game)
+                                modelContext.delete(game)
                             } label: {
                                 Label("Eliminar", systemImage: "trash")
                             }
@@ -35,7 +36,7 @@ struct GamesListView: View {
             }
         }
         .sheet(isPresented: $showingAddSheet) {
-            GameSearchView(viewModel: viewModel, modelContext: modelContext, isPresented: $showingAddSheet)
+            GameSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
         }
     }
     
@@ -114,7 +115,7 @@ struct GameRowView: View {
 
 struct GameSearchView: View {
     @ObservedObject var viewModel: GamesViewModel
-    let modelContext: ModelContext
+    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @State private var manualTitle = ""
     @State private var showingManualEntry = false
@@ -157,7 +158,7 @@ struct GameSearchView: View {
             VStack(spacing: 8) {
                 TextField("Clave API RAWG (opcional)", text: $viewModel.apiKey)
                     .textFieldStyle(.roundedBorder)
-                    .autocapitalization(.none)
+                    .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                 
                 HStack {
@@ -264,5 +265,5 @@ struct GameSearchResultRow: View {
     NavigationStack {
         GamesListView()
     }
-    .modelContainer(for: ResourceEntity.self, inMemory: true)
+    .modelContainer(DataStore.shared.modelContainer)
 }

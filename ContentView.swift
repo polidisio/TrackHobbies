@@ -24,5 +24,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: ResourceEntity.self, inMemory: true)
+        .modelContainer(DataStore.shared.modelContainer)
 }

@@ -24,6 +24,7 @@
 		B5DBFC979CB7C8B2523DBF21 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99C66782E12E70C840E990B /* Models.swift */; };
 		BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E2B31E64D28666005361AC /* ContentView.swift */; };
 		DA49E9B8C7B150C407F43A0B /* SeriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A895F8F404163A29E1FD657C /* SeriesViewModel.swift */; };
+		E2ED6D0FD8E20F6C6BB99A0E /* BookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E6567FB320A5958549B53A /* BookStore.swift */; };
 		E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F5971818241D6508505936 /* BooksListView.swift */; };
 		E9A34AE83D6FB87C70BEECAB /* GamesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */; };
 		FF6B05939503189A4F95F60A /* TVMazeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D453C5A1873F779D55CCB4 /* TVMazeService.swift */; };
@@ -61,6 +62,7 @@
 		B0943B922500B4A7858940E9 /* PersistenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceModels.swift; sourceTree = "<group>"; };
 		C3D49B2828E8F69D4F6BB745 /* ResourceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceRow.swift; sourceTree = "<group>"; };
 		C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesListView.swift; sourceTree = "<group>"; };
+		D5E6567FB320A5958549B53A /* BookStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookStore.swift; sourceTree = "<group>"; };
 		F66158E6B18878E77DDC2F56 /* RAWGService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RAWGService.swift; sourceTree = "<group>"; };
 		FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +73,7 @@
 			children = (
 				7E4C44E78580E5B462231EDB /* AppMain.swift */,
 				7FCCD7217BD5FBDDCDC4D118 /* Assets.xcassets */,
+				D5E6567FB320A5958549B53A /* BookStore.swift */,
 				61E2B31E64D28666005361AC /* ContentView.swift */,
 				A99C66782E12E70C840E990B /* Models.swift */,
 				7DEAC75538CAA0FB17999251 /* NotionExporter.swift */,
@@ -255,6 +258,7 @@
 			files = (
 				0197958054C4C81249FF47FC /* AppMain.swift in Sources */,
 				08E9134A93D93763C729B7F6 /* BookSearchView.swift in Sources */,
+				E2ED6D0FD8E20F6C6BB99A0E /* BookStore.swift in Sources */,
 				E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */,
 				391A3147AFCFD73A1D07E728 /* BooksViewModel.swift in Sources */,
 				7E56D230D9E9943C9D30FC7A /* CSVExporter.swift in Sources */,

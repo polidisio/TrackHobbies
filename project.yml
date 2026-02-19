@@ -22,6 +22,7 @@ targets:
     platform: iOS
     sources:
       - path: AppMain.swift
+      - path: BookStore.swift
       - path: ContentView.swift
       - path: Models
       - path: Models.swift

@@ -4,18 +4,19 @@ import SwiftData
 struct SeriesListView: View {
     @StateObject private var viewModel = SeriesViewModel()
     @Environment(\.modelContext) private var modelContext
+    @Query(filter: #Predicate<ResourceEntity> { $0.type == "series" }, sort: \.lastUpdated, order: .reverse) private var series: [ResourceEntity]
     @State private var showingAddSheet = false
     
     var body: some View {
         List {
-            if viewModel.series.isEmpty {
+            if series.isEmpty {
                 emptyStateView
             } else {
-                ForEach(viewModel.series) { serie in
+                ForEach(series) { serie in
                     SeriesRowView(serie: serie)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
-                                viewModel.deleteSeries(serie)
+                                modelContext.delete(serie)
                             } label: {
                                 Label("Eliminar", systemImage: "trash")
                             }
@@ -35,7 +36,7 @@ struct SeriesListView: View {
             }
         }
         .sheet(isPresented: $showingAddSheet) {
-            SeriesSearchView(viewModel: viewModel, modelContext: modelContext, isPresented: $showingAddSheet)
+            SeriesSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
         }
     }
     
@@ -115,7 +116,7 @@ struct SeriesRowView: View {
 
 struct SeriesSearchView: View {
     @ObservedObject var viewModel: SeriesViewModel
-    let modelContext: ModelContext
+    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @State private var manualTitle = ""
     @State private var showingManualEntry = false
@@ -258,5 +259,5 @@ struct SeriesSearchResultRow: View {
     NavigationStack {
         SeriesListView()
     }
-    .modelContainer(for: ResourceEntity.self, inMemory: true)
+    .modelContainer(DataStore.shared.modelContainer)
 }

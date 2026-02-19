@@ -4,32 +4,9 @@ import SwiftData
 
 @MainActor
 final class SeriesViewModel: ObservableObject {
-    @Published var series: [ResourceEntity] = []
     @Published var searchResults: [TVMazeSearchResult] = []
     @Published var isLoading = false
     @Published var searchQuery = ""
-    
-    private var modelContext: ModelContext?
-    
-    func setModelContext(_ context: ModelContext) {
-        self.modelContext = context
-        fetchSeries()
-    }
-    
-    func fetchSeries() {
-        guard let context = modelContext else { return }
-        
-        let descriptor = FetchDescriptor<ResourceEntity>(
-            predicate: #Predicate { $0.type == "series" },
-            sortBy: [SortDescriptor(\.lastUpdated, order: .reverse)]
-        )
-        
-        do {
-            series = try context.fetch(descriptor)
-        } catch {
-            print("Error fetching series: \(error)")
-        }
-    }
     
     func searchSeries() {
         guard !searchQuery.isEmpty else {
@@ -60,7 +37,6 @@ final class SeriesViewModel: ObservableObject {
         
         do {
             try context.save()
-            fetchSeries()
             searchResults = []
             searchQuery = ""
         } catch {
@@ -80,31 +56,8 @@ final class SeriesViewModel: ObservableObject {
         
         do {
             try context.save()
-            fetchSeries()
         } catch {
             print("Error saving series: \(error)")
-        }
-    }
-    
-    func updateSeries(_ serie: ResourceEntity) {
-        serie.lastUpdated = Date()
-        
-        do {
-            try modelContext?.save()
-            fetchSeries()
-        } catch {
-            print("Error updating series: \(error)")
-        }
-    }
-    
-    func deleteSeries(_ serie: ResourceEntity) {
-        modelContext?.delete(serie)
-        
-        do {
-            try modelContext?.save()
-            fetchSeries()
-        } catch {
-            print("Error deleting series: \(error)")
         }
     }
     
