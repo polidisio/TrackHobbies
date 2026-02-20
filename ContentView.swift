@@ -18,6 +18,11 @@ struct ContentView: View {
                 GamesListView()
             }
             .tabItem { Label("Juegos", systemImage: "gamecontroller.fill") }
+
+            NavigationStack {
+                StatsView()
+            }
+            .tabItem { Label("Stats", systemImage: "chart.bar.fill") }
         }
         .tint(AppTheme.accent)
     }
