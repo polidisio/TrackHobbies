@@ -12,11 +12,33 @@ struct BooksListView: View {
     @State private var completedExpanded = true
     @State private var archivedExpanded = false
 
-    private var wishlistBooks: [ResourceEntity] { books.filter { $0.progressStatus == .wishlist } }
-    private var notStartedBooks: [ResourceEntity] { books.filter { $0.progressStatus == .notStarted } }
-    private var inProgressBooks: [ResourceEntity] { books.filter { $0.progressStatus == .inProgress } }
-    private var completedBooks: [ResourceEntity] { books.filter { $0.progressStatus == .completed } }
-    private var archivedBooks: [ResourceEntity] { books.filter { $0.progressStatus == .archived } }
+    @State private var searchText = ""
+    @State private var showingFilters = false
+    @State private var selectedStatuses: Set<ProgressStatus> = []
+    @State private var minimumRating: Double? = nil
+    @State private var datePreset: DatePreset = .all
+
+    private var hasActiveFilters: Bool {
+        !searchText.isEmpty || !selectedStatuses.isEmpty || minimumRating != nil || datePreset != .all
+    }
+
+    private var filteredBooks: [ResourceEntity] {
+        books.filter { book in
+            let matchesText = searchText.isEmpty ||
+                book.title.localizedCaseInsensitiveContains(searchText) ||
+                (book.authorOrCreator ?? "").localizedCaseInsensitiveContains(searchText)
+            let matchesStatus = selectedStatuses.isEmpty || selectedStatuses.contains(book.progressStatus)
+            let matchesRating = minimumRating == nil || (book.userRating ?? 0) >= minimumRating!
+            let matchesDate = datePreset.matches(book.startDate ?? book.lastUpdated)
+            return matchesText && matchesStatus && matchesRating && matchesDate
+        }
+    }
+
+    private var wishlistBooks: [ResourceEntity] { filteredBooks.filter { $0.progressStatus == .wishlist } }
+    private var notStartedBooks: [ResourceEntity] { filteredBooks.filter { $0.progressStatus == .notStarted } }
+    private var inProgressBooks: [ResourceEntity] { filteredBooks.filter { $0.progressStatus == .inProgress } }
+    private var completedBooks: [ResourceEntity] { filteredBooks.filter { $0.progressStatus == .completed } }
+    private var archivedBooks: [ResourceEntity] { filteredBooks.filter { $0.progressStatus == .archived } }
 
     var body: some View {
         ZStack {
@@ -26,73 +48,115 @@ struct BooksListView: View {
                 if books.isEmpty {
                     emptyStateView
                 } else {
-                    if !wishlistBooks.isEmpty {
+                    if showingFilters {
                         Section {
-                            DisclosureGroup(isExpanded: $wishlistExpanded) {
-                                ForEach(wishlistBooks) { book in
-                                    bookRow(book)
-                                }
-                            } label: {
-                                SectionHeader(status: .wishlist, count: wishlistBooks.count)
-                            }
+                            FilterBarView(
+                                selectedStatuses: $selectedStatuses,
+                                minimumRating: $minimumRating,
+                                datePreset: $datePreset
+                            )
                         }
+                        .listRowBackground(Color.clear)
                     }
 
-                    if !notStartedBooks.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $notStartedExpanded) {
-                                ForEach(notStartedBooks) { book in
-                                    bookRow(book)
-                                }
-                            } label: {
-                                SectionHeader(status: .notStarted, count: notStartedBooks.count)
-                            }
-                        }
-                    }
-
-                    if !inProgressBooks.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $inProgressExpanded) {
-                                ForEach(inProgressBooks) { book in
-                                    bookRow(book)
-                                }
-                            } label: {
-                                SectionHeader(status: .inProgress, count: inProgressBooks.count)
-                            }
-                        }
-                    }
-
-                    if !completedBooks.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $completedExpanded) {
-                                ForEach(completedBooks) { book in
-                                    bookRow(book)
-                                        .swipeActions(edge: .leading) {
-                                            Button {
-                                                withAnimation {
-                                                    book.progressStatus = .archived
-                                                    book.lastUpdated = Date()
-                                                }
-                                            } label: {
-                                                Label("Archivar", systemImage: "archivebox")
-                                            }
-                                            .tint(ProgressStatus.archived.color)
+                    if hasActiveFilters {
+                        if filteredBooks.isEmpty {
+                            noResultsView
+                        } else {
+                            Section {
+                                HStack {
+                                    Text("\(filteredBooks.count) resultado\(filteredBooks.count == 1 ? "" : "s")")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                    Button("Limpiar filtros") {
+                                        withAnimation {
+                                            searchText = ""
+                                            selectedStatuses = []
+                                            minimumRating = nil
+                                            datePreset = .all
                                         }
+                                    }
+                                    .font(.caption)
                                 }
-                            } label: {
-                                SectionHeader(status: .completed, count: completedBooks.count)
                             }
-                        }
-                    }
+                            .listRowBackground(Color.clear)
 
-                    if !archivedBooks.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $archivedExpanded) {
-                                ForEach(archivedBooks) { book in
+                            Section {
+                                ForEach(filteredBooks) { book in
                                     bookRow(book)
                                 }
-                            } label: {
-                                SectionHeader(status: .archived, count: archivedBooks.count)
+                            }
+                        }
+                    } else {
+                        if !wishlistBooks.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $wishlistExpanded) {
+                                    ForEach(wishlistBooks) { book in
+                                        bookRow(book)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .wishlist, count: wishlistBooks.count)
+                                }
+                            }
+                        }
+
+                        if !notStartedBooks.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $notStartedExpanded) {
+                                    ForEach(notStartedBooks) { book in
+                                        bookRow(book)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .notStarted, count: notStartedBooks.count)
+                                }
+                            }
+                        }
+
+                        if !inProgressBooks.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $inProgressExpanded) {
+                                    ForEach(inProgressBooks) { book in
+                                        bookRow(book)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .inProgress, count: inProgressBooks.count)
+                                }
+                            }
+                        }
+
+                        if !completedBooks.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $completedExpanded) {
+                                    ForEach(completedBooks) { book in
+                                        bookRow(book)
+                                            .swipeActions(edge: .leading) {
+                                                Button {
+                                                    withAnimation {
+                                                        book.progressStatus = .archived
+                                                        book.lastUpdated = Date()
+                                                    }
+                                                } label: {
+                                                    Label("Archivar", systemImage: "archivebox")
+                                                }
+                                                .tint(ProgressStatus.archived.color)
+                                            }
+                                    }
+                                } label: {
+                                    SectionHeader(status: .completed, count: completedBooks.count)
+                                }
+                            }
+                        }
+
+                        if !archivedBooks.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $archivedExpanded) {
+                                    ForEach(archivedBooks) { book in
+                                        bookRow(book)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .archived, count: archivedBooks.count)
+                                }
                             }
                         }
                     }
@@ -100,14 +164,26 @@ struct BooksListView: View {
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
+            .searchable(text: $searchText, prompt: "Buscar por título, autor...")
         }
         .navigationTitle("Libros")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showingAddSheet = true
-                } label: {
-                    Image(systemName: "plus")
+                HStack(spacing: 12) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            showingFilters.toggle()
+                        }
+                    } label: {
+                        Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                            .foregroundStyle(hasActiveFilters ? AppTheme.accent : .secondary)
+                    }
+
+                    Button {
+                        showingAddSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
         }
@@ -150,6 +226,30 @@ struct BooksListView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 60)
+        .listRowBackground(Color.clear)
+    }
+
+    private var noResultsView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 40))
+                .foregroundStyle(.secondary.opacity(0.5))
+
+            Text("Sin resultados")
+                .font(.headline)
+
+            Button("Limpiar filtros") {
+                withAnimation {
+                    searchText = ""
+                    selectedStatuses = []
+                    minimumRating = nil
+                    datePreset = .all
+                }
+            }
+            .font(.subheadline)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 40)
         .listRowBackground(Color.clear)
     }
 }
@@ -312,6 +412,179 @@ struct BookSearchView: View {
                 TextField("Autor (opcional)", text: $manualAuthor)
             }
         }
+    }
+}
+
+// MARK: - Filter Components
+
+enum DatePreset: String, CaseIterable {
+    case all = "Todos"
+    case thisWeek = "Esta semana"
+    case thisMonth = "Este mes"
+    case thisYear = "Este año"
+    case olderThanYear = "Hace 1+ año"
+
+    func matches(_ date: Date?) -> Bool {
+        guard self != .all else { return true }
+        guard let date = date else { return false }
+        let calendar = Calendar.current
+        let now = Date()
+        switch self {
+        case .all:
+            return true
+        case .thisWeek:
+            return calendar.isDate(date, equalTo: now, toGranularity: .weekOfYear)
+        case .thisMonth:
+            return calendar.isDate(date, equalTo: now, toGranularity: .month)
+        case .thisYear:
+            return calendar.isDate(date, equalTo: now, toGranularity: .year)
+        case .olderThanYear:
+            guard let oneYearAgo = calendar.date(byAdding: .year, value: -1, to: now) else { return false }
+            return date < oneYearAgo
+        }
+    }
+}
+
+struct FilterChip: View {
+    let label: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption)
+                .fontWeight(.medium)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .foregroundColor(isSelected ? .white : .primary)
+                .background(isSelected ? AppTheme.accent : Color(.tertiarySystemFill))
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct FilterBarView: View {
+    @Binding var selectedStatuses: Set<ProgressStatus>
+    @Binding var minimumRating: Double?
+    @Binding var datePreset: DatePreset
+
+    private let ratingOptions: [(String, Double?)] = [
+        ("Todos", nil),
+        ("2+", 2),
+        ("3+", 3),
+        ("4+", 4),
+        ("4.5+", 4.5)
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            filterSection(title: "Estado", icon: "circle.dashed") {
+                FlowLayout(spacing: 6) {
+                    FilterChip(
+                        label: "Todos",
+                        isSelected: selectedStatuses.isEmpty,
+                        action: { withAnimation { selectedStatuses = [] } }
+                    )
+                    ForEach(ProgressStatus.allCases, id: \.self) { status in
+                        FilterChip(
+                            label: status.displayName,
+                            isSelected: selectedStatuses.contains(status),
+                            action: {
+                                withAnimation {
+                                    if selectedStatuses.contains(status) {
+                                        selectedStatuses.remove(status)
+                                    } else {
+                                        selectedStatuses.insert(status)
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+
+            filterSection(title: "Rating", icon: "star.fill") {
+                FlowLayout(spacing: 6) {
+                    ForEach(ratingOptions, id: \.0) { option in
+                        FilterChip(
+                            label: option.0,
+                            isSelected: minimumRating == option.1,
+                            action: { withAnimation { minimumRating = option.1 } }
+                        )
+                    }
+                }
+            }
+
+            filterSection(title: "Fecha", icon: "calendar") {
+                FlowLayout(spacing: 6) {
+                    ForEach(DatePreset.allCases, id: \.self) { preset in
+                        FilterChip(
+                            label: preset.rawValue,
+                            isSelected: datePreset == preset,
+                            action: { withAnimation { datePreset = preset } }
+                        )
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func filterSection<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+            }
+            content()
+        }
+    }
+}
+
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 6
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let result = arrange(proposal: proposal, subviews: subviews)
+        return result.size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = arrange(proposal: proposal, subviews: subviews)
+        for (index, position) in result.positions.enumerated() {
+            subviews[index].place(at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y), proposal: .unspecified)
+        }
+    }
+
+    private func arrange(proposal: ProposedViewSize, subviews: Subviews) -> (positions: [CGPoint], size: CGSize) {
+        let maxWidth = proposal.width ?? .infinity
+        var positions: [CGPoint] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var rowHeight: CGFloat = 0
+        var totalHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > maxWidth && x > 0 {
+                x = 0
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            positions.append(CGPoint(x: x, y: y))
+            rowHeight = max(rowHeight, size.height)
+            x += size.width + spacing
+            totalHeight = y + rowHeight
+        }
+
+        return (positions, CGSize(width: maxWidth, height: totalHeight))
     }
 }
 

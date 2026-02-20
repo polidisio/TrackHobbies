@@ -12,11 +12,33 @@ struct GamesListView: View {
     @State private var completedExpanded = true
     @State private var archivedExpanded = false
 
-    private var wishlistGames: [ResourceEntity] { games.filter { $0.progressStatus == .wishlist } }
-    private var notStartedGames: [ResourceEntity] { games.filter { $0.progressStatus == .notStarted } }
-    private var inProgressGames: [ResourceEntity] { games.filter { $0.progressStatus == .inProgress } }
-    private var completedGames: [ResourceEntity] { games.filter { $0.progressStatus == .completed } }
-    private var archivedGames: [ResourceEntity] { games.filter { $0.progressStatus == .archived } }
+    @State private var searchText = ""
+    @State private var showingFilters = false
+    @State private var selectedStatuses: Set<ProgressStatus> = []
+    @State private var minimumRating: Double? = nil
+    @State private var datePreset: DatePreset = .all
+
+    private var hasActiveFilters: Bool {
+        !searchText.isEmpty || !selectedStatuses.isEmpty || minimumRating != nil || datePreset != .all
+    }
+
+    private var filteredGames: [ResourceEntity] {
+        games.filter { item in
+            let matchesText = searchText.isEmpty ||
+                item.title.localizedCaseInsensitiveContains(searchText) ||
+                (item.authorOrCreator ?? "").localizedCaseInsensitiveContains(searchText)
+            let matchesStatus = selectedStatuses.isEmpty || selectedStatuses.contains(item.progressStatus)
+            let matchesRating = minimumRating == nil || (item.userRating ?? 0) >= minimumRating!
+            let matchesDate = datePreset.matches(item.startDate ?? item.lastUpdated)
+            return matchesText && matchesStatus && matchesRating && matchesDate
+        }
+    }
+
+    private var wishlistGames: [ResourceEntity] { filteredGames.filter { $0.progressStatus == .wishlist } }
+    private var notStartedGames: [ResourceEntity] { filteredGames.filter { $0.progressStatus == .notStarted } }
+    private var inProgressGames: [ResourceEntity] { filteredGames.filter { $0.progressStatus == .inProgress } }
+    private var completedGames: [ResourceEntity] { filteredGames.filter { $0.progressStatus == .completed } }
+    private var archivedGames: [ResourceEntity] { filteredGames.filter { $0.progressStatus == .archived } }
 
     var body: some View {
         ZStack {
@@ -26,73 +48,115 @@ struct GamesListView: View {
                 if games.isEmpty {
                     emptyStateView
                 } else {
-                    if !wishlistGames.isEmpty {
+                    if showingFilters {
                         Section {
-                            DisclosureGroup(isExpanded: $wishlistExpanded) {
-                                ForEach(wishlistGames) { game in
-                                    gameRow(game)
-                                }
-                            } label: {
-                                SectionHeader(status: .wishlist, count: wishlistGames.count)
-                            }
+                            FilterBarView(
+                                selectedStatuses: $selectedStatuses,
+                                minimumRating: $minimumRating,
+                                datePreset: $datePreset
+                            )
                         }
+                        .listRowBackground(Color.clear)
                     }
 
-                    if !notStartedGames.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $notStartedExpanded) {
-                                ForEach(notStartedGames) { game in
-                                    gameRow(game)
-                                }
-                            } label: {
-                                SectionHeader(status: .notStarted, count: notStartedGames.count)
-                            }
-                        }
-                    }
-
-                    if !inProgressGames.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $inProgressExpanded) {
-                                ForEach(inProgressGames) { game in
-                                    gameRow(game)
-                                }
-                            } label: {
-                                SectionHeader(status: .inProgress, count: inProgressGames.count)
-                            }
-                        }
-                    }
-
-                    if !completedGames.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $completedExpanded) {
-                                ForEach(completedGames) { game in
-                                    gameRow(game)
-                                        .swipeActions(edge: .leading) {
-                                            Button {
-                                                withAnimation {
-                                                    game.progressStatus = .archived
-                                                    game.lastUpdated = Date()
-                                                }
-                                            } label: {
-                                                Label("Archivar", systemImage: "archivebox")
-                                            }
-                                            .tint(ProgressStatus.archived.color)
+                    if hasActiveFilters {
+                        if filteredGames.isEmpty {
+                            noResultsView
+                        } else {
+                            Section {
+                                HStack {
+                                    Text("\(filteredGames.count) resultado\(filteredGames.count == 1 ? "" : "s")")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                    Button("Limpiar filtros") {
+                                        withAnimation {
+                                            searchText = ""
+                                            selectedStatuses = []
+                                            minimumRating = nil
+                                            datePreset = .all
                                         }
+                                    }
+                                    .font(.caption)
                                 }
-                            } label: {
-                                SectionHeader(status: .completed, count: completedGames.count)
                             }
-                        }
-                    }
+                            .listRowBackground(Color.clear)
 
-                    if !archivedGames.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $archivedExpanded) {
-                                ForEach(archivedGames) { game in
+                            Section {
+                                ForEach(filteredGames) { game in
                                     gameRow(game)
                                 }
-                            } label: {
-                                SectionHeader(status: .archived, count: archivedGames.count)
+                            }
+                        }
+                    } else {
+                        if !wishlistGames.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $wishlistExpanded) {
+                                    ForEach(wishlistGames) { game in
+                                        gameRow(game)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .wishlist, count: wishlistGames.count)
+                                }
+                            }
+                        }
+
+                        if !notStartedGames.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $notStartedExpanded) {
+                                    ForEach(notStartedGames) { game in
+                                        gameRow(game)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .notStarted, count: notStartedGames.count)
+                                }
+                            }
+                        }
+
+                        if !inProgressGames.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $inProgressExpanded) {
+                                    ForEach(inProgressGames) { game in
+                                        gameRow(game)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .inProgress, count: inProgressGames.count)
+                                }
+                            }
+                        }
+
+                        if !completedGames.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $completedExpanded) {
+                                    ForEach(completedGames) { game in
+                                        gameRow(game)
+                                            .swipeActions(edge: .leading) {
+                                                Button {
+                                                    withAnimation {
+                                                        game.progressStatus = .archived
+                                                        game.lastUpdated = Date()
+                                                    }
+                                                } label: {
+                                                    Label("Archivar", systemImage: "archivebox")
+                                                }
+                                                .tint(ProgressStatus.archived.color)
+                                            }
+                                    }
+                                } label: {
+                                    SectionHeader(status: .completed, count: completedGames.count)
+                                }
+                            }
+                        }
+
+                        if !archivedGames.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $archivedExpanded) {
+                                    ForEach(archivedGames) { game in
+                                        gameRow(game)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .archived, count: archivedGames.count)
+                                }
                             }
                         }
                     }
@@ -100,14 +164,26 @@ struct GamesListView: View {
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
+            .searchable(text: $searchText, prompt: "Buscar por título...")
         }
         .navigationTitle("Juegos")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showingAddSheet = true
-                } label: {
-                    Image(systemName: "plus")
+                HStack(spacing: 12) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            showingFilters.toggle()
+                        }
+                    } label: {
+                        Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                            .foregroundStyle(hasActiveFilters ? AppTheme.accent : .secondary)
+                    }
+
+                    Button {
+                        showingAddSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
         }
@@ -150,6 +226,30 @@ struct GamesListView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 60)
+        .listRowBackground(Color.clear)
+    }
+
+    private var noResultsView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 40))
+                .foregroundStyle(.secondary.opacity(0.5))
+
+            Text("Sin resultados")
+                .font(.headline)
+
+            Button("Limpiar filtros") {
+                withAnimation {
+                    searchText = ""
+                    selectedStatuses = []
+                    minimumRating = nil
+                    datePreset = .all
+                }
+            }
+            .font(.subheadline)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 40)
         .listRowBackground(Color.clear)
     }
 }

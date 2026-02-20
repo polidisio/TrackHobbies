@@ -12,11 +12,33 @@ struct SeriesListView: View {
     @State private var completedExpanded = true
     @State private var archivedExpanded = false
 
-    private var wishlistSeries: [ResourceEntity] { series.filter { $0.progressStatus == .wishlist } }
-    private var notStartedSeries: [ResourceEntity] { series.filter { $0.progressStatus == .notStarted } }
-    private var inProgressSeries: [ResourceEntity] { series.filter { $0.progressStatus == .inProgress } }
-    private var completedSeries: [ResourceEntity] { series.filter { $0.progressStatus == .completed } }
-    private var archivedSeries: [ResourceEntity] { series.filter { $0.progressStatus == .archived } }
+    @State private var searchText = ""
+    @State private var showingFilters = false
+    @State private var selectedStatuses: Set<ProgressStatus> = []
+    @State private var minimumRating: Double? = nil
+    @State private var datePreset: DatePreset = .all
+
+    private var hasActiveFilters: Bool {
+        !searchText.isEmpty || !selectedStatuses.isEmpty || minimumRating != nil || datePreset != .all
+    }
+
+    private var filteredSeries: [ResourceEntity] {
+        series.filter { item in
+            let matchesText = searchText.isEmpty ||
+                item.title.localizedCaseInsensitiveContains(searchText) ||
+                (item.authorOrCreator ?? "").localizedCaseInsensitiveContains(searchText)
+            let matchesStatus = selectedStatuses.isEmpty || selectedStatuses.contains(item.progressStatus)
+            let matchesRating = minimumRating == nil || (item.userRating ?? 0) >= minimumRating!
+            let matchesDate = datePreset.matches(item.startDate ?? item.lastUpdated)
+            return matchesText && matchesStatus && matchesRating && matchesDate
+        }
+    }
+
+    private var wishlistSeries: [ResourceEntity] { filteredSeries.filter { $0.progressStatus == .wishlist } }
+    private var notStartedSeries: [ResourceEntity] { filteredSeries.filter { $0.progressStatus == .notStarted } }
+    private var inProgressSeries: [ResourceEntity] { filteredSeries.filter { $0.progressStatus == .inProgress } }
+    private var completedSeries: [ResourceEntity] { filteredSeries.filter { $0.progressStatus == .completed } }
+    private var archivedSeries: [ResourceEntity] { filteredSeries.filter { $0.progressStatus == .archived } }
 
     var body: some View {
         ZStack {
@@ -26,73 +48,115 @@ struct SeriesListView: View {
                 if series.isEmpty {
                     emptyStateView
                 } else {
-                    if !wishlistSeries.isEmpty {
+                    if showingFilters {
                         Section {
-                            DisclosureGroup(isExpanded: $wishlistExpanded) {
-                                ForEach(wishlistSeries) { serie in
-                                    seriesRow(serie)
-                                }
-                            } label: {
-                                SectionHeader(status: .wishlist, count: wishlistSeries.count)
-                            }
+                            FilterBarView(
+                                selectedStatuses: $selectedStatuses,
+                                minimumRating: $minimumRating,
+                                datePreset: $datePreset
+                            )
                         }
+                        .listRowBackground(Color.clear)
                     }
 
-                    if !notStartedSeries.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $notStartedExpanded) {
-                                ForEach(notStartedSeries) { serie in
-                                    seriesRow(serie)
-                                }
-                            } label: {
-                                SectionHeader(status: .notStarted, count: notStartedSeries.count)
-                            }
-                        }
-                    }
-
-                    if !inProgressSeries.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $inProgressExpanded) {
-                                ForEach(inProgressSeries) { serie in
-                                    seriesRow(serie)
-                                }
-                            } label: {
-                                SectionHeader(status: .inProgress, count: inProgressSeries.count)
-                            }
-                        }
-                    }
-
-                    if !completedSeries.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $completedExpanded) {
-                                ForEach(completedSeries) { serie in
-                                    seriesRow(serie)
-                                        .swipeActions(edge: .leading) {
-                                            Button {
-                                                withAnimation {
-                                                    serie.progressStatus = .archived
-                                                    serie.lastUpdated = Date()
-                                                }
-                                            } label: {
-                                                Label("Archivar", systemImage: "archivebox")
-                                            }
-                                            .tint(ProgressStatus.archived.color)
+                    if hasActiveFilters {
+                        if filteredSeries.isEmpty {
+                            noResultsView
+                        } else {
+                            Section {
+                                HStack {
+                                    Text("\(filteredSeries.count) resultado\(filteredSeries.count == 1 ? "" : "s")")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                    Button("Limpiar filtros") {
+                                        withAnimation {
+                                            searchText = ""
+                                            selectedStatuses = []
+                                            minimumRating = nil
+                                            datePreset = .all
                                         }
+                                    }
+                                    .font(.caption)
                                 }
-                            } label: {
-                                SectionHeader(status: .completed, count: completedSeries.count)
                             }
-                        }
-                    }
+                            .listRowBackground(Color.clear)
 
-                    if !archivedSeries.isEmpty {
-                        Section {
-                            DisclosureGroup(isExpanded: $archivedExpanded) {
-                                ForEach(archivedSeries) { serie in
+                            Section {
+                                ForEach(filteredSeries) { serie in
                                     seriesRow(serie)
                                 }
-                            } label: {
-                                SectionHeader(status: .archived, count: archivedSeries.count)
+                            }
+                        }
+                    } else {
+                        if !wishlistSeries.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $wishlistExpanded) {
+                                    ForEach(wishlistSeries) { serie in
+                                        seriesRow(serie)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .wishlist, count: wishlistSeries.count)
+                                }
+                            }
+                        }
+
+                        if !notStartedSeries.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $notStartedExpanded) {
+                                    ForEach(notStartedSeries) { serie in
+                                        seriesRow(serie)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .notStarted, count: notStartedSeries.count)
+                                }
+                            }
+                        }
+
+                        if !inProgressSeries.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $inProgressExpanded) {
+                                    ForEach(inProgressSeries) { serie in
+                                        seriesRow(serie)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .inProgress, count: inProgressSeries.count)
+                                }
+                            }
+                        }
+
+                        if !completedSeries.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $completedExpanded) {
+                                    ForEach(completedSeries) { serie in
+                                        seriesRow(serie)
+                                            .swipeActions(edge: .leading) {
+                                                Button {
+                                                    withAnimation {
+                                                        serie.progressStatus = .archived
+                                                        serie.lastUpdated = Date()
+                                                    }
+                                                } label: {
+                                                    Label("Archivar", systemImage: "archivebox")
+                                                }
+                                                .tint(ProgressStatus.archived.color)
+                                            }
+                                    }
+                                } label: {
+                                    SectionHeader(status: .completed, count: completedSeries.count)
+                                }
+                            }
+                        }
+
+                        if !archivedSeries.isEmpty {
+                            Section {
+                                DisclosureGroup(isExpanded: $archivedExpanded) {
+                                    ForEach(archivedSeries) { serie in
+                                        seriesRow(serie)
+                                    }
+                                } label: {
+                                    SectionHeader(status: .archived, count: archivedSeries.count)
+                                }
                             }
                         }
                     }
@@ -100,14 +164,26 @@ struct SeriesListView: View {
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
+            .searchable(text: $searchText, prompt: "Buscar por título...")
         }
         .navigationTitle("Series")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showingAddSheet = true
-                } label: {
-                    Image(systemName: "plus")
+                HStack(spacing: 12) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            showingFilters.toggle()
+                        }
+                    } label: {
+                        Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                            .foregroundStyle(hasActiveFilters ? AppTheme.accent : .secondary)
+                    }
+
+                    Button {
+                        showingAddSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
         }
@@ -150,6 +226,30 @@ struct SeriesListView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 60)
+        .listRowBackground(Color.clear)
+    }
+
+    private var noResultsView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 40))
+                .foregroundStyle(.secondary.opacity(0.5))
+
+            Text("Sin resultados")
+                .font(.headline)
+
+            Button("Limpiar filtros") {
+                withAnimation {
+                    searchText = ""
+                    selectedStatuses = []
+                    minimumRating = nil
+                    datePreset = .all
+                }
+            }
+            .font(.subheadline)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 40)
         .listRowBackground(Color.clear)
     }
 }
