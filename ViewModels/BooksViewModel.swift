@@ -7,6 +7,8 @@ final class BooksViewModel: ObservableObject {
     @Published var searchResults: [GoogleBookItem] = []
     @Published var isLoading = false
     @Published var searchQuery = ""
+    @Published var importProgress: Double = 0
+    @Published var isImporting = false
     
     func searchBooks() {
         guard !searchQuery.isEmpty else {
@@ -64,6 +66,54 @@ final class BooksViewModel: ObservableObject {
             status: .notStarted
         )
         context.insert(book)
+    }
+
+    func importBooks(_ books: [GoodreadsCSVBook], context: ModelContext, enrichWithGoogleBooks: Bool = false) {
+        isImporting = true
+        importProgress = 0
+
+        let group = DispatchGroup()
+        var enrichedCount = 0
+
+        for (index, book) in books.enumerated() {
+            group.enter()
+
+            var entity = GoodreadsImporter.mapToResourceEntity(book)
+
+            if enrichWithGoogleBooks, let isbn = book.isbn13 ?? book.isbn {
+                GoogleBooksService.shared.searchByISBN(isbn) { googleBook in
+                    if let gb = googleBook {
+                        entity.imageURL = gb.coverURL
+                        if entity.summary == nil || entity.summary?.isEmpty == true {
+                            entity.summary = gb.summary
+                        }
+                        if entity.totalPages == nil {
+                            entity.totalPages = gb.numberOfPages
+                        }
+                        if entity.authorOrCreator == nil || entity.authorOrCreator?.isEmpty == true {
+                            entity.authorOrCreator = gb.author
+                        }
+                        enrichedCount += 1
+                    }
+                    DispatchQueue.main.async {
+                        context.insert(entity)
+                        self.importProgress = Double(index + 1) / Double(books.count)
+                        group.leave()
+                    }
+                }
+            } else {
+                context.insert(entity)
+                DispatchQueue.main.async {
+                    self.importProgress = Double(index + 1) / Double(books.count)
+                    group.leave()
+                }
+            }
+        }
+
+        group.notify(queue: .main) {
+            self.isImporting = false
+            self.importProgress = 0
+        }
     }
     
     func clearSearch() {

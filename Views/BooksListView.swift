@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct BooksListView: View {
     @StateObject private var viewModel = BooksViewModel()
@@ -17,6 +18,13 @@ struct BooksListView: View {
     @State private var selectedStatuses: Set<ProgressStatus> = []
     @State private var minimumRating: Double? = nil
     @State private var datePreset: DatePreset = .all
+    @State private var showingImportSheet = false
+    @State private var showingFilePicker = false
+    @State private var showingEnrichmentOption = false
+    @State private var pendingImportBooks: [GoodreadsCSVBook] = []
+    @State private var enrichWithGoogleBooks = true
+    @State private var showingExportSheet = false
+    @State private var csvExportData: String = ""
 
     private var hasActiveFilters: Bool {
         !searchText.isEmpty || !selectedStatuses.isEmpty || minimumRating != nil || datePreset != .all
@@ -171,6 +179,12 @@ struct BooksListView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
                     Button {
+                        showingFilePicker = true
+                    } label: {
+                        Image(systemName: "square.and.arrow.down")
+                    }
+
+                    Button {
                         withAnimation(.easeInOut(duration: 0.25)) {
                             showingFilters.toggle()
                         }
@@ -180,16 +194,155 @@ struct BooksListView: View {
                     }
 
                     Button {
+                        csvExportData = CSVExporter.exportFromEntities(books)
+                        showingExportSheet = true
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .disabled(books.isEmpty)
+
+                    Button {
                         showingAddSheet = true
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
+            ToolbarItem(placement: .navigationBarLeading) {
+                if !books.isEmpty {
+                    Text("\(books.count)")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(Capsule())
+                }
+            }
+        }
+        .fileImporter(
+            isPresented: $showingFilePicker,
+            allowedContentTypes: [.commaSeparatedText],
+            allowsMultipleSelection: false
+        ) { result in
+            handleFileImport(result)
         }
         .sheet(isPresented: $showingAddSheet) {
             BookSearchView(viewModel: viewModel, isPresented: $showingAddSheet)
         }
+        .sheet(isPresented: $showingEnrichmentOption) {
+            NavigationStack {
+                VStack(spacing: 24) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "books.vertical")
+                            .font(.system(size: 48))
+                            .foregroundStyle(AppTheme.bookColor)
+
+                        Text("Importar \(pendingImportBooks.count) libros")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+
+                        Text("¿Deseas enriquecer los datos con portadas y descripciones de Google Books?")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+
+                    VStack(spacing: 12) {
+                        Toggle(isOn: $enrichWithGoogleBooks) {
+                            HStack {
+                                Image(systemName: "photo.artframe")
+                                    .foregroundStyle(.blue)
+                                Text("Buscar portadas y descripciones")
+                            }
+                        }
+                        .tint(AppTheme.accent)
+
+                        if enrichWithGoogleBooks {
+                            Text("Se usará el ISBN para buscar información adicional")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+
+                    if viewModel.isImporting {
+                        VStack(spacing: 8) {
+                            ProgressView(value: viewModel.importProgress)
+                            Text("Importando...")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                    }
+
+                    Spacer()
+                }
+                .padding()
+                .navigationTitle("Importar desde Goodreads")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancelar") {
+                            pendingImportBooks = []
+                            showingEnrichmentOption = false
+                        }
+                        .disabled(viewModel.isImporting)
+                    }
+
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Importar") {
+                            confirmImport()
+                            showingEnrichmentOption = false
+                        }
+                        .disabled(viewModel.isImporting)
+                    }
+                }
+            }
+            .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showingExportSheet) {
+            ExportCSVView(csvData: csvExportData)
+        }
+    }
+
+    private func generateCSVFile() -> URL? {
+        guard !csvExportData.isEmpty else { return nil }
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("trackhobbies_books.csv")
+        do {
+            try csvExportData.write(to: tempURL, atomically: true, encoding: .utf8)
+            return tempURL
+        } catch {
+            return nil
+        }
+    }
+
+    private func handleFileImport(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            if url.startAccessingSecurityScopedResource() {
+                defer { url.stopAccessingSecurityScopedResource() }
+                do {
+                    let csvContent = try String(contentsOf: url, encoding: .utf8)
+                    let books = GoodreadsImporter.parse(csvContent: csvContent)
+                    pendingImportBooks = books
+                    showingEnrichmentOption = true
+                } catch {
+                    print("Error reading file: \(error)")
+                }
+            }
+        case .failure(let error):
+            print("Error selecting file: \(error)")
+        }
+    }
+
+    private func confirmImport() {
+        viewModel.importBooks(pendingImportBooks, context: modelContext, enrichWithGoogleBooks: enrichWithGoogleBooks)
+        pendingImportBooks = []
     }
 
     private func bookRow(_ book: ResourceEntity) -> some View {
@@ -771,4 +924,14 @@ func dateLabel(start: Date?, end: Date?) -> some View {
         BooksListView()
     }
     .modelContainer(DataStore.shared.modelContainer)
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let itemsToShare: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

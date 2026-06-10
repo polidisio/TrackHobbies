@@ -70,4 +70,36 @@ final class GoogleBooksService {
             DispatchQueue.main.async { completion(results) }
         }.resume()
     }
+
+    func searchByISBN(_ isbn: String, completion: @escaping (GoogleBookItem?) -> Void) {
+        guard var components = URLComponents(string: baseURL) else {
+            completion(nil); return
+        }
+        components.queryItems = [
+            URLQueryItem(name: "q", value: "isbn:\(isbn)"),
+            URLQueryItem(name: "maxResults", value: "1")
+        ]
+        guard let url = components.url else { completion(nil); return }
+
+        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, _ in
+            var result: GoogleBookItem? = nil
+            if let data = data {
+                if let decoded = try? JSONDecoder().decode(GoogleBooksResponse.self, from: data),
+                   let item = decoded.items?.first {
+                    let author = item.volumeInfo.authors?.joined(separator: ", ") ?? ""
+                    let thumbnail = item.volumeInfo.imageLinks?.thumbnail?
+                        .replacingOccurrences(of: "http://", with: "https://")
+                    result = GoogleBookItem(
+                        title: item.volumeInfo.title ?? "",
+                        author: author,
+                        coverURL: thumbnail,
+                        externalId: item.id,
+                        numberOfPages: item.volumeInfo.pageCount,
+                        summary: item.volumeInfo.description
+                    )
+                }
+            }
+            DispatchQueue.main.async { completion(result) }
+        }.resume()
+    }
 }
