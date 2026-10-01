@@ -50,6 +50,10 @@ final class GoogleBooksService {
             URLQueryItem(name: "q", value: query),
             URLQueryItem(name: "maxResults", value: String(maxResults))
         ]
+        // Sin clave propia se usa la cuota anónima compartida, casi siempre agotada (429).
+        if let key = Bundle.main.object(forInfoDictionaryKey: "GoogleBooksAPIKey") as? String, !key.isEmpty {
+            components.queryItems?.append(URLQueryItem(name: "key", value: key))
+        }
         guard let url = components.url else { throw SearchError.badResponse }
         return try await URLSession.shared.decode(GoogleBooksResponse.self, from: url).items ?? []
     }
