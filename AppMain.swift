@@ -3,7 +3,10 @@ import SwiftData
 
 @main
 struct TrackHobbiesApp: App {
-    init() { Analytics.setup() }
+    init() {
+        Analytics.setup()
+        SyncMonitor.shared.start()
+    }
 
     var body: some Scene {
         WindowGroup {

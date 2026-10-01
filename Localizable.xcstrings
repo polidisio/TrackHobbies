@@ -461,6 +461,7 @@
       }
     },
     "Añadir total de páginas" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -683,6 +684,16 @@
         }
       }
     },
+    "Comprobando iCloud…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking iCloud…"
+          }
+        }
+      }
+    },
     "Cámbialo solo si tu edición tiene otro número de páginas." : {
       "localizations" : {
         "en" : {
@@ -750,6 +761,7 @@
       }
     },
     "Editar total de páginas" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -782,6 +794,7 @@
       }
     },
     "El total no puede ser menor que la página actual (%lld)." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -835,6 +848,16 @@
         }
       }
     },
+    "Error de iCloud: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud error: %@"
+          }
+        }
+      }
+    },
     "Escribe un comentario..." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -864,6 +887,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Status"
+          }
+        }
+      }
+    },
+    "Estado de iCloud desconocido" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown iCloud status"
           }
         }
       }
@@ -978,6 +1011,7 @@
       }
     },
     "Guardar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1151,6 +1185,7 @@
       }
     },
     "Introduce un número de páginas entre 1 y %lld." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1193,6 +1228,7 @@
       }
     },
     "La búsqueda no está configurada en esta compilación." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1258,6 +1294,7 @@
       }
     },
     "Marcar como completado" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1345,6 +1382,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Couldn’t load your data"
+          }
+        }
+      }
+    },
+    "No se pudo comprobar iCloud" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t check iCloud"
           }
         }
       }
@@ -1487,6 +1534,7 @@
       }
     },
     "Páginas" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1655,6 +1703,16 @@
         }
       }
     },
+    "Sin cuenta de iCloud" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No iCloud account"
+          }
+        }
+      }
+    },
     "Sin empezar" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1683,6 +1741,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No results"
+          }
+        }
+      }
+    },
+    "Sin sincronizaciones todavía" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No syncs yet"
           }
         }
       }
@@ -1839,6 +1907,7 @@
       }
     },
     "Total de páginas" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1944,6 +2013,36 @@
         }
       }
     },
+    "iCloud activo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud active"
+          }
+        }
+      }
+    },
+    "iCloud no disponible ahora" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud temporarily unavailable"
+          }
+        }
+      }
+    },
+    "iCloud restringido" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud restricted"
+          }
+        }
+      }
+    },
     "la página actual (%lld)" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1994,6 +2093,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove from “Completed”?"
+          }
+        }
+      }
+    },
+    "Última sincronización: %@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last sync: %@ (%@)"
           }
         }
       }

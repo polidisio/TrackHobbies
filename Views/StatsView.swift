@@ -108,6 +108,7 @@ struct StatsView: View {
                 ratingsSection
                 Toggle("Compartir uso anónimo", isOn: $analyticsEnabled)
                     .onChange(of: analyticsEnabled) { Analytics.setEnabled($1) }
+                SyncStatusView()
             }
             .padding()
         }

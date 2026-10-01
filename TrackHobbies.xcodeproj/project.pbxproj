@@ -19,6 +19,7 @@
 		5450C5B8BC5E1EBA0BD073B3 /* PageTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA397381A25072FE3EF0393D /* PageTrackingTests.swift */; };
 		617DFFD816B7CB79B2E5EB40 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83D451D0D651DF7C97B8086 /* StatsView.swift */; };
 		65E9720D89AC26C312F6C4A8 /* SeriesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */; };
+		76195ECE2439D07A80361C0D /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1EC41F27E08BAAF9A551C8 /* SyncStatusView.swift */; };
 		79E99E27DC8B9F880E02F6C4 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CDDA91E398FEA6932455C9 /* AppTheme.swift */; };
 		7AB91F9EBC9EE43E4A7E4DF0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FCCD7217BD5FBDDCDC4D118 /* Assets.xcassets */; };
 		7DF1A781E64FD0B13ABAA167 /* Searchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90280001697AD7730CB4C6F8 /* Searchable.swift */; };
@@ -37,6 +38,7 @@
 		E2ED6D0FD8E20F6C6BB99A0E /* BookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E6567FB320A5958549B53A /* BookStore.swift */; };
 		E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F5971818241D6508505936 /* BooksListView.swift */; };
 		E9A34AE83D6FB87C70BEECAB /* GamesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */; };
+		EDF2A49250F8EF9AAAE0F98C /* SyncMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4555CED2905B72ABD64C5B /* SyncMonitor.swift */; };
 		F080DD30E6363CC37BB7B79C /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3D70DB478E5E59BFA2C530 /* HTTP.swift */; };
 		FF6B05939503189A4F95F60A /* TVMazeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D453C5A1873F779D55CCB4 /* TVMazeService.swift */; };
 /* End PBXBuildFile section */
@@ -63,6 +65,7 @@
 		3295D07AF8A533E7C592F7DF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		342F815E0CFCF0F140FC0FCB /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		3B88BC18B86DB1141949513F /* igdb.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = igdb.js; sourceTree = "<group>"; };
+		3C4555CED2905B72ABD64C5B /* SyncMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMonitor.swift; sourceTree = "<group>"; };
 		4339CA264C5FE4D871B7ECD6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		444FCCCB5D4C3277B27FA971 /* books.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = books.js; sourceTree = "<group>"; };
 		4522E34DF55AB3224898D049 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
@@ -99,6 +102,7 @@
 		F083B426E2D92FC4DB8A5B39 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesListView.swift; sourceTree = "<group>"; };
 		FD6F50F0932D624A16148084 /* ResourceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceDetailView.swift; sourceTree = "<group>"; };
+		FF1EC41F27E08BAAF9A551C8 /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +173,7 @@
 				B44A0FC5EE0FA9B7A32FB7AB /* SearchErrorView.swift */,
 				FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */,
 				B83D451D0D651DF7C97B8086 /* StatsView.swift */,
+				FF1EC41F27E08BAAF9A551C8 /* SyncStatusView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -249,6 +254,7 @@
 				4522E34DF55AB3224898D049 /* Analytics.swift */,
 				A5614B28A7A2090611799F9C /* CSVExporter.swift */,
 				8EE605D320412D12A2745A07 /* PageTracking.swift */,
+				3C4555CED2905B72ABD64C5B /* SyncMonitor.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -388,6 +394,8 @@
 				65E9720D89AC26C312F6C4A8 /* SeriesListView.swift in Sources */,
 				DA49E9B8C7B150C407F43A0B /* SeriesViewModel.swift in Sources */,
 				617DFFD816B7CB79B2E5EB40 /* StatsView.swift in Sources */,
+				EDF2A49250F8EF9AAAE0F98C /* SyncMonitor.swift in Sources */,
+				76195ECE2439D07A80361C0D /* SyncStatusView.swift in Sources */,
 				FF6B05939503189A4F95F60A /* TVMazeService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

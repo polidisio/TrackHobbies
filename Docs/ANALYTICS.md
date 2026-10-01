@@ -33,3 +33,8 @@ Solo contadores, booleanos y categorías. **Nunca** títulos, autores, notas, re
 
 ## Si no aparecen eventos
 Ver `SyncSalud/Docs/ANALYTICS.md` (key ≠ `phc_`, región, consentimiento, build antigua, lote ~30 s).
+
+## Sincronización iCloud (diagnóstico)
+| Evento | Props | Origen |
+|---|---|---|
+| `sync_error` | `kind` (`setup`/`import`/`export`), `domain`, `code` (nunca el texto del error) | `SyncMonitor` |
