@@ -14,7 +14,7 @@
 - **Min iOS:** 17.0
 - **Architecture:** MVVM
 - **Persistence:** SwiftData + CloudKit private DB (`iCloud.com.trackhobbies.app`); models follow CloudKit rules (no `.unique`, defaults, inverse relations)
-- **APIs:** Google Books (books), TVMaze (series), IGDB (games, via Cloudflare Worker in `worker/`)
+- **APIs:** Google Books (books) and IGDB (games) via the Cloudflare Worker in `worker/` (keys live there as secrets); TVMaze (series) directly
 - **Build System:** XcodeGen (project.yml)
 
 ## Quick Start
@@ -62,7 +62,7 @@ TrackHobbies/
 - ✅ **Progress tracking:** Time invested
 - ✅ **CloudKit sync:** enabled (`DataStore`, schema V2). Set `DEVELOPMENT_TEAM` in `Config/Secrets.xcconfig`; test on two real devices
 - ✅ **API auto-complete:**
-  - Books: Google Books
+  - Books: Google Books through the Worker (secret `GOOGLE_BOOKS_API_KEY`)
   - Series: TVMaze
   - Games: IGDB through the Worker (needs `Config/Secrets.xcconfig`)
 - ✅ **Export:** CSV (Excel/Sheets). Notion: not implemented

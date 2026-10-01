@@ -78,7 +78,6 @@ targets:
         CFBundleLocalizations: [es, en]
         GameAPIHost: "$(GAME_API_HOST)"
         GameAPIToken: "$(GAME_API_TOKEN)"
-        GoogleBooksAPIKey: "$(GOOGLE_BOOKS_API_KEY)"
         PostHogAPIKey: "$(POSTHOG_API_KEY)"
         PostHogHost: "$(POSTHOG_HOST)"
         CFBundleShortVersionString: "1.0.0"

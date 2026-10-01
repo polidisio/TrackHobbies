@@ -6,7 +6,7 @@ Resumen
 - Progreso y tiempo invertido; lista de pendientes por recurso.
 - Almacenamiento con SwiftData sincronizado vía CloudKit (base privada; requiere `DEVELOPMENT_TEAM` en `Config/Secrets.xcconfig`).
 - Búsqueda con APIs públicas para auto-completar datos básicos al añadir recursos:
-  - Libros: Google Books
+  - Libros: Google Books, a través del mismo Worker
   - Series: TVMaze
   - Juegos: IGDB, a través de un Worker de Cloudflare (`worker/`)
 - Exportación de datos: CSV para Excel/Sheets (Notion pendiente).

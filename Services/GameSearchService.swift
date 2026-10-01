@@ -18,16 +18,6 @@ final class GameSearchService {
     private init() {}
 
     func searchGames(title: String) async throws -> [GameItem] {
-        guard let host = Bundle.main.object(forInfoDictionaryKey: "GameAPIHost") as? String, !host.isEmpty,
-              let token = Bundle.main.object(forInfoDictionaryKey: "GameAPIToken") as? String, !token.isEmpty
-        else { throw SearchError.notConfigured }
-
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = host
-        components.path = "/games/search"
-        components.queryItems = [URLQueryItem(name: "q", value: title)]
-        guard let url = components.url else { throw SearchError.badResponse }
-        return try await URLSession.shared.decode(GameSearchResponse.self, from: url, headers: ["X-App-Token": token]).results
+        try await URLSession.shared.worker(GameSearchResponse.self, path: "/games/search", query: ["q": title]).results
     }
 }

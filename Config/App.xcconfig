@@ -1,7 +1,6 @@
 // Valores por defecto. Los reales van en Secrets.xcconfig (ignorado por git).
 GAME_API_HOST =
 GAME_API_TOKEN =
-GOOGLE_BOOKS_API_KEY =
 DEVELOPMENT_TEAM =
 POSTHOG_API_KEY =
 POSTHOG_HOST =

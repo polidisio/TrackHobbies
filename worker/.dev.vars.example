@@ -2,3 +2,4 @@
 TWITCH_CLIENT_ID=
 TWITCH_CLIENT_SECRET=
 APP_TOKEN=cambia-esto
+GOOGLE_BOOKS_API_KEY=tu-clave-de-google-books

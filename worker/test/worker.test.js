@@ -54,3 +54,47 @@ test("búsqueda ok, reintenta con token nuevo ante 401 y mapea 429", async () =>
       : new Response(null, { status: 429 });
   assert.equal((await worker.fetch(req("/games/search?q=mario"), env, { waitUntil() {} })).status, 429);
 });
+
+// --- libros ---
+import { buildUrl, isIsbn, mapBook } from "../src/books.js";
+const benv = { ...env, GOOGLE_BOOKS_API_KEY: "AIzaTEST" };
+
+test("mapBook normaliza y fuerza https", () => {
+  assert.deepEqual(
+    mapBook({ id: "b1", volumeInfo: { title: "Dune", authors: ["Frank Herbert", "X"], pageCount: 412, description: "d", imageLinks: { thumbnail: "http://img/x" } } }),
+    { externalId: "b1", title: "Dune", author: "Frank Herbert, X", coverURL: "https://img/x", numberOfPages: 412, summary: "d" },
+  );
+  assert.deepEqual(mapBook({ id: "b2", volumeInfo: {} }), { externalId: "b2", title: "", author: "", coverURL: null, numberOfPages: null, summary: null });
+});
+
+test("isIsbn solo acepta ISBN-10/13", () => {
+  assert.ok(isIsbn("9780441172719") && isIsbn("044117271X"));
+  assert.ok(!isIsbn("dune") && !isIsbn("978044117271") && !isIsbn("isbn:1 OR intitle:x"));
+});
+
+test("buildUrl codifica la consulta y lleva la clave", () => {
+  const u = new URL(buildUrl("a&key=evil", 20, "K"));
+  assert.equal(u.searchParams.get("q"), "a&key=evil");
+  assert.equal(u.searchParams.get("key"), "K");
+});
+
+test("libros: exige token, busca, mapea y propaga 429", async () => {
+  globalThis.fetch = () => assert.fail("no debe llamar upstream");
+  assert.equal((await worker.fetch(req("/books/search?q=dune", null), benv)).status, 401);
+  assert.deepEqual(await (await worker.fetch(req("/books/isbn?isbn=malo"), benv)).json(), { results: [] });
+
+  let called;
+  globalThis.fetch = async (url) => {
+    called = String(url);
+    return Response.json({ items: [{ id: "b1", volumeInfo: { title: "Dune" } }] });
+  };
+  const ok = await worker.fetch(req("/books/search?q=dune"), benv, { waitUntil() {} });
+  assert.equal((await ok.json()).results[0].title, "Dune");
+  assert.ok(called.includes("key=AIzaTEST"));
+  const isbn = await worker.fetch(req("/books/isbn?isbn=9780441172719"), benv, { waitUntil() {} });
+  assert.equal((await isbn.json()).results.length, 1);
+  assert.ok(called.includes("isbn%3A9780441172719"));
+
+  globalThis.fetch = async () => new Response(null, { status: 429 });
+  assert.equal((await worker.fetch(req("/books/search?q=otro"), benv, { waitUntil() {} })).status, 429);
+});

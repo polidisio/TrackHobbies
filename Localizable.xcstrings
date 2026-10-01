@@ -1132,13 +1132,12 @@
         }
       }
     },
-    "La búsqueda de juegos no está configurada en esta compilación." : {
-      "extractionState" : "stale",
+    "La búsqueda no está configurada en esta compilación." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Game search isn’t configured in this build."
+            "value" : "Search isn’t configured in this build."
           }
         }
       }
