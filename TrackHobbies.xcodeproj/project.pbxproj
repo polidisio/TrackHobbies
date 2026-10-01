@@ -23,6 +23,7 @@
 		86FC04BEB4191B0486B895BD /* GoogleBooksService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */; };
 		9426FD087631573B7DA50700 /* GoodreadsImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C484E15F699ECB438BACC547 /* GoodreadsImporter.swift */; };
 		9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6F3E46BC82D75258505DD8 /* Enums.swift */; };
+		B586A6E520A9008E5553006D /* ConfirmDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9BB53418ADA8CC451F38BE /* ConfirmDelete.swift */; };
 		B8F05714BB01F2754D342AC2 /* GameSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669A4F271D657C1DBE1BF1DF /* GameSearchService.swift */; };
 		BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E2B31E64D28666005361AC /* ContentView.swift */; };
 		DA49E9B8C7B150C407F43A0B /* SeriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A895F8F404163A29E1FD657C /* SeriesViewModel.swift */; };
@@ -51,6 +52,7 @@
 		5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksService.swift; sourceTree = "<group>"; };
 		61E2B31E64D28666005361AC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		669A4F271D657C1DBE1BF1DF /* GameSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSearchService.swift; sourceTree = "<group>"; };
+		6A9BB53418ADA8CC451F38BE /* ConfirmDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmDelete.swift; sourceTree = "<group>"; };
 		6D6F3E46BC82D75258505DD8 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		6E4DB05985D411C8630D894E /* BooksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksViewModel.swift; sourceTree = "<group>"; };
 		6FAD522156108FA8AC2873AD /* TrackHobbiesTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrackHobbiesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				28F5971818241D6508505936 /* BooksListView.swift */,
+				6A9BB53418ADA8CC451F38BE /* ConfirmDelete.swift */,
 				9898F8ECED671B6173932D24 /* ExportCSVView.swift */,
 				C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */,
 				FD6F50F0932D624A16148084 /* ResourceDetailView.swift */,
@@ -281,6 +284,7 @@
 				E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */,
 				391A3147AFCFD73A1D07E728 /* BooksViewModel.swift in Sources */,
 				7E56D230D9E9943C9D30FC7A /* CSVExporter.swift in Sources */,
+				B586A6E520A9008E5553006D /* ConfirmDelete.swift in Sources */,
 				BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */,
 				9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */,
 				0D89DE1831A02DBF39DD170F /* ExportCSVView.swift in Sources */,

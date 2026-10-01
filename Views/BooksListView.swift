@@ -5,6 +5,7 @@ import UniformTypeIdentifiers
 struct BooksListView: View {
     @StateObject private var viewModel = BooksViewModel()
     @Environment(\.modelContext) private var modelContext
+    @State private var resourceToDelete: ResourceEntity?
     @Query(filter: #Predicate<ResourceEntity> { $0.type == "book" }, sort: \.lastUpdated, order: .reverse) private var books: [ResourceEntity]
     @State private var showingAddSheet = false
     @State private var wishlistExpanded = true
@@ -175,6 +176,7 @@ struct BooksListView: View {
             .searchable(text: $searchText, prompt: "Buscar por título, autor...")
         }
         .navigationTitle("Libros")
+        .confirmDelete($resourceToDelete)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
@@ -338,11 +340,9 @@ struct BooksListView: View {
         NavigationLink(destination: ResourceDetailView(resource: book)) {
             BookRowView(book: book)
         }
-        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
-                withAnimation {
-                    modelContext.delete(book)
-                }
+                resourceToDelete = book
             } label: {
                 Label("Eliminar", systemImage: "trash")
             }

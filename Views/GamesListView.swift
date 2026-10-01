@@ -4,6 +4,7 @@ import SwiftData
 struct GamesListView: View {
     @StateObject private var viewModel = GamesViewModel()
     @Environment(\.modelContext) private var modelContext
+    @State private var resourceToDelete: ResourceEntity?
     @Query(filter: #Predicate<ResourceEntity> { $0.type == "game" }, sort: \.lastUpdated, order: .reverse) private var games: [ResourceEntity]
     @State private var showingAddSheet = false
     @State private var wishlistExpanded = true
@@ -167,6 +168,7 @@ struct GamesListView: View {
             .searchable(text: $searchText, prompt: "Buscar por título...")
         }
         .navigationTitle("Juegos")
+        .confirmDelete($resourceToDelete)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
@@ -196,11 +198,9 @@ struct GamesListView: View {
         NavigationLink(destination: ResourceDetailView(resource: game)) {
             GameRowView(game: game)
         }
-        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
-                withAnimation {
-                    modelContext.delete(game)
-                }
+                resourceToDelete = game
             } label: {
                 Label("Eliminar", systemImage: "trash")
             }
