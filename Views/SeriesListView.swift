@@ -66,7 +66,7 @@ struct SeriesListView: View {
                         } else {
                             Section {
                                 HStack {
-                                    Text("\(filteredSeries.count) resultado\(filteredSeries.count == 1 ? "" : "s")")
+                                    Text("\(filteredSeries.count) resultados")
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                     Spacer()
@@ -262,6 +262,11 @@ struct SeriesListView: View {
 struct SeriesRowView: View {
     let serie: ResourceEntity
 
+    private func seasonLabel(_ season: Int, of total: Int?) -> String {
+        guard let total else { return String(localized: "T\(season)") }
+        return String(localized: "T\(season)/\(total)")
+    }
+
     var body: some View {
         HStack(spacing: 12) {
             ResourceThumbnail(url: serie.imageURL, icon: "tv.fill", color: AppTheme.seriesColor)
@@ -295,14 +300,11 @@ struct SeriesRowView: View {
 
                 if serie.progressStatus == .inProgress {
                     if let season = serie.currentSeason, let episode = serie.currentEpisode {
-                        let seasonText = serie.totalSeasons != nil ? "T\(season)/\(serie.totalSeasons!)" : "T\(season)"
-                        let episodeText = "E\(episode)"
-                        Text("\(seasonText) \(episodeText)")
+                        Text("\(seasonLabel(season, of: serie.totalSeasons)) \(String(localized: "E\(episode)"))")
                             .font(.caption)
                             .foregroundColor(AppTheme.accent)
                     } else if let season = serie.currentSeason {
-                        let seasonText = serie.totalSeasons != nil ? "T\(season)/\(serie.totalSeasons!)" : "T\(season)"
-                        Text(seasonText)
+                        Text(seasonLabel(season, of: serie.totalSeasons))
                             .font(.caption)
                             .foregroundColor(AppTheme.accent)
                     }

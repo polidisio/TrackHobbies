@@ -5,12 +5,12 @@ enum SearchError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .offline: return "Sin conexión o conexión muy lenta. Revisa tu red e inténtalo de nuevo."
-        case .rateLimited: return "Demasiadas búsquedas seguidas. Espera un momento e inténtalo de nuevo."
-        case .unauthorized: return "El servicio rechazó la petición (clave de la app no válida)."
-        case .notConfigured: return "La búsqueda de juegos no está configurada en esta compilación."
-        case .server: return "El servicio no responde ahora mismo. Inténtalo más tarde."
-        case .badResponse: return "Respuesta inesperada del servicio."
+        case .offline: return String(localized: "Sin conexión o conexión muy lenta. Revisa tu red e inténtalo de nuevo.")
+        case .rateLimited: return String(localized: "Demasiadas búsquedas seguidas. Espera un momento e inténtalo de nuevo.")
+        case .unauthorized: return String(localized: "El servicio rechazó la petición (clave de la app no válida).")
+        case .notConfigured: return String(localized: "La búsqueda de juegos no está configurada en esta compilación.")
+        case .server: return String(localized: "El servicio no responde ahora mismo. Inténtalo más tarde.")
+        case .badResponse: return String(localized: "Respuesta inesperada del servicio.")
         }
     }
 }

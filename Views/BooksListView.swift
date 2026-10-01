@@ -74,7 +74,7 @@ struct BooksListView: View {
                         } else {
                             Section {
                                 HStack {
-                                    Text("\(filteredBooks.count) resultado\(filteredBooks.count == 1 ? "" : "s")")
+                                    Text("\(filteredBooks.count) resultados")
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                     Spacer()
@@ -562,12 +562,18 @@ struct BookSearchView: View {
 
 // MARK: - Filter Components
 
-enum DatePreset: String, CaseIterable {
-    case all = "Todos"
-    case thisWeek = "Esta semana"
-    case thisMonth = "Este mes"
-    case thisYear = "Este año"
-    case olderThanYear = "Hace 1+ año"
+enum DatePreset: CaseIterable {
+    case all, thisWeek, thisMonth, thisYear, olderThanYear
+
+    var label: String {
+        switch self {
+        case .all: return String(localized: "Todos")
+        case .thisWeek: return String(localized: "Esta semana")
+        case .thisMonth: return String(localized: "Este mes")
+        case .thisYear: return String(localized: "Este año")
+        case .olderThanYear: return String(localized: "Hace 1+ año")
+        }
+    }
 
     func matches(_ date: Date?) -> Bool {
         guard self != .all else { return true }
@@ -617,7 +623,7 @@ struct FilterBarView: View {
     @Binding var datePreset: DatePreset
 
     private let ratingOptions: [(String, Double?)] = [
-        ("Todos", nil),
+        (String(localized: "Todos"), nil),
         ("2+", 2),
         ("3+", 3),
         ("4+", 4),
@@ -629,7 +635,7 @@ struct FilterBarView: View {
             filterSection(title: "Estado", icon: "circle.dashed") {
                 FlowLayout(spacing: 6) {
                     FilterChip(
-                        label: "Todos",
+                        label: String(localized: "Todos"),
                         isSelected: selectedStatuses.isEmpty,
                         action: { withAnimation { selectedStatuses = [] } }
                     )
@@ -667,7 +673,7 @@ struct FilterBarView: View {
                 FlowLayout(spacing: 6) {
                     ForEach(DatePreset.allCases, id: \.self) { preset in
                         FilterChip(
-                            label: preset.rawValue,
+                            label: preset.label,
                             isSelected: datePreset == preset,
                             action: { withAnimation { datePreset = preset } }
                         )
@@ -678,7 +684,7 @@ struct FilterBarView: View {
         .padding(.vertical, 4)
     }
 
-    private func filterSection<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
+    private func filterSection<Content: View>(title: LocalizedStringKey, icon: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 4) {
                 Image(systemName: icon)
@@ -831,7 +837,7 @@ struct RatingView: View {
 }
 
 struct ProgressRow: View {
-    let text: String
+    let text: LocalizedStringKey
     let value: Double
 
     var body: some View {
@@ -909,19 +915,12 @@ struct SearchResultRow: View {
 
 @ViewBuilder
 func dateLabel(start: Date?, end: Date?) -> some View {
-    let formatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateStyle = .medium
-        f.locale = Locale(identifier: "es")
-        return f
-    }()
-
     if let s = start, let e = end {
-        Text("\(formatter.string(from: s)) - \(formatter.string(from: e))")
+        Text("\(s.formatted(date: .abbreviated, time: .omitted)) - \(e.formatted(date: .abbreviated, time: .omitted))")
             .font(.caption2)
             .foregroundColor(.secondary)
     } else if let s = start {
-        Text("Desde \(formatter.string(from: s))")
+        Text("Desde \(s.formatted(date: .abbreviated, time: .omitted))")
             .font(.caption2)
             .foregroundColor(.secondary)
     }

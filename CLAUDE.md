@@ -4,7 +4,7 @@
 
 **Name:** TrackHobbies  
 **Type:** iOS App (SwiftUI)  
-**Description:** Hobby tracking app for iPhone + iPad to record and follow books, series, and games. Features scoring (0-5 with 0.25 steps), progress/time tracking, API auto-complete, Goodreads import, CSV export. Local SwiftData storage; CloudKit sync, Notion export and English UI are planned, not implemented.  
+**Description:** Hobby tracking app for iPhone + iPad to record and follow books, series, and games. Features scoring (0-5 with 0.25 steps), progress/time tracking, API auto-complete, Goodreads import, CSV export. Local SwiftData storage; CloudKit sync and Notion export are planned, not implemented.  
 **Owner:** @polidisio  
 
 ## Tech Stack
@@ -66,7 +66,7 @@ TrackHobbies/
   - Series: TVMaze
   - Games: IGDB through the Worker (needs `Config/Secrets.xcconfig`)
 - ✅ **Export:** CSV (Excel/Sheets). Notion: not implemented
-- ⏳ **Localization:** Spanish only for now (no .xcstrings yet)
+- ✅ **Localization:** Spanish (source) + English via `Localizable.xcstrings`. Keys are the Spanish strings; use `String(localized:)` for any text that is not a SwiftUI literal
 
 ## Architecture
 

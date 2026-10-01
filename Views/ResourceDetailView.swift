@@ -57,9 +57,9 @@ struct ResourceDetailView: View {
            let rating = resource.userRating {
             let nota = rating.formatted(.number.precision(.fractionLength(0...2)))
             pendingChange = PendingChange(
-                title: "¿Sacar de «Completado»?",
-                message: "Se borrará tu nota (\(nota) de 5).",
-                confirmLabel: "Cambiar y borrar nota"
+                title: String(localized: "¿Sacar de «Completado»?"),
+                message: String(localized: "Se borrará tu nota (\(nota) de 5)."),
+                confirmLabel: String(localized: "Cambiar y borrar nota")
             ) { applyStatus(newStatus) }
         } else {
             applyStatus(newStatus)
@@ -95,18 +95,18 @@ struct ResourceDetailView: View {
         guard newValue != usePages else { return }
         var lost: [String] = []
         if newValue {
-            if let pct = resource.progressPercentage, pct > 0 { lost.append("el porcentaje (\(Int(pct))%)") }
+            if let pct = resource.progressPercentage, pct > 0 { lost.append(String(localized: "el porcentaje (\(Int(pct))%)")) }
         } else {
-            if let page = resource.currentPage { lost.append("la página actual (\(page))") }
-            if let total = resource.totalPages { lost.append("el total de páginas (\(total))") }
+            if let page = resource.currentPage { lost.append(String(localized: "la página actual (\(page))")) }
+            if let total = resource.totalPages { lost.append(String(localized: "el total de páginas (\(total))")) }
         }
         if lost.isEmpty {
             applyTrackingMode(newValue)
         } else {
             pendingChange = PendingChange(
-                title: "¿Cambiar el modo de seguimiento?",
-                message: "Se borrará \(lost.joined(separator: " y ")).",
-                confirmLabel: "Cambiar y borrar"
+                title: String(localized: "¿Cambiar el modo de seguimiento?"),
+                message: String(localized: "Se borrará \(ListFormatter.localizedString(byJoining: lost))."),
+                confirmLabel: String(localized: "Cambiar y borrar")
             ) { applyTrackingMode(newValue) }
         }
     }
@@ -388,7 +388,6 @@ struct ResourceDetailView: View {
                             ),
                             displayedComponents: .date
                         )
-                        .environment(\.locale, Locale(identifier: "es"))
                     }
 
                     if resource.endDate != nil {
@@ -400,7 +399,6 @@ struct ResourceDetailView: View {
                             ),
                             displayedComponents: .date
                         )
-                        .environment(\.locale, Locale(identifier: "es"))
                     }
 
                     if let start = resource.startDate, let end = resource.endDate {

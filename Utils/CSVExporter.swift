@@ -40,7 +40,7 @@ struct CSVExporter {
                 author: entity.authorOrCreator,
                 isbn: entity.externalId,
                 rating: entity.userRating,
-                status: entity.progressStatus.displayName,
+                status: entity.progressStatus.rawValue, // estable: no depende del idioma de la UI
                 pages: entity.totalPages,
                 dateRead: entity.endDate,
                 review: entity.reviewComment

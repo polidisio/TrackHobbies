@@ -8,9 +8,9 @@ enum ResourceType: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .book: return "Libro"
-        case .series: return "Serie"
-        case .game: return "Juego"
+        case .book: return String(localized: "Libro")
+        case .series: return String(localized: "Serie")
+        case .game: return String(localized: "Juego")
         }
     }
 
@@ -48,21 +48,21 @@ enum ProgressStatus: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .wishlist: return "Pendiente"
-        case .notStarted: return "Sin empezar"
-        case .inProgress: return "En progreso"
-        case .completed: return "Completado"
-        case .archived: return "Archivado"
+        case .wishlist: return String(localized: "Pendiente")
+        case .notStarted: return String(localized: "Sin empezar")
+        case .inProgress: return String(localized: "En progreso")
+        case .completed: return String(localized: "Completado")
+        case .archived: return String(localized: "Archivado")
         }
     }
 
     var sectionTitle: String {
         switch self {
-        case .wishlist: return "Pendientes"
-        case .notStarted: return "Sin empezar"
-        case .inProgress: return "En progreso"
-        case .completed: return "Completados"
-        case .archived: return "Archivados"
+        case .wishlist: return String(localized: "Pendientes")
+        case .notStarted: return String(localized: "Sin empezar")
+        case .inProgress: return String(localized: "En progreso")
+        case .completed: return String(localized: "Completados")
+        case .archived: return String(localized: "Archivados")
         }
     }
 

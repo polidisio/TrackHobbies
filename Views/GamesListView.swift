@@ -66,7 +66,7 @@ struct GamesListView: View {
                         } else {
                             Section {
                                 HStack {
-                                    Text("\(filteredGames.count) resultado\(filteredGames.count == 1 ? "" : "s")")
+                                    Text("\(filteredGames.count) resultados")
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                     Spacer()

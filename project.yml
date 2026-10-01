@@ -5,6 +5,7 @@ options:
     iOS: "17.0"
   xcodeVersion: "15.0"
   generateEmptyDirectories: true
+  developmentLanguage: es
 
 settings:
   base:
@@ -32,6 +33,19 @@ targets:
       - path: Views
       - path: ViewModels
       - path: Assets.xcassets
+      - path: Localizable.xcstrings
+      # Visibles en el navegador de Xcode, no se compilan:
+      - path: Config
+        buildPhase: none
+      - path: worker
+        buildPhase: none
+        excludes: ["node_modules/**", ".wrangler/**", "package-lock.json"]
+      - path: README.md
+        buildPhase: none
+      - path: CLAUDE.md
+        buildPhase: none
+      - path: AGENTS.md
+        buildPhase: none
     settings:
       base:
         INFOPLIST_FILE: Info.plist
@@ -53,6 +67,8 @@ targets:
       properties:
         CFBundleDisplayName: TrackHobbies
         CFBundleName: TrackHobbies
+        CFBundleDevelopmentRegion: es
+        CFBundleLocalizations: [es, en]
         GameAPIHost: "$(GAME_API_HOST)"
         GameAPIToken: "$(GAME_API_TOKEN)"
         CFBundleShortVersionString: "1.0.0"

@@ -280,10 +280,10 @@ struct StatsView: View {
                 StatRow(label: "Completados este año", value: "\(completedThisYear)")
 
                 if let avgDays = averageCompletionDays {
-                    StatRow(label: "Tiempo medio", value: "\(avgDays) días")
+                    StatRow(label: "Tiempo medio", value: String(localized: "\(avgDays) días"))
                 }
 
-                StatRow(label: "Últimos 30 días", value: "\(last30DaysCount) completados")
+                StatRow(label: "Últimos 30 días", value: String(localized: "\(last30DaysCount) completados"))
             }
         }
     }
@@ -373,7 +373,7 @@ struct StatsView: View {
 private struct StatCard: View {
     let icon: String
     let value: String
-    let label: String
+    let label: LocalizedStringKey
     let color: Color
 
     var body: some View {
@@ -401,7 +401,7 @@ private struct StatCard: View {
 // MARK: - StatRow
 
 private struct StatRow: View {
-    let label: String
+    let label: LocalizedStringKey
     let value: String
 
     var body: some View {
@@ -423,6 +423,8 @@ private struct RatingDistributionBar: View {
     let label: String
     let count: Int
     let maxCount: Int
+
+    private var range: [Substring] { label.split(separator: "-") + [" ", " "] }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -451,7 +453,7 @@ private struct RatingDistributionBar: View {
                 .frame(minWidth: 24, alignment: .trailing)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Notas de \(label.replacingOccurrences(of: "-", with: " a ")) estrellas")
+        .accessibilityLabel(String(localized: "Notas de \(range[0]) a \(range[1]) estrellas"))
         .accessibilityValue("\(count)")
     }
 }
