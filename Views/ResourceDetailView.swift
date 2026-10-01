@@ -4,6 +4,15 @@ import SwiftData
 struct ResourceDetailView: View {
     @Bindable var resource: ResourceEntity
     @State private var usePages = true
+    @State private var pendingChange: PendingChange?
+
+    /// Cambio que borraría datos del usuario y espera su confirmación.
+    private struct PendingChange {
+        let title: String
+        let message: String
+        let confirmLabel: String
+        let apply: () -> Void
+    }
 
     var body: some View {
         ScrollView {
@@ -29,6 +38,88 @@ struct ResourceDetailView: View {
         .onAppear {
             usePages = resource.totalPages != nil || resource.currentPage != nil
         }
+        .confirmationDialog(
+            pendingChange?.title ?? "",
+            isPresented: Binding(get: { pendingChange != nil }, set: { if !$0 { pendingChange = nil } }),
+            titleVisibility: .visible,
+            presenting: pendingChange
+        ) { change in
+            Button(change.confirmLabel, role: .destructive) { change.apply() }
+        } message: { change in
+            Text(change.message)
+        }
+    }
+
+    // MARK: - Cambios con pérdida de datos
+
+    private func requestStatus(_ newStatus: ProgressStatus) {
+        if resource.progressStatus == .completed, newStatus != .completed, newStatus != .archived,
+           let rating = resource.userRating {
+            let nota = rating.formatted(.number.precision(.fractionLength(0...2)))
+            pendingChange = PendingChange(
+                title: "¿Sacar de «Completado»?",
+                message: "Se borrará tu nota (\(nota) de 5).",
+                confirmLabel: "Cambiar y borrar nota"
+            ) { applyStatus(newStatus) }
+        } else {
+            applyStatus(newStatus)
+        }
+    }
+
+    private func applyStatus(_ newStatus: ProgressStatus) {
+        let oldStatus = resource.progressStatus
+        withAnimation {
+            resource.progressStatus = newStatus
+        }
+        resource.lastUpdated = Date()
+
+        if newStatus == .inProgress && resource.startDate == nil {
+            resource.startDate = Date()
+        }
+        if newStatus == .completed {
+            resource.endDate = Date()
+        }
+        if oldStatus == .completed && newStatus == .inProgress {
+            resource.endDate = nil
+        }
+        if newStatus == .wishlist || newStatus == .notStarted {
+            resource.startDate = nil
+            resource.endDate = nil
+        }
+        if oldStatus == .completed && newStatus != .completed && newStatus != .archived {
+            resource.userRating = nil
+        }
+    }
+
+    private func requestTrackingMode(_ newValue: Bool) {
+        guard newValue != usePages else { return }
+        var lost: [String] = []
+        if newValue {
+            if let pct = resource.progressPercentage, pct > 0 { lost.append("el porcentaje (\(Int(pct))%)") }
+        } else {
+            if let page = resource.currentPage { lost.append("la página actual (\(page))") }
+            if let total = resource.totalPages { lost.append("el total de páginas (\(total))") }
+        }
+        if lost.isEmpty {
+            applyTrackingMode(newValue)
+        } else {
+            pendingChange = PendingChange(
+                title: "¿Cambiar el modo de seguimiento?",
+                message: "Se borrará \(lost.joined(separator: " y ")).",
+                confirmLabel: "Cambiar y borrar"
+            ) { applyTrackingMode(newValue) }
+        }
+    }
+
+    private func applyTrackingMode(_ newValue: Bool) {
+        usePages = newValue
+        if newValue {
+            resource.progressPercentage = nil
+        } else {
+            resource.currentPage = nil
+            resource.totalPages = nil
+        }
+        resource.lastUpdated = Date()
     }
 
     // MARK: - Header
@@ -81,30 +172,7 @@ struct ResourceDetailView: View {
 
                 Picker("Progreso", selection: Binding(
                     get: { resource.progressStatus },
-                    set: { newStatus in
-                        let oldStatus = resource.progressStatus
-                        withAnimation {
-                            resource.progressStatus = newStatus
-                        }
-                        resource.lastUpdated = Date()
-
-                        if newStatus == .inProgress && resource.startDate == nil {
-                            resource.startDate = Date()
-                        }
-                        if newStatus == .completed {
-                            resource.endDate = Date()
-                        }
-                        if oldStatus == .completed && newStatus == .inProgress {
-                            resource.endDate = nil
-                        }
-                        if newStatus == .wishlist || newStatus == .notStarted {
-                            resource.startDate = nil
-                            resource.endDate = nil
-                        }
-                        if oldStatus == .completed && newStatus != .completed && newStatus != .archived {
-                            resource.userRating = nil
-                        }
-                    }
+                    set: { requestStatus($0) }
                 )) {
                     ForEach(ProgressStatus.allCases, id: \.self) { status in
                         Text(status.displayName).tag(status)
@@ -136,20 +204,11 @@ struct ResourceDetailView: View {
                 Text("Seguimiento de lectura")
                     .font(.headline)
 
-                Picker("Modo", selection: $usePages) {
+                Picker("Modo", selection: Binding(get: { usePages }, set: { requestTrackingMode($0) })) {
                     Text("Por páginas").tag(true)
                     Text("Por porcentaje").tag(false)
                 }
                 .pickerStyle(.segmented)
-                .onChange(of: usePages) { _, newValue in
-                    if newValue {
-                        resource.progressPercentage = nil
-                    } else {
-                        resource.currentPage = nil
-                        resource.totalPages = nil
-                    }
-                    resource.lastUpdated = Date()
-                }
 
                 if usePages {
                     HStack(spacing: 12) {
