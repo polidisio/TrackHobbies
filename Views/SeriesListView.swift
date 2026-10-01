@@ -329,6 +329,8 @@ struct SeriesSearchView: View {
             }
             .navigationTitle("Añadir Serie")
             .navigationBarTitleDisplayMode(.inline)
+            .task(id: viewModel.searchQuery) { await viewModel.searchSeries() }
+            .onDisappear { viewModel.clearSearch() }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
@@ -359,20 +361,10 @@ struct SeriesSearchView: View {
                         .foregroundColor(.secondary)
                     TextField("Buscar por título...", text: $viewModel.searchQuery)
                         .submitLabel(.search)
-                        .onSubmit {
-                            viewModel.searchSeries()
-                        }
                 }
                 .padding(10)
                 .background(Color(.tertiarySystemFill))
                 .cornerRadius(10)
-
-                if !viewModel.searchQuery.isEmpty {
-                    Button("Buscar") {
-                        viewModel.searchSeries()
-                    }
-                    .fontWeight(.medium)
-                }
             }
             .padding()
 
@@ -380,6 +372,8 @@ struct SeriesSearchView: View {
                 Spacer()
                 ProgressView("Buscando...")
                 Spacer()
+            } else if let message = viewModel.errorMessage {
+                SearchErrorView(message: message) { Task { await viewModel.searchSeries() } }
             } else if viewModel.searchResults.isEmpty && !viewModel.searchQuery.isEmpty {
                 Spacer()
                 Text("No se encontraron resultados")

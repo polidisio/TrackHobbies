@@ -3,82 +3,47 @@ import SwiftUI
 import SwiftData
 
 @MainActor
-final class SeriesViewModel: ObservableObject {
+final class SeriesViewModel: ObservableObject, Searchable {
     @Published var searchResults: [TVMazeSearchResult] = []
     @Published var isLoading = false
     @Published var searchQuery = ""
+    @Published var errorMessage: String?
     
-    func searchSeries() {
-        guard !searchQuery.isEmpty else {
-            searchResults = []
-            return
-        }
-        
-        isLoading = true
-        
-        TVMazeService.shared.searchShows(title: searchQuery) { [weak self] results in
-            Task { @MainActor in
-                self?.searchResults = results
-                self?.isLoading = false
-            }
-        }
+    func searchSeries() async {
+        await performSearch { try await TVMazeService.shared.searchShows(title: $0) }
     }
-    
-    func addSeries(from result: TVMazeSearchResult, context: ModelContext) {
-        let serie = ResourceEntity(
-            type: .series,
-            title: result.title,
-            imageURL: result.imageURL,
-            summary: result.summary,
-            status: .notStarted
-        )
-        
-        context.insert(serie)
 
-        TVMazeService.shared.fetchSeasons(showId: result.id) { totalSeasons, totalEpisodes in
-            if totalSeasons > 0 {
-                serie.totalSeasons = totalSeasons
-            }
-            if totalEpisodes > 0 {
-                serie.totalEpisodes = totalEpisodes
-            }
-        }
-        
-        do {
-            try context.save()
-            searchResults = []
-            searchQuery = ""
-        } catch {
-            print("Error saving series: \(error)")
-        }
+    func addSeries(from result: TVMazeSearchResult, context: ModelContext) {
+        insert(result, status: .notStarted, context: context)
     }
 
     func addSeriesToWishlist(from result: TVMazeSearchResult, context: ModelContext) {
+        insert(result, status: .wishlist, context: context)
+    }
+
+    private func insert(_ result: TVMazeSearchResult, status: ProgressStatus, context: ModelContext) {
         let serie = ResourceEntity(
             type: .series,
             title: result.title,
             imageURL: result.imageURL,
             summary: result.summary,
-            status: .wishlist
+            status: status
         )
-        
         context.insert(serie)
-
-        TVMazeService.shared.fetchSeasons(showId: result.id) { totalSeasons, totalEpisodes in
-            if totalSeasons > 0 {
-                serie.totalSeasons = totalSeasons
-            }
-            if totalEpisodes > 0 {
-                serie.totalEpisodes = totalEpisodes
-            }
-        }
-        
         do {
             try context.save()
             searchResults = []
             searchQuery = ""
         } catch {
             print("Error saving series: \(error)")
+        }
+
+        // Totales de temporadas/episodios: llegan después; best-effort, se guardan al llegar.
+        Task {
+            guard let totals = try? await TVMazeService.shared.fetchSeasons(showId: result.id) else { return }
+            if totals.seasons > 0 { serie.totalSeasons = totals.seasons }
+            if totals.episodes > 0 { serie.totalEpisodes = totals.episodes }
+            try? context.save()
         }
     }
     
@@ -97,10 +62,5 @@ final class SeriesViewModel: ObservableObject {
         } catch {
             print("Error saving series: \(error)")
         }
-    }
-    
-    func clearSearch() {
-        searchQuery = ""
-        searchResults = []
     }
 }

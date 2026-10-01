@@ -3,30 +3,17 @@ import SwiftUI
 import SwiftData
 
 @MainActor
-final class GamesViewModel: ObservableObject {
-    @Published var searchResults: [RAWGGameItem] = []
+final class GamesViewModel: ObservableObject, Searchable {
+    @Published var searchResults: [GameItem] = []
     @Published var isLoading = false
     @Published var searchQuery = ""
-    @Published var apiKey: String = ""
+    @Published var errorMessage: String?
     
-    func searchGames() {
-        guard !searchQuery.isEmpty else {
-            searchResults = []
-            return
-        }
-        
-        isLoading = true
-        
-        let service = RAWGService(apiKey: apiKey.isEmpty ? nil : apiKey)
-        service.searchGames(title: searchQuery) { [weak self] results in
-            Task { @MainActor in
-                self?.searchResults = results
-                self?.isLoading = false
-            }
-        }
+    func searchGames() async {
+        await performSearch { try await GameSearchService.shared.searchGames(title: $0) }
     }
     
-    func addGame(from item: RAWGGameItem, context: ModelContext) {
+    func addGame(from item: GameItem, context: ModelContext) {
         let game = ResourceEntity(
             type: .game,
             title: item.title,
@@ -46,7 +33,7 @@ final class GamesViewModel: ObservableObject {
         }
     }
 
-    func addGameToWishlist(from item: RAWGGameItem, context: ModelContext) {
+    func addGameToWishlist(from item: GameItem, context: ModelContext) {
         let game = ResourceEntity(
             type: .game,
             title: item.title,
@@ -80,10 +67,5 @@ final class GamesViewModel: ObservableObject {
         } catch {
             print("Error saving game: \(error)")
         }
-    }
-    
-    func clearSearch() {
-        searchQuery = ""
-        searchResults = []
     }
 }

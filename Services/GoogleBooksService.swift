@@ -36,70 +36,32 @@ final class GoogleBooksService {
 
     private init() {}
 
-    func search(title: String, completion: @escaping ([GoogleBookItem]) -> Void) {
-        guard var components = URLComponents(string: baseURL) else {
-            completion([]); return
-        }
-        components.queryItems = [
-            URLQueryItem(name: "q", value: title),
-            URLQueryItem(name: "maxResults", value: "20")
-        ]
-        guard let url = components.url else { completion([]); return }
-
-        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, _ in
-            var results: [GoogleBookItem] = []
-            if let data = data {
-                if let decoded = try? JSONDecoder().decode(GoogleBooksResponse.self, from: data) {
-                    if let items = decoded.items {
-                        results = items.map { vol in
-                            let author = vol.volumeInfo.authors?.joined(separator: ", ") ?? ""
-                            let thumbnail = vol.volumeInfo.imageLinks?.thumbnail?
-                                .replacingOccurrences(of: "http://", with: "https://")
-                            return GoogleBookItem(
-                                title: vol.volumeInfo.title ?? "",
-                                author: author,
-                                coverURL: thumbnail,
-                                externalId: vol.id,
-                                numberOfPages: vol.volumeInfo.pageCount,
-                                summary: vol.volumeInfo.description
-                            )
-                        }
-                    }
-                }
-            }
-            DispatchQueue.main.async { completion(results) }
-        }.resume()
+    func search(title: String) async throws -> [GoogleBookItem] {
+        try await fetch(query: title, maxResults: 20).map(Self.item)
     }
 
-    func searchByISBN(_ isbn: String, completion: @escaping (GoogleBookItem?) -> Void) {
-        guard var components = URLComponents(string: baseURL) else {
-            completion(nil); return
-        }
-        components.queryItems = [
-            URLQueryItem(name: "q", value: "isbn:\(isbn)"),
-            URLQueryItem(name: "maxResults", value: "1")
-        ]
-        guard let url = components.url else { completion(nil); return }
+    func searchByISBN(_ isbn: String) async throws -> GoogleBookItem? {
+        try await fetch(query: "isbn:\(isbn)", maxResults: 1).first.map(Self.item)
+    }
 
-        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, _ in
-            var result: GoogleBookItem? = nil
-            if let data = data {
-                if let decoded = try? JSONDecoder().decode(GoogleBooksResponse.self, from: data),
-                   let item = decoded.items?.first {
-                    let author = item.volumeInfo.authors?.joined(separator: ", ") ?? ""
-                    let thumbnail = item.volumeInfo.imageLinks?.thumbnail?
-                        .replacingOccurrences(of: "http://", with: "https://")
-                    result = GoogleBookItem(
-                        title: item.volumeInfo.title ?? "",
-                        author: author,
-                        coverURL: thumbnail,
-                        externalId: item.id,
-                        numberOfPages: item.volumeInfo.pageCount,
-                        summary: item.volumeInfo.description
-                    )
-                }
-            }
-            DispatchQueue.main.async { completion(result) }
-        }.resume()
+    private func fetch(query: String, maxResults: Int) async throws -> [GoogleBooksVolume] {
+        guard var components = URLComponents(string: baseURL) else { throw SearchError.badResponse }
+        components.queryItems = [
+            URLQueryItem(name: "q", value: query),
+            URLQueryItem(name: "maxResults", value: String(maxResults))
+        ]
+        guard let url = components.url else { throw SearchError.badResponse }
+        return try await URLSession.shared.decode(GoogleBooksResponse.self, from: url).items ?? []
+    }
+
+    private static func item(_ vol: GoogleBooksVolume) -> GoogleBookItem {
+        GoogleBookItem(
+            title: vol.volumeInfo.title ?? "",
+            author: vol.volumeInfo.authors?.joined(separator: ", ") ?? "",
+            coverURL: vol.volumeInfo.imageLinks?.thumbnail?.replacingOccurrences(of: "http://", with: "https://"),
+            externalId: vol.id,
+            numberOfPages: vol.volumeInfo.pageCount,
+            summary: vol.volumeInfo.description
+        )
     }
 }

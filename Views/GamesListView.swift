@@ -313,6 +313,8 @@ struct GameSearchView: View {
             }
             .navigationTitle("Añadir Juego")
             .navigationBarTitleDisplayMode(.inline)
+            .task(id: viewModel.searchQuery) { await viewModel.searchGames() }
+            .onDisappear { viewModel.clearSearch() }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
@@ -338,37 +340,16 @@ struct GameSearchView: View {
     private var searchSection: some View {
         VStack(spacing: 0) {
             VStack(spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(systemName: "key.fill")
-                        .foregroundColor(.secondary)
-                    TextField("Clave API RAWG (opcional)", text: $viewModel.apiKey)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                }
-                .padding(10)
-                .background(Color(.tertiarySystemFill))
-                .cornerRadius(10)
-
                 HStack(spacing: 10) {
                     HStack(spacing: 8) {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.secondary)
                         TextField("Buscar por título...", text: $viewModel.searchQuery)
-                            .submitLabel(.search)
-                            .onSubmit {
-                                viewModel.searchGames()
-                            }
+                        .submitLabel(.search)
                     }
                     .padding(10)
                     .background(Color(.tertiarySystemFill))
                     .cornerRadius(10)
-
-                    if !viewModel.searchQuery.isEmpty {
-                        Button("Buscar") {
-                            viewModel.searchGames()
-                        }
-                        .fontWeight(.medium)
-                    }
                 }
             }
             .padding()
@@ -377,6 +358,8 @@ struct GameSearchView: View {
                 Spacer()
                 ProgressView("Buscando...")
                 Spacer()
+            } else if let message = viewModel.errorMessage {
+                SearchErrorView(message: message) { Task { await viewModel.searchGames() } }
             } else if viewModel.searchResults.isEmpty && !viewModel.searchQuery.isEmpty {
                 Spacer()
                 Text("No se encontraron resultados")

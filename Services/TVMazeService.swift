@@ -27,44 +27,21 @@ struct TVMazeSearchResult {
 
 final class TVMazeService {
     static let shared = TVMazeService()
-    private let baseURL = "https://api.tvmaze.com/search/shows?q="
+    private init() {}
 
-    func searchShows(title: String, completion: @escaping ([TVMazeSearchResult]) -> Void) {
-        guard let encoded = title.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            completion([]); return
+    func searchShows(title: String) async throws -> [TVMazeSearchResult] {
+        var components = URLComponents(string: "https://api.tvmaze.com/search/shows")
+        components?.queryItems = [URLQueryItem(name: "q", value: title)]
+        guard let url = components?.url else { throw SearchError.badResponse }
+        return try await URLSession.shared.decode([TVMazeShowContainer].self, from: url).map {
+            TVMazeSearchResult(id: $0.show.id, title: $0.show.name, imageURL: $0.show.image?.medium, summary: $0.show.summary)
         }
-        let urlStr = baseURL + encoded
-        guard let url = URL(string: urlStr) else { completion([]); return }
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            var results: [TVMazeSearchResult] = []
-            if let data = data {
-                if let decoded = try? JSONDecoder().decode([TVMazeShowContainer].self, from: data) {
-                    results = decoded.map { c in
-                        let s = c.show
-                        let img = s.image?.medium
-                        return TVMazeSearchResult(id: s.id, title: s.name, imageURL: img, summary: s.summary)
-                    }
-                }
-            }
-            DispatchQueue.main.async { completion(results) }
-        }.resume()
     }
 
-    func fetchSeasons(showId: Int, completion: @escaping (Int, Int) -> Void) {
-        let urlStr = "https://api.tvmaze.com/shows/\(showId)/seasons"
-        guard let url = URL(string: urlStr) else { completion(0, 0); return }
-
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            var totalSeasons = 0
-            var totalEpisodes = 0
-            if let data = data {
-                if let seasons = try? JSONDecoder().decode([TVMazeSeason].self, from: data) {
-                    totalSeasons = seasons.count
-                    totalEpisodes = seasons.compactMap { $0.episodeOrder }.reduce(0, +)
-                }
-            }
-            DispatchQueue.main.async { completion(totalSeasons, totalEpisodes) }
-        }.resume()
+    func fetchSeasons(showId: Int) async throws -> (seasons: Int, episodes: Int) {
+        guard let url = URL(string: "https://api.tvmaze.com/shows/\(showId)/seasons") else { throw SearchError.badResponse }
+        let seasons = try await URLSession.shared.decode([TVMazeSeason].self, from: url)
+        return (seasons.count, seasons.compactMap(\.episodeOrder).reduce(0, +))
     }
 }
 

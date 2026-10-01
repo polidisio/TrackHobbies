@@ -468,6 +468,8 @@ struct BookSearchView: View {
             }
             .navigationTitle("Añadir Libro")
             .navigationBarTitleDisplayMode(.inline)
+            .task(id: viewModel.searchQuery) { await viewModel.searchBooks() }
+            .onDisappear { viewModel.clearSearch() }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
@@ -498,20 +500,10 @@ struct BookSearchView: View {
                         .foregroundColor(.secondary)
                     TextField("Buscar por título...", text: $viewModel.searchQuery)
                         .submitLabel(.search)
-                        .onSubmit {
-                            viewModel.searchBooks()
-                        }
                 }
                 .padding(10)
                 .background(Color(.tertiarySystemFill))
                 .cornerRadius(10)
-
-                if !viewModel.searchQuery.isEmpty {
-                    Button("Buscar") {
-                        viewModel.searchBooks()
-                    }
-                    .fontWeight(.medium)
-                }
             }
             .padding()
 
@@ -519,6 +511,8 @@ struct BookSearchView: View {
                 Spacer()
                 ProgressView("Buscando...")
                 Spacer()
+            } else if let message = viewModel.errorMessage {
+                SearchErrorView(message: message) { Task { await viewModel.searchBooks() } }
             } else if viewModel.searchResults.isEmpty && !viewModel.searchQuery.isEmpty {
                 Spacer()
                 Text("No se encontraron resultados")
