@@ -309,17 +309,6 @@ struct BooksListView: View {
         }
     }
 
-    private func generateCSVFile() -> URL? {
-        guard !csvExportData.isEmpty else { return nil }
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("trackhobbies_books.csv")
-        do {
-            try csvExportData.write(to: tempURL, atomically: true, encoding: .utf8)
-            return tempURL
-        } catch {
-            return nil
-        }
-    }
-
     private func handleFileImport(_ result: Result<[URL], Error>) {
         switch result {
         case .success(let urls):
@@ -924,14 +913,4 @@ func dateLabel(start: Date?, end: Date?) -> some View {
         BooksListView()
     }
     .modelContainer(DataStore.shared.modelContainer)
-}
-
-struct ShareSheet: UIViewControllerRepresentable {
-    let itemsToShare: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

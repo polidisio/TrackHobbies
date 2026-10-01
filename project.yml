@@ -8,6 +8,7 @@ options:
 
 settings:
   base:
+    PRODUCT_NAME: "$(TARGET_NAME)"
     SWIFT_VERSION: "5.9"
     TARGETED_DEVICE_FAMILY: "1,2"
     IPHONEOS_DEPLOYMENT_TARGET: "17.0"
@@ -25,10 +26,7 @@ targets:
       - path: BookStore.swift
       - path: ContentView.swift
       - path: Models
-      - path: Models.swift
-      - path: NotionExporter.swift
       - path: Services
-      - path: Sync
       - path: Utils
       - path: Theme
       - path: Views
