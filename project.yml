@@ -72,6 +72,9 @@ targets:
           - iCloud.com.trackhobbies.app
         com.apple.developer.icloud-services:
           - CloudKit
+        # CloudKit avisa de cambios remotos por push silencioso; sin esto no hay sync en vivo.
+        # Xcode lo cambia a `production` al firmar para TestFlight/App Store.
+        aps-environment: development
     info:
       path: Info.plist
       properties:
