@@ -20,6 +20,8 @@ Solo contadores, booleanos y categorías. **Nunca** títulos, autores, notas, re
 |---|---|---|
 | `resource_added` | `type` (`book`/`series`/`game`), `source` (`search`/`wishlist`/`manual`) | ViewModels `add*` |
 | `resource_deleted` | `type` | `ConfirmDelete` |
+| `status_changed` | `type`, `from`, `to` (valores de `ProgressStatus`), `days_to_complete` (solo si `to = completed` y hay fecha de inicio) | `ResourceDetailView` (`onChange` del estado: selector y completado automático) |
+| `resource_edited` | `type` — una vez al salir del detalle si algo cambió; sin campo ni valor | `ResourceDetailView` (`onDisappear`) |
 | `import_done` | `source = goodreads`, `count`, `enriched` | `BooksViewModel.importBooks` |
 | `export_started` | — (ShareLink no informa de finalización) | `ExportCSVView` |
 | `search_error` | `reason` (caso de `SearchError`, nunca la query) | `Searchable.performSearch` |

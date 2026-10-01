@@ -8,6 +8,7 @@ struct ResourceDetailView: View {
     @State private var showTotalEditor = false
     @State private var totalDraft = ""
     @State private var totalError: String?
+    @State private var lastUpdatedOnOpen: Date?
 
     /// Cambio que borraría datos del usuario y espera su confirmación.
     private struct PendingChange {
@@ -40,6 +41,19 @@ struct ResourceDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             usePages = resource.totalPages != nil || resource.currentPage != nil
+            lastUpdatedOnOpen = resource.lastUpdated
+        }
+        // Una sola vez por visita, sin saber qué campo se tocó (ni su valor).
+        .onDisappear {
+            if resource.lastUpdated != lastUpdatedOnOpen { Analytics.track("resource_edited", ["type": resource.type]) }
+        }
+        // Cubre todas las vías (selector, completado automático por páginas/porcentaje/episodios).
+        .onChange(of: resource.status) { old, new in
+            var props: [String: Any] = ["type": resource.type, "from": old, "to": new]
+            if new == ProgressStatus.completed.rawValue, let start = resource.startDate {
+                props["days_to_complete"] = max(0, Calendar.current.dateComponents([.day], from: start, to: Date()).day ?? 0)
+            }
+            Analytics.track("status_changed", props)
         }
         .confirmationDialog(
             pendingChange?.title ?? "",
