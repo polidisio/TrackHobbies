@@ -1,0 +1,4 @@
+// Valores por defecto. Los reales van en Secrets.xcconfig (ignorado por git).
+GAME_API_HOST =
+GAME_API_TOKEN =
+#include? "Secrets.xcconfig"

@@ -1,0 +1,4 @@
+# Copia a .dev.vars (ignorado por git) para `wrangler dev`
+TWITCH_CLIENT_ID=
+TWITCH_CLIENT_SECRET=
+APP_TOKEN=cambia-esto

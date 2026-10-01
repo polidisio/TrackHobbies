@@ -1,0 +1,5 @@
+name = "trackhobbies-api"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+# Secretos (NO van aquí): wrangler secret put TWITCH_CLIENT_ID | TWITCH_CLIENT_SECRET | APP_TOKEN

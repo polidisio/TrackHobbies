@@ -5,3 +5,7 @@ build/
 DerivedData/
 .env
 *.xcconfig.local
+worker/node_modules/
+worker/.wrangler/
+.dev.vars
+Config/Secrets.xcconfig
