@@ -2,4 +2,5 @@
 GAME_API_HOST =
 GAME_API_TOKEN =
 GOOGLE_BOOKS_API_KEY =
+DEVELOPMENT_TEAM =
 #include? "Secrets.xcconfig"

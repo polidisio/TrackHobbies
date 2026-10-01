@@ -3,15 +3,15 @@ import SwiftData
 
 @Model
 final class ResourceEntity {
-    @Attribute(.unique) var id: UUID
-    var type: String
-    var title: String
+    var id: UUID = UUID()
+    var type: String = ""
+    var title: String = ""
     var externalId: String?
     var imageURL: String?
     var summary: String?
     var authorOrCreator: String?
     var userRating: Double?
-    var status: String
+    var status: String = ""
     var timeSpentHours: Double?
     var lastUpdated: Date?
     var currentPage: Int?
@@ -24,7 +24,7 @@ final class ResourceEntity {
     var startDate: Date?
     var endDate: Date?
     var reviewComment: String?
-    @Relationship(deleteRule: .cascade) var pendings: [PendingItemEntity]?
+    @Relationship(deleteRule: .cascade, inverse: \PendingItemEntity.resource) var pendings: [PendingItemEntity]?
     
     init(
         id: UUID = UUID(),
@@ -85,11 +85,12 @@ final class ResourceEntity {
 
 @Model
 final class PendingItemEntity {
-    @Attribute(.unique) var id: UUID
-    var resourceId: UUID
-    var title: String
+    var id: UUID = UUID()
+    var resourceId: UUID = UUID()
+    var title: String = ""
     var dueDate: Date?
-    var completed: Bool
+    var completed: Bool = false
+    var resource: ResourceEntity?
     
     init(
         id: UUID = UUID(),

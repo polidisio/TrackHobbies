@@ -4,7 +4,7 @@
 
 **Name:** TrackHobbies  
 **Type:** iOS App (SwiftUI)  
-**Description:** Hobby tracking app for iPhone + iPad to record and follow books, series, and games. Features scoring (0-5 with 0.25 steps), progress/time tracking, API auto-complete, Goodreads import, CSV export. Local SwiftData storage; CloudKit sync and Notion export are planned, not implemented.  
+**Description:** Hobby tracking app for iPhone + iPad to record and follow books, series, and games. Features scoring (0-5 with 0.25 steps), progress/time tracking, API auto-complete, Goodreads import, CSV export. SwiftData storage synced with CloudKit (private DB, needs a paid team); Notion export is planned, not implemented.  
 **Owner:** @polidisio  
 
 ## Tech Stack
@@ -13,7 +13,7 @@
 - **Framework:** SwiftUI
 - **Min iOS:** 17.0
 - **Architecture:** MVVM
-- **Persistence:** SwiftData, local only (CloudKit planned)
+- **Persistence:** SwiftData + CloudKit private DB (`iCloud.com.trackhobbies.app`); models follow CloudKit rules (no `.unique`, defaults, inverse relations)
 - **APIs:** Google Books (books), TVMaze (series), IGDB (games, via Cloudflare Worker in `worker/`)
 - **Build System:** XcodeGen (project.yml)
 
@@ -60,7 +60,7 @@ TrackHobbies/
 - ✅ **Resources:** Books, Series, Games
 - ✅ **Scoring:** 0-5 with 0.25 steps
 - ✅ **Progress tracking:** Time invested
-- ⏳ **CloudKit sync:** planned (disabled, `cloudKitDatabase: .none`)
+- ✅ **CloudKit sync:** enabled (`DataStore`, schema V2). Set `DEVELOPMENT_TEAM` in `Config/Secrets.xcconfig`; test on two real devices
 - ✅ **API auto-complete:**
   - Books: Google Books
   - Series: TVMaze
