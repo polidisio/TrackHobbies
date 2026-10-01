@@ -361,7 +361,7 @@ struct ResourceDetailView: View {
                     ), format: .number)
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.decimalPad)
-                    .frame(width: 80)
+                    .frame(minWidth: 80)
                     Text("h")
                         .foregroundColor(.secondary)
                 }
@@ -530,6 +530,16 @@ struct StarRatingInput: View {
             }
         }
         .frame(height: 44)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Nota")
+        .accessibilityValue(rating > 0 ? "\(rating.formatted(.number.precision(.fractionLength(0...2)))) de 5" : "Sin nota")
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment: rating = min(rating + step, Double(starCount))
+            case .decrement: rating = max(rating - step, step)
+            @unknown default: break
+            }
+        }
     }
 
     private func starView(for index: Int) -> some View {

@@ -162,7 +162,8 @@ struct StatsView: View {
                     HStack(spacing: 10) {
                         Image(systemName: status.icon)
                             .foregroundColor(status.color)
-                            .frame(width: 20)
+                            .frame(minWidth: 20)
+                            .accessibilityHidden(true)
                         Text(status.sectionTitle)
                             .font(.subheadline)
                         Spacer()
@@ -391,6 +392,7 @@ private struct StatCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
+        .accessibilityElement(children: .combine)
         .background(color.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
@@ -432,7 +434,7 @@ private struct RatingDistributionBar: View {
                     .font(.caption)
                     .monospacedDigit()
             }
-            .frame(width: 50, alignment: .leading)
+            .frame(minWidth: 50, alignment: .leading)
 
             GeometryReader { geometry in
                 let fraction = maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
@@ -446,8 +448,11 @@ private struct RatingDistributionBar: View {
                 .font(.caption)
                 .fontWeight(.medium)
                 .foregroundColor(.secondary)
-                .frame(width: 24, alignment: .trailing)
+                .frame(minWidth: 24, alignment: .trailing)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Notas de \(label.replacingOccurrences(of: "-", with: " a ")) estrellas")
+        .accessibilityValue("\(count)")
     }
 }
 

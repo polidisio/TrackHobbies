@@ -184,6 +184,7 @@ struct BooksListView: View {
                         showingFilePicker = true
                     } label: {
                         Image(systemName: "square.and.arrow.down")
+                            .accessibilityLabel("Importar CSV de Goodreads")
                     }
 
                     Button {
@@ -193,6 +194,8 @@ struct BooksListView: View {
                     } label: {
                         Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
                             .foregroundStyle(hasActiveFilters ? AppTheme.accent : .secondary)
+                            .accessibilityLabel("Filtros")
+                            .accessibilityValue(hasActiveFilters ? "activos" : "")
                     }
 
                     Button {
@@ -200,6 +203,7 @@ struct BooksListView: View {
                         showingExportSheet = true
                     } label: {
                         Image(systemName: "square.and.arrow.up")
+                            .accessibilityLabel("Exportar CSV")
                     }
                     .disabled(books.isEmpty)
 
@@ -207,6 +211,7 @@ struct BooksListView: View {
                         showingAddSheet = true
                     } label: {
                         Image(systemName: "plus")
+                            .accessibilityLabel("Añadir libro")
                     }
                 }
             }
@@ -355,6 +360,8 @@ struct BooksListView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.bookColor.opacity(0.4))
 
+            .accessibilityHidden(true)
+
             VStack(spacing: 6) {
                 Text("No hay libros")
                     .font(.title3)
@@ -424,6 +431,7 @@ struct BookRowView: View {
 
                     if book.reviewComment != nil && !(book.reviewComment ?? "").isEmpty {
                         Image(systemName: "text.quote")
+                            .accessibilityLabel("Tiene reseña")
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }
@@ -446,6 +454,7 @@ struct BookRowView: View {
             Spacer()
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -598,6 +607,7 @@ struct FilterChip: View {
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -738,6 +748,7 @@ struct SectionHeader: View {
                 .foregroundColor(.white)
                 .frame(width: 26, height: 26)
                 .background(status.color, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                .accessibilityHidden(true)
 
             Text(status.sectionTitle)
                 .font(.subheadline)
@@ -749,6 +760,8 @@ struct SectionHeader: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -780,6 +793,7 @@ struct ResourceThumbnail: View {
         .frame(width: AppTheme.thumbnailSize.width, height: AppTheme.thumbnailSize.height)
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.thumbnailRadius, style: .continuous))
         .shadow(color: AppTheme.subtleShadow, radius: 4, y: 2)
+        .accessibilityHidden(true)
     }
 }
 
@@ -811,6 +825,8 @@ struct RatingView: View {
                 .fontWeight(.medium)
                 .foregroundColor(.secondary)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Nota \(rating.formatted(.number.precision(.fractionLength(0...2)))) de 5")
     }
 }
 
@@ -827,6 +843,9 @@ struct ProgressRow: View {
                 .font(.caption2)
                 .foregroundColor(.secondary)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Progreso")
+        .accessibilityValue(text)
     }
 }
 
@@ -865,8 +884,11 @@ struct SearchResultRow: View {
                     .font(.title2)
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(.orange)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Guardar «\(title)» en pendientes")
 
             Button {
                 onAdd()
@@ -875,8 +897,11 @@ struct SearchResultRow: View {
                     .font(.title2)
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(.green)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Añadir «\(title)»")
         }
         .padding(.vertical, 4)
     }

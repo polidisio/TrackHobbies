@@ -179,12 +179,15 @@ struct SeriesListView: View {
                     } label: {
                         Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
                             .foregroundStyle(hasActiveFilters ? AppTheme.accent : .secondary)
+                            .accessibilityLabel("Filtros")
+                            .accessibilityValue(hasActiveFilters ? "activos" : "")
                     }
 
                     Button {
                         showingAddSheet = true
                     } label: {
                         Image(systemName: "plus")
+                            .accessibilityLabel("Añadir serie")
                     }
                 }
             }
@@ -212,6 +215,8 @@ struct SeriesListView: View {
             Image(systemName: "tv.fill")
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.seriesColor.opacity(0.4))
+
+            .accessibilityHidden(true)
 
             VStack(spacing: 6) {
                 Text("No hay series")
@@ -282,6 +287,7 @@ struct SeriesRowView: View {
 
                     if serie.reviewComment != nil && !(serie.reviewComment ?? "").isEmpty {
                         Image(systemName: "text.quote")
+                            .accessibilityLabel("Tiene reseña")
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }
@@ -308,6 +314,7 @@ struct SeriesRowView: View {
             Spacer()
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 }
 
