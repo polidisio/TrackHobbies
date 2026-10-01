@@ -4,7 +4,7 @@
 
 **Name:** TrackHobbies  
 **Type:** iOS App (SwiftUI)  
-**Description:** Hobby tracking app for iPhone + iPad to record and follow books, series, and games. Features scoring (0-5 with 0.25 steps), progress/time tracking, CloudKit sync, API auto-complete, CSV/Notion export, and Spanish/English UI.  
+**Description:** Hobby tracking app for iPhone + iPad to record and follow books, series, and games. Features scoring (0-5 with 0.25 steps), progress/time tracking, API auto-complete, Goodreads import, CSV export. Local SwiftData storage; CloudKit sync, Notion export and English UI are planned, not implemented.  
 **Owner:** @polidisio  
 
 ## Tech Stack
@@ -13,8 +13,8 @@
 - **Framework:** SwiftUI
 - **Min iOS:** 17.0
 - **Architecture:** MVVM
-- **Sync:** CloudKit (iCloud)
-- **APIs:** Open Library (books), TVMaze (series), RAWG (games)
+- **Persistence:** SwiftData, local only (CloudKit planned)
+- **APIs:** Google Books (books), TVMaze (series), IGDB (games, via Cloudflare Worker in `worker/`)
 - **Build System:** XcodeGen (project.yml)
 
 ## Quick Start
@@ -36,16 +36,15 @@ TrackHobbies/
 ├── AppMain.swift           # App entry point
 ├── BookStore.swift         # Book-specific logic
 ├── ContentView.swift       # Main container with tabs
-├── Models.swift           # Model definitions
-├── NotionExporter.swift   # Notion sync (optional)
+├── Models/                # SwiftData entities + enums
 ├── Services/              # API services
-│   ├── OpenLibraryService.swift
+│   ├── GoogleBooksService.swift
+│   ├── GoodreadsImporter.swift
 │   ├── TVMazeService.swift
-│   └── RAWGService.swift
-├── Sync/
+│   ├── GameSearchService.swift
+│   └── HTTP.swift
 ├── Utils/
 │   ├── CSVExporter.swift
-│   └── NotionExporter.swift
 ├── Theme/
 ├── Views/
 ├── ViewModels/
@@ -61,13 +60,13 @@ TrackHobbies/
 - ✅ **Resources:** Books, Series, Games
 - ✅ **Scoring:** 0-5 with 0.25 steps
 - ✅ **Progress tracking:** Time invested
-- ✅ **CloudKit sync:** iPhone ↔ iPad
+- ⏳ **CloudKit sync:** planned (disabled, `cloudKitDatabase: .none`)
 - ✅ **API auto-complete:**
-  - Books: Open Library
+  - Books: Google Books
   - Series: TVMaze
-  - Games: RAWG (optional API key)
-- ✅ **Export:** CSV (Excel/Sheets), Notion (opt-in)
-- ✅ **Localization:** Spanish (default), English ready
+  - Games: IGDB through the Worker (needs `Config/Secrets.xcconfig`)
+- ✅ **Export:** CSV (Excel/Sheets). Notion: not implemented
+- ⏳ **Localization:** Spanish only for now (no .xcstrings yet)
 
 ## Architecture
 
@@ -84,7 +83,7 @@ TrackHobbies/
 
 ### ✅ Always Do
 - Test CloudKit sync on real devices
-- Handle RAWG API gracefully (no key = limited data)
+- Handle game search gracefully (Worker not configured or offline = visible error, never crash)
 - Follow MVVM separation
 
 ### ❌ Never Do

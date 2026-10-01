@@ -4,29 +4,26 @@ Resumen
 - Aplicación iOS para registrar y hacer seguimiento de libros, series y juegos.
 - Puntuación personal 0–5 con decimales (pasos de 0.25).
 - Progreso y tiempo invertido; lista de pendientes por recurso.
-- Sincronización entre dispositivos con CloudKit (MVP).
+- Almacenamiento local con SwiftData (sincronización CloudKit planificada).
 - Búsqueda con APIs públicas para auto-completar datos básicos al añadir recursos:
-  - Libros: Open Library
+  - Libros: Google Books
   - Series: TVMaze
-  - Juegos: RAWG (clave gratuita opcional; si no hay clave, datos limitados)
-- Exportación de datos: CSV para Excel/Sheets; Notion como opción avanzada (opt-in).
-- Localización: UI en español por defecto; preparado para inglés.
+  - Juegos: IGDB, a través de un Worker de Cloudflare (`worker/`)
+- Exportación de datos: CSV para Excel/Sheets (Notion pendiente).
+- Localización: UI solo en español por ahora (inglés pendiente).
 
 Estructura de archivos propuesta (inicio)
 - AppMain.swift: punto de entrada de la app SwiftUI.
 - Models.swift: definiciones de modelos y tipos de dominio.
 - Services/
-  - OpenLibraryService.swift
+  - GoogleBooksService.swift
   - TVMazeService.swift
-  - RAWGService.swift
+  - GameSearchService.swift
 - Views/
   - ContentView.swift (contenedor principal con pestañas)
   - ResourceRow.swift
 - Utils/
   - CSVExporter.swift
-  - NotionExporter.swift (opción avanzada)
-- Sync/
-  - CloudKitSync.swift (placeholder para MVP)
 
 Siguientes pasos propuestos
 - Construir el esqueleto de la app y las vistas principales.
