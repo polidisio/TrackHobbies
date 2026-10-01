@@ -460,6 +460,16 @@
         }
       }
     },
+    "Añadir total de páginas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add total pages"
+          }
+        }
+      }
+    },
     "Añadir «%@»" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -673,6 +683,16 @@
         }
       }
     },
+    "Cámbialo solo si tu edición tiene otro número de páginas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change it only if your edition has a different page count."
+          }
+        }
+      }
+    },
     "Demasiadas búsquedas seguidas. Espera un momento e inténtalo de nuevo." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -729,6 +749,16 @@
         }
       }
     },
+    "Editar total de páginas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit total pages"
+          }
+        }
+      }
+    },
     "El servicio no responde ahora mismo. Inténtalo más tarde." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -747,6 +777,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The service rejected the request (invalid app key)."
+          }
+        }
+      }
+    },
+    "El total no puede ser menor que la página actual (%lld)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The total can't be lower than the current page (%lld)."
           }
         }
       }
@@ -937,6 +977,16 @@
         }
       }
     },
+    "Guardar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
     "Guardar «%@» en pendientes" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1100,6 +1150,16 @@
         }
       }
     },
+    "Introduce un número de páginas entre 1 y %lld." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a page count between 1 and %lld."
+          }
+        }
+      }
+    },
     "Juego" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1193,6 +1253,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manual"
+          }
+        }
+      }
+    },
+    "Marcar como completado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark as completed"
           }
         }
       }
@@ -1412,6 +1482,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Current page"
+          }
+        }
+      }
+    },
+    "Páginas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pages"
           }
         }
       }
@@ -1754,6 +1834,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All"
+          }
+        }
+      }
+    },
+    "Total de páginas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total pages"
           }
         }
       }

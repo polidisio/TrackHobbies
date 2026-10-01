@@ -5,6 +5,9 @@ struct ResourceDetailView: View {
     @Bindable var resource: ResourceEntity
     @State private var usePages = true
     @State private var pendingChange: PendingChange?
+    @State private var showTotalEditor = false
+    @State private var totalDraft = ""
+    @State private var totalError: String?
 
     /// Cambio que borraría datos del usuario y espera su confirmación.
     private struct PendingChange {
@@ -47,6 +50,14 @@ struct ResourceDetailView: View {
             Button(change.confirmLabel, role: .destructive) { change.apply() }
         } message: { change in
             Text(change.message)
+        }
+        .alert("Total de páginas", isPresented: $showTotalEditor) {
+            TextField("Páginas", text: $totalDraft)
+                .keyboardType(.numberPad)
+            Button("Guardar") { saveTotal() }
+            Button("Cancelar", role: .cancel) {}
+        } message: {
+            Text("Cámbialo solo si tu edición tiene otro número de páginas.")
         }
     }
 
@@ -198,6 +209,25 @@ struct ResourceDetailView: View {
         }
     }
 
+    private func markCompleted() {
+        resource.progressStatus = .completed
+        resource.endDate = Date()
+        resource.lastUpdated = Date()
+    }
+
+    private func saveTotal() {
+        switch PageTracking.validateTotal(totalDraft, currentPage: resource.currentPage) {
+        case .success(let total):
+            resource.totalPages = total
+            resource.lastUpdated = Date()
+            totalError = nil
+        case .failure(.invalid):
+            totalError = String(localized: "Introduce un número de páginas entre 1 y \(PageTracking.maxPages).")
+        case .failure(.belowCurrent(let current)):
+            totalError = String(localized: "El total no puede ser menor que la página actual (\(current)).")
+        }
+    }
+
     private var bookTrackingSection: some View {
         DetailCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -219,11 +249,11 @@ struct ResourceDetailView: View {
                             TextField("0", value: Binding(
                                 get: { resource.currentPage ?? 0 },
                                 set: {
-                                    resource.currentPage = $0 > 0 ? $0 : nil
+                                    let page = PageTracking.clampedPage($0, total: resource.totalPages)
+                                    resource.currentPage = page > 0 ? page : nil
                                     resource.lastUpdated = Date()
-                                    if let current = resource.currentPage, let total = resource.totalPages, total > 0, current >= total {
-                                        resource.progressStatus = .completed
-                                        resource.endDate = Date()
+                                    if PageTracking.isFinished(page: resource.currentPage, total: resource.totalPages) {
+                                        markCompleted()
                                     }
                                 }
                             ), format: .number)
@@ -231,24 +261,33 @@ struct ResourceDetailView: View {
                             .keyboardType(.numberPad)
                         }
 
+                        // El total no se teclea a la vez que la lectura: se cambia con un editor explícito.
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Total páginas")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            TextField("0", value: Binding(
-                                get: { resource.totalPages ?? 0 },
-                                set: {
-                                    resource.totalPages = $0 > 0 ? $0 : nil
-                                    resource.lastUpdated = Date()
-                                    if let current = resource.currentPage, let total = resource.totalPages, total > 0, current >= total {
-                                        resource.progressStatus = .completed
-                                        resource.endDate = Date()
-                                    }
+                            Button {
+                                totalDraft = resource.totalPages.map(String.init) ?? ""
+                                totalError = nil
+                                showTotalEditor = true
+                            } label: {
+                                HStack {
+                                    Text(resource.totalPages.map(String.init) ?? "—")
+                                    Spacer()
+                                    Image(systemName: resource.totalPages == nil ? "plus.circle" : "pencil")
                                 }
-                            ), format: .number)
-                            .textFieldStyle(.roundedBorder)
-                            .keyboardType(.numberPad)
+                                .padding(8)
+                                .background(.quaternary, in: RoundedRectangle(cornerRadius: 6))
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel(resource.totalPages == nil ? "Añadir total de páginas" : "Editar total de páginas")
                         }
+                    }
+
+                    if let totalError {
+                        Text(totalError)
+                            .font(.caption)
+                            .foregroundColor(.red)
                     }
 
                     if let current = resource.currentPage, let total = resource.totalPages, total > 0 {
@@ -259,6 +298,10 @@ struct ResourceDetailView: View {
                             Text("Pág. \(current) / \(total) (\(Int(percentage * 100))%)")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                        }
+                        if PageTracking.isFinished(page: current, total: total) {
+                            Button("Marcar como completado") { markCompleted() }
+                                .buttonStyle(.borderedProminent)
                         }
                     }
                 } else {

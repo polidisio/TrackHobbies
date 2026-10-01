@@ -8,6 +8,9 @@ options:
   developmentLanguage: es
 
 settings:
+  configs:
+    Debug:
+      ENABLE_TESTABILITY: YES
   base:
     PRODUCT_NAME: "$(TARGET_NAME)"
     SWIFT_VERSION: "5.9"
