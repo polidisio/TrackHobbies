@@ -66,6 +66,7 @@ TrackHobbies/
   - Series: TVMaze
   - Games: IGDB through the Worker (needs `Config/Secrets.xcconfig`)
 - ✅ **Export:** CSV (Excel/Sheets). Notion: not implemented
+- ✅ **Analytics:** PostHog EU opt-in, ver `Docs/ANALYTICS.md`; nunca enviar títulos, notas, reseñas ni puntuaciones
 - ✅ **Localization:** Spanish (source) + English via `Localizable.xcstrings`. Keys are the Spanish strings; use `String(localized:)` for any text that is not a SwiftUI literal
 
 ## Architecture

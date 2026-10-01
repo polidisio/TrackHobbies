@@ -48,6 +48,7 @@ struct ExportCSVView: View {
             }
             .onAppear {
                 generateFile()
+                Analytics.track("export_started")
             }
         }
     }

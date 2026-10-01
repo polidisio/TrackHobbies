@@ -30,6 +30,7 @@ final class SeriesViewModel: ObservableObject, Searchable {
             status: status
         )
         context.insert(serie)
+        Analytics.track("resource_added", ["type": "series", "source": status == .wishlist ? "wishlist" : "search"])
         do {
             try context.save()
             searchResults = []
@@ -56,6 +57,7 @@ final class SeriesViewModel: ObservableObject, Searchable {
         )
         
         context.insert(serie)
+        Analytics.track("resource_added", ["type": "series", "source": "manual"])
         
         do {
             try context.save()

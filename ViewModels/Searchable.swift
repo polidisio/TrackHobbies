@@ -32,6 +32,7 @@ extension Searchable {
         } catch {
             searchResults = []
             errorMessage = error.localizedDescription
+            Analytics.track("search_error", ["reason": (error as? SearchError).map { String(describing: $0) } ?? "other"])
         }
         isLoading = false
     }

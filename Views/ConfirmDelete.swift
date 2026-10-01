@@ -20,6 +20,7 @@ private struct ConfirmDeleteModifier: ViewModifier {
             presenting: item
         ) { resource in
             Button("Eliminar", role: .destructive) {
+                Analytics.track("resource_deleted", ["type": resource.type])
                 withAnimation { modelContext.delete(resource) }
             }
         } message: { _ in

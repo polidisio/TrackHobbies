@@ -23,6 +23,7 @@ final class GamesViewModel: ObservableObject, Searchable {
         )
         
         context.insert(game)
+        Analytics.track("resource_added", ["type": "game", "source": "search"])
         
         do {
             try context.save()
@@ -43,6 +44,7 @@ final class GamesViewModel: ObservableObject, Searchable {
         )
         
         context.insert(game)
+        Analytics.track("resource_added", ["type": "game", "source": "wishlist"])
         
         do {
             try context.save()
@@ -61,6 +63,7 @@ final class GamesViewModel: ObservableObject, Searchable {
         )
         
         context.insert(game)
+        Analytics.track("resource_added", ["type": "game", "source": "manual"])
         
         do {
             try context.save()

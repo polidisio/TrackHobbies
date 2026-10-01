@@ -17,6 +17,11 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
 
+packages:
+  PostHog:
+    url: https://github.com/PostHog/posthog-ios
+    exactVersion: 3.86.0
+
 targets:
   TrackHobbies:
     type: application
@@ -33,6 +38,7 @@ targets:
       - path: ViewModels
       - path: Assets.xcassets
       - path: Localizable.xcstrings
+      - path: PrivacyInfo.xcprivacy
       # Visibles en el navegador de Xcode, no se compilan:
       - path: Config
         buildPhase: none
@@ -54,6 +60,8 @@ targets:
     configFiles:
       Debug: Config/App.xcconfig
       Release: Config/App.xcconfig
+    dependencies:
+      - package: PostHog
     entitlements:
       path: TrackHobbies.entitlements
       properties:
@@ -71,6 +79,8 @@ targets:
         GameAPIHost: "$(GAME_API_HOST)"
         GameAPIToken: "$(GAME_API_TOKEN)"
         GoogleBooksAPIKey: "$(GOOGLE_BOOKS_API_KEY)"
+        PostHogAPIKey: "$(POSTHOG_API_KEY)"
+        PostHogHost: "$(POSTHOG_HOST)"
         CFBundleShortVersionString: "1.0.0"
         CFBundleVersion: "1"
         UIBackgroundModes:

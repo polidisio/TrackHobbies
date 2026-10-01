@@ -27,6 +27,7 @@ final class BooksViewModel: ObservableObject, Searchable {
             totalPages: item.numberOfPages
         )
         context.insert(book)
+        Analytics.track("resource_added", ["type": "book", "source": "search"])
         searchResults = []
         searchQuery = ""
     }
@@ -43,6 +44,7 @@ final class BooksViewModel: ObservableObject, Searchable {
             totalPages: item.numberOfPages
         )
         context.insert(book)
+        Analytics.track("resource_added", ["type": "book", "source": "wishlist"])
         searchResults = []
         searchQuery = ""
     }
@@ -55,6 +57,7 @@ final class BooksViewModel: ObservableObject, Searchable {
             status: .notStarted
         )
         context.insert(book)
+        Analytics.track("resource_added", ["type": "book", "source": "manual"])
     }
 
     func importBooks(_ books: [GoodreadsCSVBook], context: ModelContext, enrichWithGoogleBooks: Bool = false) {
@@ -84,6 +87,7 @@ final class BooksViewModel: ObservableObject, Searchable {
                 importProgress = Double(index + 1) / Double(books.count)
             }
             do { try context.save() } catch { print("Error saving imported books: \(error)") }
+            Analytics.track("import_done", ["source": "goodreads", "count": books.count, "enriched": enrich])
             isImporting = false
             importProgress = 0
         }

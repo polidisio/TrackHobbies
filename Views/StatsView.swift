@@ -3,6 +3,7 @@ import SwiftData
 
 struct StatsView: View {
     @Query(sort: \ResourceEntity.lastUpdated, order: .reverse) private var allResources: [ResourceEntity]
+    @AppStorage(Analytics.consentKey) private var analyticsEnabled = false
 
     private var books: [ResourceEntity] { allResources.filter { $0.type == "book" } }
     private var series: [ResourceEntity] { allResources.filter { $0.type == "series" } }
@@ -105,6 +106,8 @@ struct StatsView: View {
                 juegosSection
                 actividadTemporalSection
                 ratingsSection
+                Toggle("Compartir uso anónimo", isOn: $analyticsEnabled)
+                    .onChange(of: analyticsEnabled) { Analytics.setEnabled($1) }
             }
             .padding()
         }

@@ -11,6 +11,7 @@ Resumen
   - Juegos: IGDB, a través de un Worker de Cloudflare (`worker/`)
 - Exportación de datos: CSV para Excel/Sheets (Notion pendiente).
 - Localización: UI en español e inglés (`Localizable.xcstrings`).
+- Analytics opt-in con PostHog (`Docs/ANALYTICS.md`): solo uso anónimo, nunca contenido.
 
 Estructura de archivos propuesta (inicio)
 - AppMain.swift: punto de entrada de la app SwiftUI.

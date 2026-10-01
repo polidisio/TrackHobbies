@@ -31,6 +31,10 @@
 	<string>$(GAME_API_TOKEN)</string>
 	<key>GoogleBooksAPIKey</key>
 	<string>$(GOOGLE_BOOKS_API_KEY)</string>
+	<key>PostHogAPIKey</key>
+	<string>$(POSTHOG_API_KEY)</string>
+	<key>PostHogHost</key>
+	<string>$(POSTHOG_HOST)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
