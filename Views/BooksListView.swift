@@ -218,6 +218,11 @@ struct BooksListView: View {
                 }
             }
         }
+        .alert("Importación", isPresented: Binding(get: { viewModel.importMessage != nil }, set: { if !$0 { viewModel.importMessage = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.importMessage ?? "")
+        }
         .fileImporter(
             isPresented: $showingFilePicker,
             allowedContentTypes: [.commaSeparatedText],
@@ -305,27 +310,29 @@ struct BooksListView: View {
     }
 
     private func handleFileImport(_ result: Result<[URL], Error>) {
-        switch result {
-        case .success(let urls):
-            guard let url = urls.first else { return }
-            if url.startAccessingSecurityScopedResource() {
-                defer { url.stopAccessingSecurityScopedResource() }
-                do {
-                    let csvContent = try String(contentsOf: url, encoding: .utf8)
-                    if CSVImporter.isOwnFormat(csvContent) {
-                        CSVImporter.insert(CSVImporter.parse(csvContent), context: modelContext)
-                        return
-                    }
-                    let books = GoodreadsImporter.parse(csvContent: csvContent)
-                    pendingImportBooks = books
-                    showingEnrichmentOption = true
-                } catch {
-                    print("Error reading file: \(error)")
-                }
-            }
-        case .failure(let error):
-            print("Error selecting file: \(error)")
+        guard case .success(let urls) = result, let url = urls.first, url.startAccessingSecurityScopedResource() else {
+            viewModel.importMessage = CSVImporter.unreadable
+            return
         }
+        defer { url.stopAccessingSecurityScopedResource() }
+        guard let csvContent = CSVImporter.readText(url) else {
+            viewModel.importMessage = CSVImporter.unreadable
+            return
+        }
+        if CSVImporter.isOwnFormat(csvContent) {
+            let items = CSVImporter.parse(csvContent)
+            viewModel.importMessage = items.isEmpty
+                ? CSVImporter.nothingFound
+                : CSVImporter.summary(added: CSVImporter.insert(items, context: modelContext), total: items.count)
+            return
+        }
+        let books = GoodreadsImporter.parse(csvContent: csvContent)
+        guard !books.isEmpty else {
+            viewModel.importMessage = CSVImporter.nothingFound
+            return
+        }
+        pendingImportBooks = books
+        showingEnrichmentOption = true
     }
 
     private func confirmImport() {

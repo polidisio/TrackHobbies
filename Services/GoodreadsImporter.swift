@@ -13,137 +13,91 @@ struct GoodreadsCSVBook: Identifiable {
     let dateRead: Date?
     let exclusiveShelf: String
     let bookshelves: String?
+    let review: String?
 }
 
 struct GoodreadsImporter {
-    private static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy/MM/dd"
-        return formatter
-    }()
+    private static let dateFormats = ["yyyy/MM/dd", "yyyy-MM-dd"]
 
+    private static func date(_ s: String) -> Date? {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        for format in dateFormats {
+            f.dateFormat = format
+            if let d = f.date(from: s) { return d }
+        }
+        return nil
+    }
+
+    /// Clave para no duplicar libros al reimportar: título (sin la serie de Goodreads) + autor, normalizados.
+    static func dedupeKey(title: String, author: String?) -> String {
+        BookMatch.normalize(BookMatch.cleanTitle(title)) + "|" + BookMatch.normalize(author ?? "")
+    }
+
+    /// CSV de «Mis libros» de Goodreads. Usa el parser RFC 4180 (las reseñas pueden llevar saltos de línea y comillas).
     static func parse(csvContent: String) -> [GoodreadsCSVBook] {
-        let lines = csvContent.components(separatedBy: .newlines)
-        guard lines.count > 1 else { return [] }
+        let rows = CSVImporter.parseRows(csvContent)
+        guard let header = rows.first else { return [] }
+        let junk = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "\u{FEFF}"))
+        let col = Dictionary(header.enumerated().map { ($1.trimmingCharacters(in: junk).lowercased(), $0) },
+                             uniquingKeysWith: { a, _ in a })
 
-        let headerLine = lines[0].lowercased()
-        let headers = parseCSVLine(headerLine)
-
-        var books: [GoodreadsCSVBook] = []
-
-        for i in 1..<lines.count {
-            let line = lines[i].trimmingCharacters(in: .whitespaces)
-            guard !line.isEmpty else { continue }
-
-            let values = parseCSVLine(line)
-
-            guard let titleIndex = headers.firstIndex(of: "title"),
-                  titleIndex < values.count,
-                  !values[titleIndex].isEmpty else { continue }
-
-            let title = cleanGoodreadsValue(values[titleIndex])
-
-            let author = getValue(for: "author", headers: headers, values: values).flatMap { cleanGoodreadsValue($0) }
-            let isbn = getValue(for: "isbn", headers: headers, values: values).flatMap { cleanISBN($0) }
-            let isbn13 = getValue(for: "isbn13", headers: headers, values: values).flatMap { cleanISBN($0) }
-            let ratingString = getValue(for: "my rating", headers: headers, values: values)
-            let myRating = ratingString.flatMap { Double($0) }
-            let pagesString = getValue(for: "number of pages", headers: headers, values: values)
-            let numberOfPages = pagesString.flatMap { Int($0) }
-            let dateReadString = getValue(for: "date read", headers: headers, values: values)
-            let dateRead = dateReadString.flatMap { dateFormatter.date(from: $0) }
-            let exclusiveShelf = getValue(for: "exclusive shelf", headers: headers, values: values) ?? "to-read"
-            let bookshelves = getValue(for: "bookshelves", headers: headers, values: values)
-
-            let book = GoodreadsCSVBook(
-                title: title,
-                author: author,
-                isbn: isbn,
-                isbn13: isbn13,
-                myRating: myRating,
-                numberOfPages: numberOfPages,
-                dateRead: dateRead,
-                exclusiveShelf: exclusiveShelf,
-                bookshelves: bookshelves
-            )
-            books.append(book)
-        }
-
-        return books
-    }
-
-    private static func parseCSVLine(_ line: String) -> [String] {
-        var result: [String] = []
-        var current = ""
-        var insideQuotes = false
-
-        for char in line {
-            if char == "\"" {
-                insideQuotes.toggle()
-            } else if char == "," && !insideQuotes {
-                result.append(current)
-                current = ""
-            } else {
-                current.append(char)
+        return rows.dropFirst().compactMap { row in
+            func get(_ key: String) -> String? {
+                guard let i = col[key], i < row.count else { return nil }
+                let v = row[i].trimmingCharacters(in: .whitespaces)
+                return v.isEmpty ? nil : v
             }
+            guard let title = get("title") else { return nil }
+            return GoodreadsCSVBook(
+                title: title,
+                author: get("author"),
+                isbn: get("isbn").flatMap(cleanISBN),
+                isbn13: get("isbn13").flatMap(cleanISBN),
+                // Goodreads usa 0 para «sin puntuar»
+                myRating: get("my rating").flatMap(Double.init).flatMap { $0 > 0 ? $0 : nil },
+                numberOfPages: get("number of pages").flatMap(Int.init).flatMap { $0 > 0 ? $0 : nil },
+                dateRead: get("date read").flatMap(date),
+                exclusiveShelf: get("exclusive shelf") ?? "to-read",
+                bookshelves: get("bookshelves"),
+                review: get("my review").map(cleanReview).flatMap { $0.isEmpty ? nil : $0 }
+            )
         }
-        result.append(current)
-
-        return result
     }
 
-    private static func cleanGoodreadsValue(_ value: String) -> String {
-        var cleaned = value
-        if cleaned.hasPrefix("\"") && cleaned.hasSuffix("\"") {
-            cleaned = String(cleaned.dropFirst().dropLast())
-        }
-        cleaned = cleaned.replacingOccurrences(of: "\"\"", with: "\"")
-        return cleaned.trimmingCharacters(in: .whitespaces)
+    /// Goodreads guarda los saltos de línea de la reseña como `<br/>`.
+    private static func cleanReview(_ s: String) -> String {
+        s.replacingOccurrences(of: "<br\\s*/?>", with: "\n", options: [.regularExpression, .caseInsensitive])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    /// `="0441172717"` → `0441172717`; `=""` → nil.
     private static func cleanISBN(_ value: String) -> String? {
-        var cleaned = value
-        if cleaned.hasPrefix("=") && cleaned.hasPrefix("\"") {
-            cleaned = String(cleaned.dropFirst())
-        }
-        cleaned = cleaned.replacingOccurrences(of: "\"", with: "")
-        cleaned = cleaned.replacingOccurrences(of: "=", with: "")
+        let cleaned = value.filter { $0 != "=" && $0 != "\"" }.trimmingCharacters(in: .whitespaces)
         return cleaned.isEmpty ? nil : cleaned
     }
 
-    private static func getValue(for header: String, headers: [String], values: [String]) -> String? {
-        guard let index = headers.firstIndex(of: header),
-              index < values.count else { return nil }
-        let value = values[index]
-        return value.isEmpty ? nil : cleanGoodreadsValue(value)
-    }
-
     static func mapToResourceEntity(_ book: GoodreadsCSVBook) -> ResourceEntity {
-        let status = mapShelfToStatus(book.exclusiveShelf)
-
-        return ResourceEntity(
+        ResourceEntity(
             type: .book,
             title: book.title,
             externalId: book.isbn13 ?? book.isbn,
             authorOrCreator: book.author,
             userRating: book.myRating,
-            status: status,
+            status: mapShelfToStatus(book.exclusiveShelf),
             lastUpdated: Date(),
             totalPages: book.numberOfPages,
-            endDate: book.dateRead
+            endDate: book.dateRead,
+            reviewComment: book.review
         )
     }
 
     private static func mapShelfToStatus(_ shelf: String) -> ProgressStatus {
         switch shelf.lowercased() {
-        case "read":
-            return .completed
-        case "currently-reading":
-            return .inProgress
-        case "to-read":
-            return .wishlist
-        default:
-            return .notStarted
+        case "read": return .completed
+        case "currently-reading": return .inProgress
+        case "to-read": return .wishlist
+        default: return .notStarted
         }
     }
 }

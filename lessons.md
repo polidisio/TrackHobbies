@@ -19,4 +19,5 @@ Qué salió mal, por qué y cómo evitarlo (ver `CLAUDE.md` → Self-Improvement
 11. **Los operadores de Google Books no funcionan con esta clave.** `intitle:`, `inauthor:` e `isbn:` devuelven 0 resultados; el texto plano sí. Probar la consulta real con `curl` contra el Worker antes de darla por buena (`BookMatch.query` ya usa texto plano). Además Google da 502/503 sueltos: `GoogleBooksService.search` reintenta una vez.
 12. **Probar en el simulador iOS 27, no en el iPhone 17 Pro (iOS 26.2):** `xcodebuild test` y `simctl install` se cuelgan allí. El flujo `ui-automation` de MobileBuildMCP se activa en `.mobilebuildmcp/config.yaml` y exige reconectar el MCP (`/mcp`).
 13. **El autocorrector estropea títulos y autores** («Dune» → «Dime»). `.autocorrectionDisabled()` en los campos de nombres propios.
+14. **No partir un CSV por líneas.** Las reseñas de Goodreads llevan saltos de línea y comillas dentro del campo; usar `CSVImporter.parseRows` (RFC 4180). En Goodreads, `My Rating` 0 = sin puntuar (→ `nil`), el ISBN viene como `="…"` y los saltos de la reseña como `<br/>`.
 

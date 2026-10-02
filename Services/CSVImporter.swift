@@ -24,6 +24,18 @@ enum CSVImporter {
         return added
     }
 
+    static func summary(added: Int, total: Int) -> String {
+        String(localized: "Añadidos: \(added). Omitidos (ya existían): \(total - added).")
+    }
+
+    static let nothingFound = String(localized: "No se encontraron elementos en el archivo. ¿Es un CSV de TrackHobbies o de Goodreads?")
+    static let unreadable = String(localized: "No se pudo leer el archivo.")
+
+    /// UTF-8 y, si no, Latin-1 (algunos exports antiguos).
+    static func readText(_ url: URL) -> String? {
+        (try? String(contentsOf: url, encoding: .utf8)) ?? (try? String(contentsOf: url, encoding: .isoLatin1))
+    }
+
     static func parse(_ content: String) -> [ResourceEntity] {
         let rows = parseRows(content)
         guard let header = rows.first else { return [] }
@@ -80,11 +92,11 @@ enum CSVImporter {
     }
 }
 
-/// Botón de la barra: importa el CSV propio (el de `ExportCSVButton`).
+/// Botón de la barra: importa el CSV propio (el de `ExportCSVButton`) e informa del resultado.
 struct ImportCSVButton: View {
     @Environment(\.modelContext) private var modelContext
     @State private var picking = false
-    @State private var failed = false
+    @State private var message: String?
 
     var body: some View {
         Button { picking = true } label: {
@@ -92,15 +104,22 @@ struct ImportCSVButton: View {
                 .accessibilityLabel("Importar CSV")
         }
         .fileImporter(isPresented: $picking, allowedContentTypes: [.commaSeparatedText]) { result in
-            guard case .success(let url) = result, url.startAccessingSecurityScopedResource() else { return failed = true }
-            defer { url.stopAccessingSecurityScopedResource() }
-            guard let text = try? String(contentsOf: url, encoding: .utf8), CSVImporter.isOwnFormat(text) else { return failed = true }
-            CSVImporter.insert(CSVImporter.parse(text), context: modelContext)
+            message = restore(result)
         }
-        .alert("No se pudo importar", isPresented: $failed) {
+        .alert("Importación", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("El archivo no es un CSV exportado desde TrackHobbies.")
+            Text(message ?? "")
         }
+    }
+
+    private func restore(_ result: Result<URL, Error>) -> String {
+        guard case .success(let url) = result, url.startAccessingSecurityScopedResource() else { return CSVImporter.unreadable }
+        defer { url.stopAccessingSecurityScopedResource() }
+        guard let text = CSVImporter.readText(url) else { return CSVImporter.unreadable }
+        guard CSVImporter.isOwnFormat(text) else { return String(localized: "El archivo no es un CSV exportado desde TrackHobbies.") }
+        let items = CSVImporter.parse(text)
+        guard !items.isEmpty else { return CSVImporter.nothingFound }
+        return CSVImporter.summary(added: CSVImporter.insert(items, context: modelContext), total: items.count)
     }
 }

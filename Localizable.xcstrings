@@ -1186,6 +1186,36 @@
         }
       }
     },
+    "Importación" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import"
+          }
+        }
+      }
+    },
+    "No se pudo leer el archivo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't read the file."
+          }
+        }
+      }
+    },
+    "No se encontraron elementos en el archivo. ¿Es un CSV de TrackHobbies o de Goodreads?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No items found in the file. Is it a TrackHobbies or Goodreads CSV?"
+          }
+        }
+      }
+    },
     "Fecha" : {
       "extractionState" : "stale",
       "localizations" : {

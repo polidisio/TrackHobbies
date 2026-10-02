@@ -119,3 +119,60 @@ final class BackupTests: XCTestCase {
         XCTAssertThrowsError(try Backup.decode(Data(newer.utf8)))
     }
 }
+
+final class GoodreadsImportTests: XCTestCase {
+    // Formato real del export «Mis libros» de Goodreads: 24 columnas, ISBN como ="…", reseña con
+    // salto de línea y comillas dentro del campo, rating 0 = sin puntuar, estantería personalizada.
+    private let sample = #"""
+    Book Id,Title,Author,Author l-f,Additional Authors,ISBN,ISBN13,My Rating,Average Rating,Publisher,Binding,Number of Pages,Year Published,Original Publication Year,Date Read,Date Added,Bookshelves,Bookshelves with positions,Exclusive Shelf,My Review,Spoiler,Private Notes,Read Count,Owned Copies
+    123,"Dune (Dune Chronicles, #1)",Frank Herbert,"Herbert, Frank",,"=""0441172717""","=""9780441172719""",5,4.27,Ace,Paperback,604,1990,1965,2023/05/14,2023/01/02,"sci-fi, favorites","sci-fi (#1), favorites (#2)",read,"Obra maestra.<br/>Segunda línea
+    y una tercera con ""comillas"".",,,1,0
+    456,"El nombre del viento",Patrick Rothfuss,"Rothfuss, Patrick",,"=""""","=""""",0,4.5,,,662,2007,2007,,2023/03/03,,,to-read,,,,0,0
+    789,Neuromancer,William Gibson,"Gibson, William",,"=""0441569595""","=""9780441569595""",4,3.9,Ace,Paperback,271,1984,1984,,2023/04/04,cyberpunk,cyberpunk (#1),currently-reading,,,,0,0
+    """#
+
+    func testParsesRealExportIncludingMultilineReview() throws {
+        let books = GoodreadsImporter.parse(csvContent: sample)
+        XCTAssertEqual(books.count, 3) // el salto de línea de la reseña no parte la fila
+        let dune = books[0]
+        XCTAssertEqual(dune.title, "Dune (Dune Chronicles, #1)")
+        XCTAssertEqual(dune.isbn, "0441172717")
+        XCTAssertEqual(dune.isbn13, "9780441172719")
+        XCTAssertEqual(dune.myRating, 5)
+        XCTAssertEqual(dune.numberOfPages, 604)
+        XCTAssertNotNil(dune.dateRead)
+        XCTAssertEqual(dune.review, "Obra maestra.\nSegunda línea\ny una tercera con \"comillas\".")
+    }
+
+    func testUnratedAndEmptyIsbnBecomeNil() {
+        let rothfuss = GoodreadsImporter.parse(csvContent: sample)[1]
+        XCTAssertNil(rothfuss.myRating) // 0 en Goodreads = sin puntuar
+        XCTAssertNil(rothfuss.isbn)
+        XCTAssertNil(rothfuss.isbn13)
+        XCTAssertNil(rothfuss.dateRead)
+    }
+
+    func testShelvesMapToStatus() {
+        let e = GoodreadsImporter.parse(csvContent: sample).map(GoodreadsImporter.mapToResourceEntity)
+        XCTAssertEqual(e.map(\.progressStatus), [.completed, .wishlist, .inProgress])
+        XCTAssertEqual(e[0].externalId, "9780441172719")
+        XCTAssertEqual(e[0].reviewComment?.hasPrefix("Obra maestra."), true)
+    }
+
+    func testHandlesBOMAndWindowsLineEndings() {
+        let csv = "\u{FEFF}" + sample.replacingOccurrences(of: "\n", with: "\r\n")
+        XCTAssertEqual(GoodreadsImporter.parse(csvContent: csv).count, 3)
+    }
+
+    func testDedupeKeyIgnoresSeriesCaseAndAccents() {
+        XCTAssertEqual(GoodreadsImporter.dedupeKey(title: "Dune (Dune Chronicles, #1)", author: "Frank Herbert"),
+                       GoodreadsImporter.dedupeKey(title: "DUNE", author: "frank herbert"))
+        XCTAssertNotEqual(GoodreadsImporter.dedupeKey(title: "Dune", author: "Frank Herbert"),
+                          GoodreadsImporter.dedupeKey(title: "Dune", author: "Otro Autor"))
+    }
+
+    func testNotAGoodreadsFileGivesNothing() {
+        XCTAssertTrue(GoodreadsImporter.parse(csvContent: "a,b\n1,2").isEmpty)
+        XCTAssertTrue(GoodreadsImporter.parse(csvContent: "").isEmpty)
+    }
+}

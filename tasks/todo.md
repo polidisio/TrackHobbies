@@ -13,7 +13,7 @@ Actualizado 2026-10-02. Orden por valor/riesgo.
 - [x] 6. Enriquecimiento Goodreads por título + autor (`BookMatch`).
 - [x] 7. Backup JSON completo (Estadísticas → Copia de seguridad): exporta/restaura todos los campos y el `id`; solo añade.
 - [ ] 8. Higiene git: versionar `Package.resolved`, ignorar reordenado de `Localizable.xcstrings`.
-- [ ] 9. Importar CSV propio: aviso de cuántos se añadieron/omitidos.
+- [x] 9. Aviso de importación (añadidos/omitidos) en CSV propio, Goodreads y copia JSON; errores visibles en vez de `print`.
 - [ ] 10. Revisar insights de PostHog con datos reales.
 - [ ] Notion export (planeada).
 - Producto (opcional): widget «ahora leyendo/viendo», recordatorios de progreso, estadísticas por año.

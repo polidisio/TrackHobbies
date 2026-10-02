@@ -10,6 +10,8 @@ final class BooksViewModel: ObservableObject, Searchable {
     @Published var errorMessage: String?
     @Published var importProgress: Double = 0
     @Published var isImporting = false
+    /// Resultado de la última importación (CSV propio o Goodreads); la vista lo muestra en una alerta.
+    @Published var importMessage: String?
     
     func searchBooks() async {
         await performSearch { try await GoogleBooksService.shared.search(title: $0) }
@@ -53,12 +55,17 @@ final class BooksViewModel: ObservableObject, Searchable {
         isImporting = true
         importProgress = 0
 
+        // Reimportar el mismo CSV no duplica: se omite lo que ya está (título sin serie + autor).
+        let existing = (try? context.fetch(FetchDescriptor<ResourceEntity>(predicate: #Predicate { $0.type == "book" }))) ?? []
+        var seen = Set(existing.map { GoodreadsImporter.dedupeKey(title: $0.title, author: $0.authorOrCreator) })
+        let fresh = books.filter { seen.insert(GoodreadsImporter.dedupeKey(title: $0.title, author: $0.author)).inserted }
+
         // Secuencial a propósito: 1 petición a la vez no revienta la cuota de Google Books
         // y mantiene las mutaciones de los @Model en el hilo principal.
         // ponytail: lento con miles de libros; subir a concurrencia limitada (TaskGroup de 4) si molesta.
         Task {
             var enrich = enrichWithGoogleBooks
-            for (index, book) in books.enumerated() {
+            for (index, book) in fresh.enumerated() {
                 let entity = GoodreadsImporter.mapToResourceEntity(book)
                 if enrich {
                     do {
@@ -74,10 +81,11 @@ final class BooksViewModel: ObservableObject, Searchable {
                     } catch {}
                 }
                 context.insert(entity)
-                importProgress = Double(index + 1) / Double(books.count)
+                importProgress = Double(index + 1) / Double(fresh.count)
             }
             do { try context.save() } catch { print("Error saving imported books: \(error)") }
-            Analytics.track("import_done", ["source": "goodreads", "count": books.count, "enriched": enrich])
+            Analytics.track("import_done", ["source": "goodreads", "count": fresh.count, "enriched": enrich])
+            importMessage = CSVImporter.summary(added: fresh.count, total: books.count)
             isImporting = false
             importProgress = 0
         }

@@ -130,7 +130,7 @@ struct BackupView: View {
         do {
             let items = try Backup.decode(Data(contentsOf: url))
             let added = CSVImporter.insert(items, context: modelContext, source: "backup")
-            return String(localized: "Añadidos: \(added). Omitidos (ya existían): \(items.count - added).")
+            return CSVImporter.summary(added: added, total: items.count)
         } catch {
             return error.localizedDescription
         }
