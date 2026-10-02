@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftUI
 import SwiftData
 
@@ -9,6 +10,7 @@ struct ResourceDetailView: View {
     @State private var totalDraft = ""
     @State private var totalError: String?
     @State private var showEditionPicker = false
+    @State private var pickedPhoto: PhotosPickerItem?
     @State private var lastUpdatedOnOpen: Date?
 
     /// Cambio que borraría datos del usuario y espera su confirmación.
@@ -65,6 +67,16 @@ struct ResourceDetailView: View {
             Button(change.confirmLabel, role: .destructive) { change.apply() }
         } message: { change in
             Text(change.message)
+        }
+        .onChange(of: pickedPhoto) { _, item in
+            guard let item else { return }
+            Task {
+                if let data = try? await item.loadTransferable(type: Data.self), let url = CoverStore.dataURL(from: data) {
+                    resource.imageURL = url
+                    resource.lastUpdated = Date()
+                }
+                pickedPhoto = nil
+            }
         }
         .sheet(isPresented: $showEditionPicker) {
             EditionPickerView(title: resource.title, author: resource.authorOrCreator) { apply(edition: $0) }
@@ -177,6 +189,11 @@ struct ResourceDetailView: View {
             .frame(height: 240)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
             .shadow(color: AppTheme.subtleShadow, radius: 8, y: 4)
+
+            PhotosPicker(selection: $pickedPhoto, matching: .images) {
+                Label(resource.imageURL == nil ? "Subir portada" : "Cambiar portada", systemImage: "photo")
+                    .font(.subheadline)
+            }
 
             Text(resource.title)
                 .font(.title2)
