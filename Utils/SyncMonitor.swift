@@ -12,6 +12,8 @@ final class SyncMonitor: ObservableObject {
     @Published private(set) var accountStatus: CKAccountStatus?
     @Published private(set) var lastEvent: (kind: String, date: Date)?
     @Published private(set) var lastError: String?
+    /// Texto del primer error interno (solo en pantalla, nunca se envía a analytics).
+    @Published private(set) var lastErrorDetail: String?
 
     private static let log = Logger(subsystem: "com.trackhobbies.app", category: "Sync")
     private var started = false
@@ -37,12 +39,20 @@ final class SyncMonitor: ObservableObject {
 
     private func record(kind: String, date: Date, error: NSError?) {
         if let error {
-            lastError = "\(error.domain) \(error.code)"
-            Self.log.error("\(kind, privacy: .public) failed: \(error.domain, privacy: .public) \(error.code)")
-            // Solo dominio y código: nunca el texto del error ni datos del usuario.
-            Analytics.track("sync_error", ["kind": kind, "domain": error.domain, "code": error.code])
+            // partialFailure (CKError 2) solo dice "alguno falló": la causa va en los errores internos.
+            let inner = (error.userInfo[CKPartialErrorsByItemIDKey] as? [AnyHashable: Error])?.values.map { $0 as NSError } ?? []
+            let innerCodes = Array(Set(inner.map { "\($0.domain) \($0.code)" })).sorted()
+            lastError = ([("\(error.domain) \(error.code)")] + (innerCodes.isEmpty ? [] : ["→ " + innerCodes.joined(separator: ", ")])).joined(separator: " ")
+            // 22 (batchRequestFailed) solo dice "falló otro del lote": la causa está en el primero que no sea 22.
+            let culprit = inner.first { $0.code != 22 } ?? inner.first ?? error
+            let server = culprit.userInfo["ServerErrorDescription"] as? String
+            lastErrorDetail = "\(culprit.domain) \(culprit.code): " + String((server ?? culprit.localizedDescription).prefix(300))
+            Self.log.error("\(kind, privacy: .public) failed: \(self.lastError ?? "", privacy: .public)")
+            // Solo dominio y códigos: nunca el texto del error ni datos del usuario.
+            Analytics.track("sync_error", ["kind": kind, "domain": error.domain, "code": error.code, "inner_codes": innerCodes.joined(separator: ",")])
         } else {
             lastError = nil
+            lastErrorDetail = nil
             lastEvent = (kind, date)
         }
     }

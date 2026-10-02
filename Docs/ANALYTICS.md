@@ -37,4 +37,4 @@ Ver `SyncSalud/Docs/ANALYTICS.md` (key ≠ `phc_`, región, consentimiento, buil
 ## Sincronización iCloud (diagnóstico)
 | Evento | Props | Origen |
 |---|---|---|
-| `sync_error` | `kind` (`setup`/`import`/`export`), `domain`, `code` (nunca el texto del error) | `SyncMonitor` |
+| `sync_error` | `kind` (`setup`/`import`/`export`), `domain`, `code`, `inner_codes` (códigos de los errores internos de un partialFailure; nunca el texto) | `SyncMonitor` |

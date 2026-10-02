@@ -27,6 +27,9 @@ struct SyncStatusView: View {
             }
             if let error = monitor.lastError {
                 Text("Error de iCloud: \(error)").foregroundStyle(.red)
+                if let detail = monitor.lastErrorDetail {
+                    Text(detail).lineLimit(5).textSelection(.enabled)
+                }
             }
         }
         .font(.caption)
