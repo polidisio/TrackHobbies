@@ -4,7 +4,7 @@ Actualizado 2026-10-02. Orden por valor/riesgo.
 
 ## En curso
 - [x] 1. `PendingItemEntity`: decisión → **mantener** (ver abajo).
-- [ ] 2. Arreglar `xcodebuild test`. Hecho: `EXCLUDED_ARCHS[sdk=iphonesimulator*]=x86_64` en `project.yml` (el enlazado con PostHog fallaba sin `ARCHS=arm64`). **Sigue colgado**: compila, pero `simctl install` en el simulador iPhone 17 Pro (runtime iOS 26.2 con Xcode 27) no termina. Probar: otro simulador/runtime, `simctl erase`, reiniciar CoreSimulator, o Cmd+U en Xcode.
+- [x] 2. Tests: el problema era el runtime del simulador (iPhone 17 Pro = iOS 26.2 cuelga). Usar iPhone 18 Pro (iOS 27) con `test_sim`. 11 tests pasan.
 - [x] 3. Bundle id propio para Debug (`com.trackhobbies.app.dev`) en `project.yml`. Falta: primera build de dispositivo para que Xcode registre el App ID con iCloud; en dispositivos que tenían Debug, borrar la app vieja.
 
 ## Para retomar
