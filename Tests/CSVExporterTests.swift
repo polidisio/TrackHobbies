@@ -85,3 +85,28 @@ final class ManualEntryTests: XCTestCase {
         XCTAssertFalse(ManualDraft(title: "  ").isValid)
     }
 }
+
+final class BackupTests: XCTestCase {
+    func testRoundTripKeepsEveryField() throws {
+        let e = ResourceEntity(type: .book, title: "Dune", externalId: "x", imageURL: "data:image/jpeg;base64,AAAA",
+                               summary: "s", authorOrCreator: "FH", userRating: 4.75, status: .inProgress,
+                               timeSpentHours: 2.5, lastUpdated: Date(timeIntervalSince1970: 1_700_000_000),
+                               currentPage: 10, totalPages: 400, progressPercentage: 2.5, currentSeason: 1,
+                               currentEpisode: 2, totalSeasons: 3, totalEpisodes: 9,
+                               startDate: Date(timeIntervalSince1970: 1_690_000_000), reviewComment: "a\nb")
+        let back = try XCTUnwrap(Backup.decode(Backup.encode([e])).first)
+        XCTAssertEqual(back.id, e.id)
+        XCTAssertEqual(Backup.Item(back).imageURL, e.imageURL)
+        XCTAssertEqual(back.progressStatus, .inProgress)
+        XCTAssertEqual(back.userRating, 4.75)
+        XCTAssertEqual(back.totalEpisodes, 9)
+        XCTAssertEqual(back.startDate, e.startDate)
+        XCTAssertEqual(back.reviewComment, "a\nb")
+    }
+
+    func testRejectsGarbageAndNewerVersions() {
+        XCTAssertThrowsError(try Backup.decode(Data("nope".utf8)))
+        let newer = #"{"version":99,"exportedAt":"2026-01-01T00:00:00Z","items":[]}"#
+        XCTAssertThrowsError(try Backup.decode(Data(newer.utf8)))
+    }
+}

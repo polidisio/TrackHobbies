@@ -1106,6 +1106,86 @@
         }
       }
     },
+    "Copia de seguridad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup"
+          }
+        }
+      }
+    },
+    "Exportar copia (JSON)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export backup (JSON)"
+          }
+        }
+      }
+    },
+    "Restaurar copia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore backup"
+          }
+        }
+      }
+    },
+    "Restaurar solo añade lo que falta: no borra ni sobrescribe nada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restoring only adds what is missing: nothing is deleted or overwritten."
+          }
+        }
+      }
+    },
+    "No se pudo abrir el archivo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't open the file."
+          }
+        }
+      }
+    },
+    "El archivo no es una copia de seguridad de TrackHobbies." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a TrackHobbies backup."
+          }
+        }
+      }
+    },
+    "La copia es de una versión más nueva de TrackHobbies. Actualiza la app." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The backup comes from a newer version of TrackHobbies. Update the app."
+          }
+        }
+      }
+    },
+    "Añadidos: %lld. Omitidos (ya existían): %lld." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added: %lld. Skipped (already existed): %lld."
+          }
+        }
+      }
+    },
     "Fecha" : {
       "extractionState" : "stale",
       "localizations" : {

@@ -11,7 +11,7 @@ Actualizado 2026-10-02. Orden por valor/riesgo.
 - [x] 4. Evento `sync_ok` (kind + duration_ms) en `SyncMonitor`. Falta: insight en el dashboard de PostHog (id 989027) cuando haya datos.
 - [x] 5. Páginas para libros a mano: botón «Buscar páginas» en el detalle (sin ruta nueva en el Worker: reusa `/books/search` por título+autor).
 - [x] 6. Enriquecimiento Goodreads por título + autor (`BookMatch`).
-- [ ] 7. Backup JSON completo (alternativa barata a Notion).
+- [x] 7. Backup JSON completo (Estadísticas → Copia de seguridad): exporta/restaura todos los campos y el `id`; solo añade.
 - [ ] 8. Higiene git: versionar `Package.resolved`, ignorar reordenado de `Localizable.xcstrings`.
 - [ ] 9. Importar CSV propio: aviso de cuántos se añadieron/omitidos.
 - [ ] 10. Revisar insights de PostHog con datos reales.

@@ -10,16 +10,17 @@ enum CSVImporter {
 
     /// Solo añade: omite lo que ya existe (mismo tipo + título + id externo). Devuelve cuántos añadió.
     @discardableResult
-    static func insert(_ items: [ResourceEntity], context: ModelContext) -> Int {
+    static func insert(_ items: [ResourceEntity], context: ModelContext, source: String = "trackhobbies") -> Int {
         let existing = (try? context.fetch(FetchDescriptor<ResourceEntity>())) ?? []
         var seen = Set(existing.map { "\($0.type)|\($0.title)|\($0.externalId ?? "")" })
+        let ids = Set(existing.map(\.id))
         var added = 0
-        for item in items where seen.insert("\(item.type)|\(item.title)|\(item.externalId ?? "")").inserted {
+        for item in items where !ids.contains(item.id) && seen.insert("\(item.type)|\(item.title)|\(item.externalId ?? "")").inserted {
             context.insert(item)
             added += 1
         }
         do { try context.save() } catch { print("Error saving imported items: \(error)") }
-        Analytics.track("import_done", ["source": "trackhobbies", "count": added])
+        Analytics.track("import_done", ["source": source, "count": added])
         return added
     }
 
