@@ -15,7 +15,7 @@ final class CSVExporterTests: XCTestCase {
         let e = ResourceEntity(type: .book, title: "Say \"hi\"", reviewComment: "a\nb")
         let csv = CSVExporter.export([e])
         XCTAssertTrue(csv.contains("\"Say \"\"hi\"\"\""))
-        XCTAssertTrue(csv.hasSuffix("\"a\nb\""))
+        XCTAssertEqual(CSVImporter.parse(csv).first?.reviewComment, "a\nb")
     }
 
     func testRoundTripKeepsProgressStatusAndCover() {
@@ -73,7 +73,7 @@ final class ManualEntryTests: XCTestCase {
     @MainActor
     func testDraftBuildsEntityPerType() throws {
         let container = try ModelContainer(for: ResourceEntity.self, PendingItemEntity.self,
-                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
         var d = ManualDraft(title: "  Dark  ", status: .inProgress, pages: "99", seasons: "3", episodes: "26")
         let s = d.insert(type: .series, context: container.mainContext)
         XCTAssertEqual(s.title, "Dark")
