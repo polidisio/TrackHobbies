@@ -110,6 +110,7 @@ struct StatsView: View {
                     .onChange(of: analyticsEnabled) { Analytics.setEnabled($1) }
                 SyncStatusView()
                 BackupView(resources: allResources)
+                CreditsView()
             }
             .padding()
         }
