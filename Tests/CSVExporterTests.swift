@@ -52,6 +52,14 @@ final class BookMatchTests: XCTestCase {
         XCTAssertEqual(BookMatch.pick(r, title: "Dune (Dune Chronicles, #1)", author: "Frank Herbert")?.numberOfPages, 412)
     }
 
+    func testStripSeriesOnlyRemovesGoodreadsSeriesSuffix() {
+        XCTAssertEqual(BookMatch.stripSeries("Dune (Dune Chronicles, #1)"), "Dune")
+        XCTAssertEqual(BookMatch.stripSeries("The Hobbit (The Lord of the Rings #0)"), "The Hobbit")
+        XCTAssertEqual(BookMatch.stripSeries("Brave New World (Annotated)"), "Brave New World (Annotated)")
+        XCTAssertEqual(BookMatch.stripSeries("Dune"), "Dune")
+        XCTAssertEqual(BookMatch.stripSeries("Catch-22 (Catch-22, #1) (Special)"), "Catch-22 (Catch-22, #1) (Special)")
+    }
+
     func testQueryIsPlainTextWithoutOperators() {
         XCTAssertEqual(BookMatch.query(title: "Hyperion (Hyperion Cantos, #1)", author: "Dan Simmons"), "Hyperion Dan Simmons")
         XCTAssertEqual(BookMatch.query(title: "Dune", author: nil), "Dune")
@@ -155,6 +163,7 @@ final class GoodreadsImportTests: XCTestCase {
     func testShelvesMapToStatus() {
         let e = GoodreadsImporter.parse(csvContent: sample).map(GoodreadsImporter.mapToResourceEntity)
         XCTAssertEqual(e.map(\.progressStatus), [.completed, .wishlist, .inProgress])
+        XCTAssertEqual(e[0].title, "Dune") // sin el sufijo de serie
         XCTAssertEqual(e[0].externalId, "9780441172719")
         XCTAssertEqual(e[0].reviewComment?.hasPrefix("Obra maestra."), true)
     }

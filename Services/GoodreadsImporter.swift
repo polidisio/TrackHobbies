@@ -80,7 +80,7 @@ struct GoodreadsImporter {
     static func mapToResourceEntity(_ book: GoodreadsCSVBook) -> ResourceEntity {
         ResourceEntity(
             type: .book,
-            title: book.title,
+            title: BookMatch.stripSeries(book.title),
             externalId: book.isbn13 ?? book.isbn,
             authorOrCreator: book.author,
             userRating: book.myRating,

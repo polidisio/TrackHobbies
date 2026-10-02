@@ -16,6 +16,12 @@ enum BookMatch {
         return title[..<open].trimmingCharacters(in: .whitespaces)
     }
 
+    /// Solo el sufijo de serie de Goodreads, «(Serie, #1)» o «(Serie #1)»; deja otros paréntesis («(Annotated)»).
+    static func stripSeries(_ title: String) -> String {
+        title.replacingOccurrences(of: #"\s*\([^()]*#\s*\d[^()]*\)\s*$"#, with: "", options: .regularExpression)
+            .trimmingCharacters(in: .whitespaces)
+    }
+
     /// Consulta para `/books/search` (el Worker corta a 100 caracteres).
     /// Texto plano a propósito: con esta clave de Google Books los operadores (`intitle:`, `inauthor:`, `isbn:`)
     /// devuelven 0 resultados; el filtrado fino lo hace `pick`.
