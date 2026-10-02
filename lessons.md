@@ -21,4 +21,6 @@ Qué salió mal, por qué y cómo evitarlo (ver `CLAUDE.md` → Self-Improvement
 13. **El autocorrector estropea títulos y autores** («Dune» → «Dime»). `.autocorrectionDisabled()` en los campos de nombres propios.
 14. **No partir un CSV por líneas.** Las reseñas de Goodreads llevan saltos de línea y comillas dentro del campo; usar `CSVImporter.parseRows` (RFC 4180). En Goodreads, `My Rating` 0 = sin puntuar (→ `nil`), el ISBN viene como `="…"` y los saltos de la reseña como `<br/>`.
 15. **El `.xcodeproj` está en git y no se regenera solo.** Tras añadir/borrar archivos, ejecutar `xcodegen generate` y commitear `project.pbxproj`; si no, un clon limpio no compila. Antes de subirlo, buscar en el diff los valores de `Config/Secrets.xcconfig` (Team ID, tokens, claves).
+16. **«Failed to establish communication with the test runner (Channel disconnected)»** tras muchas sesiones en el mismo simulador: `xcrun simctl shutdown` + `boot` del simulador y repetir. No es un fallo del código.
+17. **PostHog: el proyecto es compartido y las builds Debug llevan el mismo `$app_name`.** El dashboard 989027 filtra `$app_namespace = com.trackhobbies.app` para excluir `.dev`; los insights nuevos filtran `$app_name` y `$app_namespace`.
 

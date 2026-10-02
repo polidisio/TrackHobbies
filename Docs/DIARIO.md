@@ -76,4 +76,3 @@ Primer diseño descartado (marco redondeado propio, «PLAY» duplicado, cuarto c
 - [ ] Buscar páginas para libros añadidos a mano (ruta nueva del Worker, elegir edición).
 - [ ] Mirar las insights de PostHog con datos reales de la build nueva.
 - [ ] Revisar si el enriquecimiento por ISBN de Goodreads sirve de algo o consultar por título y autor.
-- [ ] Exportación a Notion (planeada).

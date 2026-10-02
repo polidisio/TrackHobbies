@@ -828,10 +828,6 @@
       "text": "Revisar las insights de PostHog cuando haya datos de la build nueva."
     },
     {
-      "status": "planeado",
-      "text": "Exportación a Notion."
-    },
-    {
       "status": "hecho",
       "text": "Sincronización CloudKit, analytics opt-in, libros vía Worker, icono, seguimiento de páginas controlado."
     }

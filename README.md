@@ -9,7 +9,7 @@ Resumen
   - Libros: Google Books, a través del mismo Worker
   - Series: TVMaze
   - Juegos: IGDB, a través de un Worker de Cloudflare (`worker/`)
-- Exportación de datos: CSV para Excel/Sheets (Notion pendiente).
+- Exportación de datos: CSV para Excel/Sheets y copia de seguridad en JSON.
 - Localización: UI en español e inglés (`Localizable.xcstrings`).
 - Analytics opt-in con PostHog (`Docs/ANALYTICS.md`): solo uso anónimo, nunca contenido.
 
@@ -34,7 +34,7 @@ Estructura de archivos propuesta (inicio)
 Siguientes pasos propuestos
 - Construir el esqueleto de la app y las vistas principales.
 - Integrar los servicios de API y el flujo de autocompletar al añadir recursos.
-- Implementar la capa de exportación CSV y la integración inicial con Notion como función avanzada.
+- Implementar la capa de exportación CSV.
 - Probar la sincronización CloudKit entre iPhone y iPad reales y desplegar el esquema a producción.
 
 Este archivo no sustituye la planificación completa; es un resumen para empezar a trabajar.

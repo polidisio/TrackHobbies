@@ -203,8 +203,7 @@ TrackHobbies/
 │   └── ResourceRow.swift
 ├── ViewModels/             # MVVM view models
 ├── Utils/                  # Utilities
-│   ├── CSVExporter.swift
-│   └── NotionExporter.swift
+│   └── CSVExporter.swift
 └── Sync/                   # CloudKit sync
     └── CloudKitSync.swift
 ```

@@ -22,8 +22,8 @@ Solo contadores, booleanos y categorías. **Nunca** títulos, autores, notas, re
 | `resource_deleted` | `type` | `ConfirmDelete` |
 | `status_changed` | `type`, `from`, `to` (valores de `ProgressStatus`), `days_to_complete` (solo si `to = completed` y hay fecha de inicio) | `ResourceDetailView` (`onChange` del estado: selector y completado automático) |
 | `resource_edited` | `type` — una vez al salir del detalle si algo cambió; sin campo ni valor | `ResourceDetailView` (`onDisappear`) |
-| `import_done` | `source = goodreads`, `count`, `enriched` | `BooksViewModel.importBooks` |
-| `export_started` | — (ShareLink no informa de finalización) | `ExportCSVView` |
+| `import_done` | `source` (`goodreads` / `trackhobbies` = CSV propio / `backup` = copia JSON), `count` (añadidos), `enriched` (solo Goodreads) | `BooksViewModel.importBooks`, `CSVImporter.insert` |
+| `export_started` | `format` (`csv` / `json`; los eventos anteriores a 2026-10-02 no lo traen) (ShareLink no informa de finalización) | `ExportCSVButton`, `BackupView` |
 | `search_error` | `reason` (caso de `SearchError`, nunca la query) | `Searchable.performSearch` |
 | `$screen` | `$screen_name` (`books`, `series`, `games`, `stats`) | `ContentView` |
 | lifecycle | SDK | `captureApplicationLifecycleEvents` |
@@ -39,3 +39,12 @@ Ver `SyncSalud/Docs/ANALYTICS.md` (key ≠ `phc_`, región, consentimiento, buil
 |---|---|---|
 | `sync_error` | `kind` (`setup`/`import`/`export`), `domain`, `code`, `inner_codes` (códigos de los errores internos de un partialFailure; nunca el texto) | `SyncMonitor` |
 | `sync_ok` | `kind` (`setup`/`import`/`export`), `duration_ms` (inicio→fin del evento de CloudKit; `import` = lado receptor) | `SyncMonitor` |
+
+## Dashboard y builds de prueba
+
+Dashboard «TrackHobbies - App iOS» (id 989027, proyecto 289000, EU). El proyecto de PostHog es **compartido con otras apps**, por eso cada insight filtra `$app_name = TrackHobbies`.
+
+Las builds Debug usan el bundle id `com.trackhobbies.app.dev` y llevan el mismo `$app_name`: el **filtro del dashboard** `$app_namespace = com.trackhobbies.app` las excluye de todos los tiles. Para ver también las de prueba, quitar ese filtro en el dashboard o consultar con `$app_namespace` explícito.
+
+Insights de sincronización e importación (2026-10-02): «Sincronización: correctas frente a errores», «Latencia de sync: lado receptor (import)», «Errores de sincronización por código», «Importaciones por origen» y «Exportaciones por formato».
+

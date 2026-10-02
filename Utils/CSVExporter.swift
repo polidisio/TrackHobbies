@@ -56,6 +56,6 @@ struct ExportCSVButton: View {
                 .accessibilityLabel("Exportar CSV")
         }
         .disabled(items.isEmpty)
-        .simultaneousGesture(TapGesture().onEnded { Analytics.track("export_started") })
+        .simultaneousGesture(TapGesture().onEnded { Analytics.track("export_started", ["format": "csv"]) })
     }
 }
