@@ -81,7 +81,10 @@ final class ManualEntryTests: XCTestCase {
         XCTAssertNil(s.totalPages) // las páginas no aplican a series
         XCTAssertNotNil(s.startDate)
         d.status = .completed
-        XCTAssertNotNil(d.insert(type: .book, context: container.mainContext).endDate)
+        let book = d.insert(type: .book, context: container.mainContext)
+        XCTAssertNotNil(book.endDate)
+        XCTAssertEqual(book.totalPages, 99)
+        XCTAssertNil(book.totalSeasons) // las temporadas no aplican a libros
         XCTAssertFalse(ManualDraft(title: "  ").isValid)
     }
 }

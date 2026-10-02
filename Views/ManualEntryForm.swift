@@ -53,8 +53,10 @@ struct ManualEntryForm: View {
         Form {
             Section("Información") {
                 TextField("Título", text: $draft.title)
+                    .autocorrectionDisabled() // el autocorrector estropea nombres propios («Dune» → «Dime»)
                 if type == .book {
                     TextField("Autor (opcional)", text: $draft.creator)
+                        .autocorrectionDisabled()
                 }
             }
             Section {
