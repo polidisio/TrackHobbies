@@ -1,0 +1,34 @@
+TrackHobbies es tu diario personal de ocio: apunta los libros que lees, las series que ves y los juegos que juegas, y mira cómo avanzas en cada uno. Sin cuentas ni registros: abres la app y empiezas.
+
+TODO EN UN SOLO LUGAR
+• Libros, series y videojuegos en tres pestañas, con la misma forma de trabajar.
+• Estados claros: pendiente, sin empezar, en progreso, completado y archivado.
+• Portadas y descripciones al añadir: busca por título y la app rellena el resto.
+• ¿No aparece? Añádelo a mano con estado, páginas, temporadas, horas y tu propia portada.
+
+SIGUE TU PROGRESO
+• Libros: página actual y total, o porcentaje. Se marca como completado al llegar a la última página.
+• Series: temporada y episodio actuales, con el total de temporadas y episodios.
+• Juegos: horas jugadas.
+• Fechas de inicio y fin, y los días que tardaste en terminar.
+
+PUNTÚA CON PRECISIÓN
+• Nota de 0 a 5 con saltos de cuarto de estrella (4,25; 4,75…) para distinguir un notable de un sobresaliente.
+• Reseña personal para cada título.
+• Filtra por estado, nota mínima o fecha, y busca por título o autor.
+
+TUS ESTADÍSTICAS
+Un resumen de tu colección: cuántos elementos tienes por tipo y estado, páginas leídas, temporadas y episodios vistos, horas jugadas, nota media y tus títulos mejor valorados.
+
+TUS DATOS, SIEMPRE CONTIGO
+• Sincronización con iCloud entre tu iPhone y tu iPad (necesitas haber iniciado sesión en iCloud).
+• Importa tu biblioteca desde un CSV exportado de Goodreads: la app evita duplicados y puede completar portadas y páginas.
+• Exporta a CSV para abrirlo en Excel o en Hojas de cálculo.
+• Copia de seguridad completa en JSON, y restauración que nunca borra ni sobrescribe lo que ya tienes.
+
+PRIVACIDAD
+Tus listas, notas y reseñas son tuyas: se guardan en tu dispositivo y en tu iCloud privado. Si quieres, puedes compartir datos de uso anónimos para mejorar la app. Es opcional, solo se activa si lo aceptas y nunca incluye títulos, notas, reseñas ni puntuaciones. Puedes cambiarlo cuando quieras en Estadísticas.
+
+Disponible en español e inglés, para iPhone y iPad.
+
+Los datos de libros, series y juegos proceden de Google Books, TVMaze e IGDB.

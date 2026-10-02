@@ -1,0 +1,1 @@
+libros,series,juegos,lectura,biblioteca,seguimiento,diario,puntuación,reseñas,pendientes,colección

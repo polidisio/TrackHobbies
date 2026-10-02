@@ -1,0 +1,34 @@
+TrackHobbies is your personal journal for the things you love: log the books you read, the series you watch and the games you play, and see how far you've come in each one. No accounts, no sign-up: open the app and start.
+
+EVERYTHING IN ONE PLACE
+• Books, series and video games in three tabs, all working the same way.
+• Clear statuses: wishlist, not started, in progress, completed and archived.
+• Covers and descriptions as you add: search by title and the app fills in the rest.
+• Can't find it? Add it by hand with status, pages, seasons, hours and your own cover.
+
+TRACK YOUR PROGRESS
+• Books: current page and total, or a percentage. Marked as completed when you reach the last page.
+• Series: current season and episode, with the total seasons and episodes.
+• Games: hours played.
+• Start and end dates, and how many days it took you to finish.
+
+RATE WITH PRECISION
+• Score from 0 to 5 in quarter-star steps (4.25, 4.75…) to tell a great read from a perfect one.
+• A personal review for every title.
+• Filter by status, minimum rating or date, and search by title or author.
+
+YOUR STATS
+A summary of your collection: how many items by type and status, pages read, seasons and episodes watched, hours played, average rating and your top-rated titles.
+
+YOUR DATA, ALWAYS WITH YOU
+• iCloud sync between your iPhone and iPad (you need to be signed in to iCloud).
+• Import your library from a CSV exported from Goodreads: the app avoids duplicates and can fill in covers and page counts.
+• Export to CSV to open it in Excel or Sheets.
+• Full JSON backup, and a restore that never deletes or overwrites what you already have.
+
+PRIVACY
+Your lists, notes and reviews are yours: they live on your device and in your private iCloud. If you like, you can share anonymous usage data to help improve the app. It's optional, only turned on if you accept, and never includes titles, notes, reviews or ratings. You can change it anytime in Statistics.
+
+Available in English and Spanish, for iPhone and iPad.
+
+Book, series and game data comes from Google Books, TVMaze and IGDB.
