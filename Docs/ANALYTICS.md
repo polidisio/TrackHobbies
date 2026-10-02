@@ -38,3 +38,4 @@ Ver `SyncSalud/Docs/ANALYTICS.md` (key ≠ `phc_`, región, consentimiento, buil
 | Evento | Props | Origen |
 |---|---|---|
 | `sync_error` | `kind` (`setup`/`import`/`export`), `domain`, `code`, `inner_codes` (códigos de los errores internos de un partialFailure; nunca el texto) | `SyncMonitor` |
+| `sync_ok` | `kind` (`setup`/`import`/`export`), `duration_ms` (inicio→fin del evento de CloudKit; `import` = lado receptor) | `SyncMonitor` |

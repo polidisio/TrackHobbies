@@ -8,7 +8,7 @@ Actualizado 2026-10-02. Orden por valor/riesgo.
 - [x] 3. Bundle id propio para Debug (`com.trackhobbies.app.dev`) en `project.yml`. Falta: primera build de dispositivo para que Xcode registre el App ID con iCloud; en dispositivos que tenían Debug, borrar la app vieja.
 
 ## Para retomar
-- [ ] 4. Eventos `sync_ok` en PostHog (latencia de sync, lado receptor).
+- [x] 4. Evento `sync_ok` (kind + duration_ms) en `SyncMonitor`. Falta: insight en el dashboard de PostHog (id 989027) cuando haya datos.
 - [ ] 5. Páginas para libros añadidos a mano (ruta nueva del Worker, elegir edición).
 - [ ] 6. Enriquecimiento Goodreads por título + autor (Google devuelve 0 con `isbn:`).
 - [ ] 7. Backup JSON completo (alternativa barata a Notion).

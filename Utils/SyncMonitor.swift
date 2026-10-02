@@ -28,7 +28,8 @@ final class SyncMonitor: ObservableObject {
                     as? NSPersistentCloudKitContainer.Event, let end = event.endDate else { return }
             let kind = Self.name(event.type)
             let nsError = event.error as NSError?
-            Task { @MainActor in self?.record(kind: kind, date: end, error: nsError) }
+            let ms = Int(end.timeIntervalSince(event.startDate) * 1000)
+            Task { @MainActor in self?.record(kind: kind, date: end, durationMs: ms, error: nsError) }
         }
         Task { await refreshAccount() }
     }
@@ -37,7 +38,7 @@ final class SyncMonitor: ObservableObject {
         accountStatus = try? await CKContainer(identifier: "iCloud.com.trackhobbies.app").accountStatus()
     }
 
-    private func record(kind: String, date: Date, error: NSError?) {
+    private func record(kind: String, date: Date, durationMs: Int, error: NSError?) {
         if let error {
             // partialFailure (CKError 2) solo dice "alguno falló": la causa va en los errores internos.
             let inner = (error.userInfo[CKPartialErrorsByItemIDKey] as? [AnyHashable: Error])?.values.map { $0 as NSError } ?? []
@@ -54,6 +55,8 @@ final class SyncMonitor: ObservableObject {
             lastError = nil
             lastErrorDetail = nil
             lastEvent = (kind, date)
+            // Solo tipo y duración: import = lado receptor, export = lado emisor.
+            Analytics.track("sync_ok", ["kind": kind, "duration_ms": durationMs])
         }
     }
 
