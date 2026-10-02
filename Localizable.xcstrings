@@ -956,6 +956,36 @@
         }
       }
     },
+    "Importar CSV" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import CSV"
+          }
+        }
+      }
+    },
+    "No se pudo importar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't import"
+          }
+        }
+      }
+    },
+    "El archivo no es un CSV exportado desde TrackHobbies." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a CSV exported from TrackHobbies."
+          }
+        }
+      }
+    },
     "Fecha" : {
       "extractionState" : "stale",
       "localizations" : {

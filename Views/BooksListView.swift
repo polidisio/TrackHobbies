@@ -24,8 +24,6 @@ struct BooksListView: View {
     @State private var showingEnrichmentOption = false
     @State private var pendingImportBooks: [GoodreadsCSVBook] = []
     @State private var enrichWithGoogleBooks = true
-    @State private var showingExportSheet = false
-    @State private var csvExportData: String = ""
 
     private var hasActiveFilters: Bool {
         !searchText.isEmpty || !selectedStatuses.isEmpty || minimumRating != nil || datePreset != .all
@@ -198,14 +196,7 @@ struct BooksListView: View {
                             .accessibilityValue(hasActiveFilters ? "activos" : "")
                     }
 
-                    Button {
-                        csvExportData = CSVExporter.exportFromEntities(books)
-                        showingExportSheet = true
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .accessibilityLabel("Exportar CSV")
-                    }
-                    .disabled(books.isEmpty)
+                    ExportCSVButton(type: .book, items: books)
 
                     Button {
                         showingAddSheet = true
@@ -311,9 +302,6 @@ struct BooksListView: View {
             }
             .presentationDetents([.medium])
         }
-        .sheet(isPresented: $showingExportSheet) {
-            ExportCSVView(csvData: csvExportData)
-        }
     }
 
     private func handleFileImport(_ result: Result<[URL], Error>) {
@@ -324,6 +312,10 @@ struct BooksListView: View {
                 defer { url.stopAccessingSecurityScopedResource() }
                 do {
                     let csvContent = try String(contentsOf: url, encoding: .utf8)
+                    if CSVImporter.isOwnFormat(csvContent) {
+                        CSVImporter.insert(CSVImporter.parse(csvContent), context: modelContext)
+                        return
+                    }
                     let books = GoodreadsImporter.parse(csvContent: csvContent)
                     pendingImportBooks = books
                     showingEnrichmentOption = true

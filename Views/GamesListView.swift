@@ -172,6 +172,9 @@ struct GamesListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
+                    ImportCSVButton()
+                    ExportCSVButton(type: .game, items: games)
+
                     Button {
                         withAnimation(.easeInOut(duration: 0.25)) {
                             showingFilters.toggle()

@@ -1,51 +1,61 @@
-import Foundation
-import SwiftData
+import SwiftUI
+import UniformTypeIdentifiers
 
-struct CSVBook {
-    let title: String
-    let author: String?
-    let isbn: String?
-    let rating: Double?
-    let status: String
-    let pages: Int?
-    let dateRead: Date?
-    let review: String?
-}
+/// CSV de recursos (libros, series, juegos). Campos vacíos = sin dato (nunca `0`).
+enum CSVExporter {
+    static let header = "type,title,author_or_creator,external_id,rating,status,pages,current_page,season,episode,total_seasons,total_episodes,hours,start_date,end_date,review,image_url,summary"
 
-struct CSVExporter {
-    static func export(books: [CSVBook]) -> String {
-        var lines: [String] = []
-        lines.append("title,author,isbn,rating,status,pages,date_read,review")
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd"
-
-        for book in books {
-            let titleField = book.title.replacingOccurrences(of: "\"", with: "\"\"")
-            let author = (book.author ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            let isbn = (book.isbn ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            let review = (book.review ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            let dateRead = book.dateRead.map { dateFormatter.string(from: $0) } ?? ""
-
-            let line = "\"\(titleField)\",\"\(author)\",\"\(isbn)\",\"\(book.rating ?? 0)\",\"\(book.status)\",\"\(book.pages ?? 0)\",\"\(dateRead)\",\"\(review)\""
-            lines.append(line)
+    static func export(_ entities: [ResourceEntity]) -> String {
+        let day = Date.ISO8601FormatStyle().year().month().day()
+        let rows = entities.map { e -> String in
+            [
+                e.resourceType.rawValue, e.title, e.authorOrCreator, e.externalId,
+                e.userRating.map { "\($0)" },
+                e.progressStatus.rawValue, // estable: no depende del idioma de la UI
+                e.totalPages.map(String.init), e.currentPage.map(String.init),
+                e.currentSeason.map(String.init), e.currentEpisode.map(String.init),
+                e.totalSeasons.map(String.init), e.totalEpisodes.map(String.init),
+                e.timeSpentHours.map { "\($0)" },
+                e.startDate?.formatted(day), e.endDate?.formatted(day),
+                e.reviewComment, e.imageURL, e.summary,
+            ].map(field).joined(separator: ",")
         }
-        return lines.joined(separator: "\n")
+        return ([header] + rows).joined(separator: "\n")
     }
 
-    static func exportFromEntities(_ entities: [ResourceEntity]) -> String {
-        let books = entities.map { entity in
-            CSVBook(
-                title: entity.title,
-                author: entity.authorOrCreator,
-                isbn: entity.externalId,
-                rating: entity.userRating,
-                status: entity.progressStatus.rawValue, // estable: no depende del idioma de la UI
-                pages: entity.totalPages,
-                dateRead: entity.endDate,
-                review: entity.reviewComment
-            )
+    /// RFC 4180: siempre entre comillas, `"` duplicada; los saltos de línea quedan dentro del campo.
+    static func field(_ value: String?) -> String {
+        "\"" + (value ?? "").replacingOccurrences(of: "\"", with: "\"\"") + "\""
+    }
+}
+
+struct CSVFile: Transferable {
+    let name: String
+    let content: String
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .commaSeparatedText) { file in
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent(file.name)
+            try file.content.write(to: url, atomically: true, encoding: .utf8)
+            return SentTransferredFile(url)
         }
-        return export(books: books)
+    }
+}
+
+/// Botón de la barra: comparte el CSV directamente (sin hoja intermedia).
+struct ExportCSVButton: View {
+    let type: ResourceType
+    let items: [ResourceEntity]
+
+    var body: some View {
+        ShareLink(
+            item: CSVFile(name: "trackhobbies_\(type.rawValue).csv", content: CSVExporter.export(items)),
+            preview: SharePreview("trackhobbies_\(type.rawValue).csv")
+        ) {
+            Image(systemName: "square.and.arrow.up")
+                .accessibilityLabel("Exportar CSV")
+        }
+        .disabled(items.isEmpty)
+        .simultaneousGesture(TapGesture().onEnded { Analytics.track("export_started") })
     }
 }

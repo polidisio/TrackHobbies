@@ -172,6 +172,9 @@ struct SeriesListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
+                    ImportCSVButton()
+                    ExportCSVButton(type: .series, items: series)
+
                     Button {
                         withAnimation(.easeInOut(duration: 0.25)) {
                             showingFilters.toggle()
