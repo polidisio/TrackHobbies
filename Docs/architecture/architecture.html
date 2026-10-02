@@ -1,0 +1,1313 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrackHobbies · Arquitectura</title>
+<style>
+  :root {
+    --bg: #f5f5fa; --surface: #ffffff; --surface-2: #eef0f8; --text: #1b1b24; --muted: #5d6075;
+    --line: #d9dcea; --accent: #4f46e5; --accent-soft: #e4e2fd;
+    --ui: #4f46e5; --app: #0b7285; --data: #2f9e44; --platform: #c2680b; --backend: #b3265f; --ext: #6b7280;
+    --ok: #2f9e44; --warn: #c2680b; --bad: #c92a2a;
+    --shadow: 0 1px 2px rgba(20,20,50,.06), 0 4px 14px rgba(20,20,50,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12121a; --surface: #1b1b27; --surface-2: #232333; --text: #ececf4; --muted: #a2a5bd;
+      --line: #33344a; --accent: #8b87ff; --accent-soft: #2b2a55;
+      --ui: #8b87ff; --app: #3cc6dc; --data: #5fd17a; --platform: #f0a24a; --backend: #f06595; --ext: #9aa0b4;
+      --ok: #5fd17a; --warn: #f0a24a; --bad: #ff8787; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12121a; --surface: #1b1b27; --surface-2: #232333; --text: #ececf4; --muted: #a2a5bd;
+    --line: #33344a; --accent: #8b87ff; --accent-soft: #2b2a55;
+    --ui: #8b87ff; --app: #3cc6dc; --data: #5fd17a; --platform: #f0a24a; --backend: #f06595; --ext: #9aa0b4;
+    --ok: #5fd17a; --warn: #f0a24a; --bad: #ff8787; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px 64px; }
+  header.top { padding: 36px 0 18px; }
+  h1 { margin: 0 0 4px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.02em; }
+  .tagline { margin: 0 0 14px; color: var(--muted); font-size: 17px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px; font-size: 13px; color: var(--muted); }
+  nav { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); margin: 0 -16px 24px; padding: 8px 16px; display: flex; gap: 6px; overflow-x: auto; align-items: center; }
+  nav a { white-space: nowrap; text-decoration: none; color: var(--muted); padding: 5px 10px; border-radius: 8px; font-size: 13.5px; }
+  nav a:hover { background: var(--surface-2); color: var(--text); }
+  nav button { margin-left: auto; background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; cursor: pointer; font: inherit; font-size: 13px; }
+  section { margin: 0 0 44px; scroll-margin-top: 64px; }
+  h2 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); margin: 0 0 16px; max-width: 760px; }
+  h3 { font-size: 16px; margin: 0 0 6px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .kpi .n { font-size: 30px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+  .kpi .l { color: var(--muted); font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  .tablewrap { overflow-x: auto; }
+  .bar { height: 6px; background: var(--surface-2); border-radius: 4px; overflow: hidden; min-width: 70px; }
+  .bar > i { display: block; height: 100%; background: var(--layer, var(--accent)); }
+  .badge { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid currentColor; }
+  .b-alto, .b-no, .b-pendiente { color: var(--bad); } .b-medio, .b-planeado { color: var(--warn); }
+  .b-bajo { color: var(--muted); } .b-hecho, .b-si { color: var(--ok); }
+  .layer-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .dot { width: 12px; height: 12px; border-radius: 4px; background: var(--layer, var(--accent)); flex: none; }
+  details { margin-top: 2px; } summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
+  details ul { margin: 4px 0 0; padding-left: 18px; color: var(--muted); font-size: 12.5px; }
+  ol.steps { margin: 6px 0 0; padding-left: 20px; } ol.steps li { margin: 4px 0; }
+  ul.plain { margin: 6px 0 0; padding-left: 18px; } ul.plain li { margin: 3px 0; }
+  .callout { border-left: 4px solid var(--warn); background: var(--surface-2); border-radius: 0 10px 10px 0; padding: 12px 14px; }
+  .callout b { display: block; margin-bottom: 2px; }
+  .fields { columns: 2 220px; column-gap: 18px; margin: 6px 0 0; padding-left: 18px; font-size: 13px; }
+  .fields li { break-inside: avoid; margin: 2px 0; }
+  .timeline { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--line); margin-left: 6px; }
+  .timeline li { position: relative; padding: 0 0 12px 18px; }
+  .timeline li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 3px solid var(--accent); }
+  .timeline .t { color: var(--muted); font-size: 12.5px; }
+  .tag { font-size: 11.5px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 6px; margin-left: 6px; }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  footer { color: var(--muted); font-size: 13px; text-align: center; padding-top: 12px; }
+  @media print { nav, button { display: none; } body { background: #fff; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><noscript>Activa JavaScript para ver el dashboard.</noscript></div>
+
+<!--DATA-->
+<script id="arch-data" type="application/json">{
+  "meta": {
+    "name": "TrackHobbies",
+    "tagline": "Seguimiento de libros, series y juegos para iPhone y iPad",
+    "version": "1.0.0",
+    "generated": "2026-10-01",
+    "owner": "@polidisio",
+    "platforms": [
+      "iPhone",
+      "iPad"
+    ],
+    "minIOS": "17.0",
+    "language": "Swift 5.9 (SwiftUI)",
+    "pattern": "MVVM + capa de servicios",
+    "buildSystem": "XcodeGen (project.yml)",
+    "bundleId": "com.trackhobbies.app",
+    "localizations": [
+      "es (origen)",
+      "en"
+    ]
+  },
+  "diagram": {
+    "nodes": [
+      {
+        "id": "views",
+        "label": "Views (SwiftUI)",
+        "sub": "4 pestañas · @Query",
+        "x": 20,
+        "y": 40,
+        "w": 210,
+        "h": 64,
+        "group": "ui"
+      },
+      {
+        "id": "vms",
+        "label": "ViewModels",
+        "sub": "Searchable · debounce 400 ms",
+        "x": 300,
+        "y": 40,
+        "w": 210,
+        "h": 64,
+        "group": "app"
+      },
+      {
+        "id": "services",
+        "label": "Servicios",
+        "sub": "URLSession.decode / .worker",
+        "x": 580,
+        "y": 40,
+        "w": 210,
+        "h": 64,
+        "group": "app"
+      },
+      {
+        "id": "worker",
+        "label": "Cloudflare Worker",
+        "sub": "token de app · caché 24 h",
+        "x": 860,
+        "y": 40,
+        "w": 210,
+        "h": 64,
+        "group": "backend"
+      },
+      {
+        "id": "gbooks",
+        "label": "Google Books",
+        "sub": "clave secreta",
+        "x": 800,
+        "y": 180,
+        "w": 140,
+        "h": 54,
+        "group": "ext"
+      },
+      {
+        "id": "igdb",
+        "label": "IGDB (Twitch)",
+        "sub": "credenciales Twitch",
+        "x": 960,
+        "y": 180,
+        "w": 140,
+        "h": 54,
+        "group": "ext"
+      },
+      {
+        "id": "tvmaze",
+        "label": "TVMaze",
+        "sub": "directo, sin clave",
+        "x": 580,
+        "y": 180,
+        "w": 180,
+        "h": 54,
+        "group": "ext"
+      },
+      {
+        "id": "analytics",
+        "label": "Analytics → PostHog EU",
+        "sub": "opt-in · solo categorías",
+        "x": 20,
+        "y": 200,
+        "w": 210,
+        "h": 64,
+        "group": "platform"
+      },
+      {
+        "id": "swiftdata",
+        "label": "SwiftData",
+        "sub": "ResourceEntity · PendingItem (V2)",
+        "x": 300,
+        "y": 200,
+        "w": 210,
+        "h": 64,
+        "group": "data"
+      },
+      {
+        "id": "cloudkit",
+        "label": "CloudKit (privada)",
+        "sub": "iCloud.com.trackhobbies.app",
+        "x": 580,
+        "y": 330,
+        "w": 210,
+        "h": 64,
+        "group": "data"
+      },
+      {
+        "id": "monitor",
+        "label": "SyncMonitor",
+        "sub": "estado y errores de iCloud",
+        "x": 300,
+        "y": 330,
+        "w": 210,
+        "h": 64,
+        "group": "platform"
+      }
+    ],
+    "edges": [
+      {
+        "from": "views",
+        "to": "vms",
+        "label": "estado"
+      },
+      {
+        "from": "vms",
+        "to": "services",
+        "label": "async"
+      },
+      {
+        "from": "services",
+        "to": "worker",
+        "label": "HTTPS"
+      },
+      {
+        "from": "worker",
+        "to": "gbooks"
+      },
+      {
+        "from": "worker",
+        "to": "igdb"
+      },
+      {
+        "from": "services",
+        "to": "tvmaze",
+        "label": "directo"
+      },
+      {
+        "from": "vms",
+        "to": "swiftdata",
+        "label": "insert"
+      },
+      {
+        "from": "swiftdata",
+        "to": "cloudkit",
+        "label": "espejo"
+      },
+      {
+        "from": "cloudkit",
+        "to": "monitor",
+        "label": "eventos"
+      },
+      {
+        "from": "views",
+        "to": "analytics",
+        "label": "eventos"
+      }
+    ]
+  },
+  "layers": [
+    {
+      "id": "ui",
+      "name": "Presentación",
+      "description": "Vistas SwiftUI. Cada pestaña es un NavigationStack; los listados leen SwiftData con @Query y las hojas de búsqueda observan su ViewModel.",
+      "modules": [
+        {
+          "name": "ContentView",
+          "path": "ContentView.swift",
+          "role": "TabView de 4 pestañas, aviso de modo temporal y hoja de consentimiento de analytics.",
+          "files": [
+            "ContentView.swift"
+          ],
+          "lines": 54
+        },
+        {
+          "name": "Listados de recursos",
+          "path": "Views/BooksListView.swift",
+          "role": "Listas por estado, filtros, búsqueda y alta; incluye componentes compartidos (fila, insignias, flujo).",
+          "files": [
+            "Views/BooksListView.swift",
+            "Views/SeriesListView.swift",
+            "Views/GamesListView.swift"
+          ],
+          "lines": 1774
+        },
+        {
+          "name": "Detalle",
+          "path": "Views/ResourceDetailView.swift",
+          "role": "Estado, seguimiento (páginas / % / episodios), fechas, nota y reseña. Total de páginas con editor controlado.",
+          "files": [
+            "Views/ResourceDetailView.swift"
+          ],
+          "lines": 677
+        },
+        {
+          "name": "Estadísticas",
+          "path": "Views/StatsView.swift",
+          "role": "7 secciones de métricas, interruptor de analytics y estado de iCloud.",
+          "files": [
+            "Views/StatsView.swift"
+          ],
+          "lines": 472
+        },
+        {
+          "name": "Utilidades de vista",
+          "path": "Views/ConfirmDelete.swift",
+          "role": "Confirmación de borrado, exportación CSV, errores de búsqueda, consentimiento y estado de sincronización.",
+          "files": [
+            "Views/ConfirmDelete.swift",
+            "Views/ExportCSVView.swift",
+            "Views/SearchErrorView.swift",
+            "Views/AnalyticsConsentView.swift",
+            "Views/SyncStatusView.swift"
+          ],
+          "lines": 184
+        },
+        {
+          "name": "Tema",
+          "path": "Theme/AppTheme.swift",
+          "role": "Colores, fondo de malla índigo y estilos comunes.",
+          "files": [
+            "Theme/AppTheme.swift"
+          ],
+          "lines": 84
+        }
+      ]
+    },
+    {
+      "id": "app",
+      "name": "ViewModels y servicios",
+      "description": "Lógica de búsqueda con cancelación y errores visibles; los servicios hablan con el Worker o con TVMaze y devuelven modelos ligeros.",
+      "modules": [
+        {
+          "name": "Searchable",
+          "path": "ViewModels/Searchable.swift",
+          "role": "Protocolo + performSearch: debounce de 400 ms, cancelación por .task(id:), isLoading, errorMessage y evento search_error.",
+          "files": [
+            "ViewModels/Searchable.swift"
+          ],
+          "lines": 46
+        },
+        {
+          "name": "ViewModels",
+          "path": "ViewModels/BooksViewModel.swift",
+          "role": "Altas desde búsqueda / pendiente / manual, importación secuencial de Goodreads y eventos resource_added.",
+          "files": [
+            "ViewModels/BooksViewModel.swift",
+            "ViewModels/SeriesViewModel.swift",
+            "ViewModels/GamesViewModel.swift"
+          ],
+          "lines": 237
+        },
+        {
+          "name": "HTTP",
+          "path": "Services/HTTP.swift",
+          "role": "SearchError, URLSession.decode (sin red / 429 / 401 / 5xx) y URLSession.worker para el Worker.",
+          "files": [
+            "Services/HTTP.swift"
+          ],
+          "lines": 66
+        },
+        {
+          "name": "GoogleBooksService",
+          "path": "Services/GoogleBooksService.swift",
+          "role": "Libros por título o ISBN vía Worker.",
+          "files": [
+            "Services/GoogleBooksService.swift"
+          ],
+          "lines": 28
+        },
+        {
+          "name": "GameSearchService",
+          "path": "Services/GameSearchService.swift",
+          "role": "Juegos vía Worker.",
+          "files": [
+            "Services/GameSearchService.swift"
+          ],
+          "lines": 23
+        },
+        {
+          "name": "TVMazeService",
+          "path": "Services/TVMazeService.swift",
+          "role": "Series y totales de temporadas/episodios, llamada directa.",
+          "files": [
+            "Services/TVMazeService.swift"
+          ],
+          "lines": 50
+        },
+        {
+          "name": "GoodreadsImporter",
+          "path": "Services/GoodreadsImporter.swift",
+          "role": "Parseo del CSV de Goodreads y mapeo de estanterías a estados.",
+          "files": [
+            "Services/GoodreadsImporter.swift"
+          ],
+          "lines": 149
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "name": "Dominio y persistencia",
+      "description": "Un único modelo de recurso para libros, series y juegos. Esquema versionado y compatible con CloudKit.",
+      "modules": [
+        {
+          "name": "Enums",
+          "path": "Models/Enums.swift",
+          "role": "ResourceType (book / series / game) y ProgressStatus (wishlist, not_started, in_progress, completed, archived).",
+          "files": [
+            "Models/Enums.swift"
+          ],
+          "lines": 88
+        },
+        {
+          "name": "PersistenceModels",
+          "path": "Models/PersistenceModels.swift",
+          "role": "ResourceEntity y PendingItemEntity (esquema V2: sin .unique, valores por defecto, relación inversa).",
+          "files": [
+            "Models/PersistenceModels.swift"
+          ],
+          "lines": 108
+        },
+        {
+          "name": "BookStore / DataStore",
+          "path": "BookStore.swift",
+          "role": "SchemaV1 congelado, SchemaV2, migración ligera, ModelContainer con CloudKit y respaldo en memoria si falla.",
+          "files": [
+            "BookStore.swift"
+          ],
+          "lines": 169
+        },
+        {
+          "name": "PageTracking",
+          "path": "Utils/PageTracking.swift",
+          "role": "Reglas puras del seguimiento por páginas (validar total, limitar página, detectar fin).",
+          "files": [
+            "Utils/PageTracking.swift"
+          ],
+          "lines": 32
+        },
+        {
+          "name": "CSVExporter",
+          "path": "Utils/CSVExporter.swift",
+          "role": "Exportación a CSV para Excel / Sheets.",
+          "files": [
+            "Utils/CSVExporter.swift"
+          ],
+          "lines": 51
+        }
+      ]
+    },
+    {
+      "id": "platform",
+      "name": "Transversal",
+      "description": "Analítica con consentimiento y diagnóstico de la sincronización.",
+      "modules": [
+        {
+          "name": "AppMain",
+          "path": "AppMain.swift",
+          "role": "Punto de entrada: configura Analytics y SyncMonitor y crea el contenedor.",
+          "files": [
+            "AppMain.swift"
+          ],
+          "lines": 17
+        },
+        {
+          "name": "Analytics",
+          "path": "Utils/Analytics.swift",
+          "role": "Envoltorio de PostHog: opt-in, sin identify, sin GeoIP, app=trackhobbies.",
+          "files": [
+            "Utils/Analytics.swift"
+          ],
+          "lines": 57
+        },
+        {
+          "name": "SyncMonitor",
+          "path": "Utils/SyncMonitor.swift",
+          "role": "Eventos de NSPersistentCloudKitContainer, cuenta de iCloud, error interno de partialFailure y evento sync_error.",
+          "files": [
+            "Utils/SyncMonitor.swift"
+          ],
+          "lines": 68
+        }
+      ]
+    },
+    {
+      "id": "backend",
+      "name": "Backend (Cloudflare Worker)",
+      "description": "Guarda las claves de terceros fuera de la app y cachea las respuestas 24 h.",
+      "modules": [
+        {
+          "name": "index.js",
+          "path": "worker/src/index.js",
+          "role": "Rutas, autenticación por token de app, caché compartida y mapeo de errores (429 / 502).",
+          "files": [
+            "worker/src/index.js"
+          ],
+          "lines": 96
+        },
+        {
+          "name": "books.js",
+          "path": "worker/src/books.js",
+          "role": "URL de Google Books, validación de ISBN y normalización a GoogleBookItem.",
+          "files": [
+            "worker/src/books.js"
+          ],
+          "lines": 24
+        },
+        {
+          "name": "igdb.js",
+          "path": "worker/src/igdb.js",
+          "role": "Consulta Apicalypse segura y normalización de juegos.",
+          "files": [
+            "worker/src/igdb.js"
+          ],
+          "lines": 21
+        }
+      ]
+    }
+  ],
+  "dataModel": {
+    "schemaVersion": "V2 (1.1.0)",
+    "store": "Application Support/TrackHobbies.sqlite",
+    "entities": [
+      {
+        "name": "ResourceEntity",
+        "description": "Libro, serie o juego.",
+        "fields": [
+          "id: UUID",
+          "type: String (ResourceType)",
+          "title: String",
+          "externalId: String?",
+          "imageURL: String?",
+          "summary: String?",
+          "authorOrCreator: String?",
+          "userRating: Double? (0–5, pasos de 0,25)",
+          "status: String (ProgressStatus)",
+          "timeSpentHours: Double?",
+          "lastUpdated: Date?",
+          "currentPage / totalPages: Int?",
+          "progressPercentage: Double?",
+          "currentSeason / currentEpisode / totalSeasons / totalEpisodes: Int?",
+          "startDate / endDate: Date?",
+          "reviewComment: String?",
+          "pendings: [PendingItemEntity]? (cascade)"
+        ]
+      },
+      {
+        "name": "PendingItemEntity",
+        "description": "Tarea pendiente de un recurso. Sin uso en la interfaz todavía.",
+        "fields": [
+          "id: UUID",
+          "resourceId: UUID",
+          "title: String",
+          "dueDate: Date?",
+          "completed: Bool",
+          "resource: ResourceEntity? (inverso)"
+        ]
+      }
+    ],
+    "migrations": [
+      {
+        "from": "V1 (1.0.0)",
+        "to": "V2 (1.1.0)",
+        "kind": "ligera",
+        "changes": [
+          "Se quita @Attribute(.unique)",
+          "Valores por defecto en atributos no opcionales",
+          "PendingItemEntity.resource como inverso de ResourceEntity.pendings"
+        ]
+      }
+    ],
+    "rules": [
+      "Antes de tocar un modelo: congelar la versión actual dentro de un enum SchemaVn y añadir un MigrationStage.",
+      "Con CloudKit en Production el esquema solo crece: se pueden añadir campos, no quitarlos ni cambiar su tipo."
+    ]
+  },
+  "sync": {
+    "container": "iCloud.com.trackhobbies.app",
+    "database": "Privada (CloudKit)",
+    "library": "SwiftData sobre NSPersistentCloudKitContainer",
+    "entitlements": [
+      "com.apple.developer.icloud-container-identifiers",
+      "com.apple.developer.icloud-services = CloudKit",
+      "aps-environment (development → production al firmar para TestFlight/App Store)"
+    ],
+    "background": "UIBackgroundModes: remote-notification",
+    "environments": [
+      {
+        "name": "Development",
+        "used_by": "Builds Debug desde Xcode",
+        "note": "CloudKit crea los tipos de registro al vuelo."
+      },
+      {
+        "name": "Production",
+        "used_by": "TestFlight y App Store",
+        "note": "El esquema debe desplegarse a mano desde el CloudKit Console antes de usarlo."
+      }
+    ],
+    "diagnostics": [
+      "Estadísticas muestra cuenta de iCloud, última sincronización (setup / import / export) y último error con su código y el texto del primer error interno.",
+      "sync_error llega a PostHog con kind, domain, code e inner_codes (nunca el texto)."
+    ],
+    "incident": {
+      "title": "Sincronización — 2026-10-01",
+      "symptom": "CKErrorDomain 2 (partialFailure) con 12 (invalidArguments) y 22 (batchRequestFailed): «Cannot create new type CD_ResourceEntity in production schema».",
+      "cause": "Las builds de TestFlight usan el entorno Production y su esquema no estaba desplegado. Faltaba además aps-environment, necesario para recibir los avisos de cambios remotos.",
+      "fix": "Esquema creado en Development y desplegado a Production; aps-environment añadido; reinstalación limpia en ambos dispositivos. El usuario confirma que ya funciona; la causa exacta de que iPad→iPhone no llegara en vivo no se llegó a aislar."
+    }
+  },
+  "externalServices": [
+    {
+      "name": "Google Books",
+      "via": "Worker (/books/search, /books/isbn)",
+      "auth": "Clave de API como secreto del Worker",
+      "cache": "24 h",
+      "limit": "~1.000 consultas/día por clave (a verificar)",
+      "notes": "Las consultas isbn: devuelven 0 resultados incluso directas contra la API; la importación de Goodreads enriquece con 1 petición por libro."
+    },
+    {
+      "name": "IGDB (Twitch)",
+      "via": "Worker (/games/search)",
+      "auth": "Client ID / Secret como secretos; token en memoria del isolate",
+      "cache": "24 h",
+      "limit": "~4 peticiones/s, uso no comercial (a verificar)",
+      "notes": "Si el Worker no está configurado la búsqueda muestra un error visible, nunca se cae."
+    },
+    {
+      "name": "TVMaze",
+      "via": "Directo desde la app",
+      "auth": "Ninguna",
+      "cache": "—",
+      "limit": "~20 llamadas/10 s por IP",
+      "notes": "Cada usuario llega desde su propia IP, no se acumula."
+    },
+    {
+      "name": "Cloudflare Workers",
+      "via": "—",
+      "auth": "APP_TOKEN compartido con la app",
+      "cache": "Cache API por centro de datos",
+      "limit": "100.000 peticiones/día en el plan gratis (a verificar)",
+      "notes": "Sin rate limit propio: añadir el binding ratelimit si hay abuso."
+    },
+    {
+      "name": "PostHog Cloud EU",
+      "via": "SDK 3.86.0",
+      "auth": "Project token phc_… en el Info.plist",
+      "cache": "—",
+      "limit": "Plan gratis",
+      "notes": "Opt-in. Proyecto compartido con otras apps; se filtra por $app_name."
+    },
+    {
+      "name": "CloudKit",
+      "via": "SwiftData",
+      "auth": "Cuenta de iCloud del usuario",
+      "cache": "—",
+      "limit": "Cuota del usuario",
+      "notes": "Base privada; sin servidor propio."
+    }
+  ],
+  "worker": {
+    "name": "trackhobbies-api",
+    "routes": [
+      {
+        "method": "GET",
+        "path": "/games/search?q=",
+        "desc": "Juegos de IGDB (mín. 2 caracteres, máx. 100)."
+      },
+      {
+        "method": "GET",
+        "path": "/books/search?q=",
+        "desc": "Hasta 20 libros de Google Books."
+      },
+      {
+        "method": "GET",
+        "path": "/books/isbn?isbn=",
+        "desc": "Un libro por ISBN-10/13 validado."
+      }
+    ],
+    "headers": [
+      "X-App-Token: obligatorio (401 si falta o es incorrecto)"
+    ],
+    "secrets": [
+      "APP_TOKEN",
+      "TWITCH_CLIENT_ID",
+      "TWITCH_CLIENT_SECRET",
+      "GOOGLE_BOOKS_API_KEY"
+    ],
+    "errors": {
+      "429": "Cuota del upstream agotada → la app muestra «Demasiadas búsquedas seguidas»",
+      "502": "Fallo del upstream",
+      "404": "Ruta desconocida"
+    },
+    "deploy": "cd worker && npx wrangler secret put <NOMBRE> && npx wrangler deploy"
+  },
+  "analytics": {
+    "provider": "PostHog Cloud EU",
+    "consent": "Hoja en el primer arranque + interruptor en Estadísticas; apagado por defecto.",
+    "rules": [
+      "Solo contadores, booleanos y categorías.",
+      "Nunca títulos, autores, notas, reseñas, puntuaciones ni textos de búsqueda.",
+      "Sin identify, autocapture ni session replay; $geoip_disable=true."
+    ],
+    "events": [
+      {
+        "name": "resource_added",
+        "props": "type, source (search / wishlist / manual)",
+        "answers": "Cuántos recursos se añaden y por qué vía"
+      },
+      {
+        "name": "resource_deleted",
+        "props": "type",
+        "answers": "Cuántos se eliminan"
+      },
+      {
+        "name": "status_changed",
+        "props": "type, from, to, days_to_complete (solo al completar)",
+        "answers": "Cuántos se completan y cuánto tardan"
+      },
+      {
+        "name": "resource_edited",
+        "props": "type (una vez por visita al detalle)",
+        "answers": "Cuántos se editan"
+      },
+      {
+        "name": "import_done",
+        "props": "source, count, enriched",
+        "answers": "Uso de la importación de Goodreads"
+      },
+      {
+        "name": "export_started",
+        "props": "—",
+        "answers": "Uso de la exportación CSV"
+      },
+      {
+        "name": "search_error",
+        "props": "reason",
+        "answers": "Cuota agotada, red o servidor"
+      },
+      {
+        "name": "sync_error",
+        "props": "kind, domain, code, inner_codes",
+        "answers": "Fallos de CloudKit"
+      },
+      {
+        "name": "$screen",
+        "props": "$screen_name",
+        "answers": "Pantallas más vistas"
+      }
+    ],
+    "dashboard": {
+      "name": "TrackHobbies - App iOS",
+      "id": 989027,
+      "url": "https://eu.posthog.com/project/289000/dashboard/989027",
+      "note": "17 insights de uso general y 9 creadas hoy (ciclo de vida, embudo, errores de búsqueda y cuota agotada)."
+    },
+    "alert": "Aviso diario por email si hay más de 20 búsquedas con rateLimited en un día."
+  },
+  "config": [
+    {
+      "key": "GAME_API_HOST / GAME_API_TOKEN",
+      "where": "Config/Secrets.xcconfig → Info.plist (GameAPIHost, GameAPIToken)",
+      "committed": false,
+      "purpose": "Host y token de app del Worker. Sirven también para libros (el nombre es histórico)."
+    },
+    {
+      "key": "POSTHOG_API_KEY / POSTHOG_HOST",
+      "where": "Config/Secrets.xcconfig → Info.plist (PostHogAPIKey, PostHogHost)",
+      "committed": false,
+      "purpose": "Project token phc_… y host sin https://."
+    },
+    {
+      "key": "DEVELOPMENT_TEAM",
+      "where": "Config/Secrets.xcconfig",
+      "committed": false,
+      "purpose": "Equipo de firma (obligatorio para CloudKit)."
+    },
+    {
+      "key": "Secretos del Worker",
+      "where": "wrangler secret put …",
+      "committed": false,
+      "purpose": "APP_TOKEN, TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET, GOOGLE_BOOKS_API_KEY."
+    },
+    {
+      "key": "Config/Secrets.example.xcconfig",
+      "where": "Repositorio",
+      "committed": true,
+      "purpose": "Plantilla con marcadores; sin valores reales."
+    }
+  ],
+  "flows": [
+    {
+      "name": "Buscar y añadir un recurso",
+      "steps": [
+        "La hoja de búsqueda cambia viewModel.searchQuery.",
+        "El .task(id:) cancela la búsqueda anterior y espera 400 ms (debounce).",
+        "El servicio llama al Worker (libros, juegos) o a TVMaze (series) con URLSession.decode.",
+        "Los errores se traducen a SearchError y se muestran con opción de reintento.",
+        "El usuario elige «Añadir» o «Pendiente»: se inserta un ResourceEntity y se emite resource_added."
+      ]
+    },
+    {
+      "name": "Seguimiento por páginas",
+      "steps": [
+        "El total de páginas viene de la búsqueda o de Goodreads; si falta, se añade con un editor explícito.",
+        "El editor valida 1…10.000 y que no sea menor que la página actual.",
+        "La página actual se limita al total.",
+        "Solo al llegar a la última página se marca «Completado»; guardar un total nunca cambia el estado.",
+        "Cualquier cambio de estado emite status_changed."
+      ]
+    },
+    {
+      "name": "Sincronización con CloudKit",
+      "steps": [
+        "SwiftData espeja ResourceEntity en la base privada del usuario.",
+        "Cada cambio remoto llega con un push silencioso (aps-environment + remote-notification).",
+        "SyncMonitor registra cada evento setup / import / export y muestra el error interno si lo hay.",
+        "En Production el esquema debe estar desplegado previamente."
+      ]
+    },
+    {
+      "name": "Consentimiento de analytics",
+      "steps": [
+        "Primer arranque: hoja con «Compartir uso anónimo» / «Ahora no».",
+        "Sin consentimiento el SDK arranca en optOut y no envía nada.",
+        "El interruptor de Estadísticas lo cambia en cualquier momento."
+      ]
+    }
+  ],
+  "quality": {
+    "tests": [
+      {
+        "suite": "PageTrackingTests",
+        "kind": "XCTest",
+        "count": 3,
+        "covers": "Reglas del total de páginas y el caso del «completado falso»."
+      },
+      {
+        "suite": "worker.test.js",
+        "kind": "node --test",
+        "count": 9,
+        "covers": "Mapeo de juegos y libros, ISBN, token, caché, 429."
+      }
+    ],
+    "practices": [
+      "Confirmación antes de borrar o de cambios que borran datos del usuario.",
+      "Accesibilidad: VoiceOver y Dynamic Type.",
+      "Localización es/en con Localizable.xcstrings (claves en español).",
+      "Manifiesto de privacidad (PrivacyInfo.xcprivacy): Product Interaction + Device ID, solo analytics.",
+      "Sin claves en el repositorio; escaneo de secretos antes de cada commit."
+    ]
+  },
+  "risks": [
+    {
+      "level": "alto",
+      "text": "El esquema de CloudKit en Production solo crece. Antes de cambiar ResourceEntity hay que planificar la migración y volver a desplegar el esquema."
+    },
+    {
+      "level": "medio",
+      "text": "Alternar un mismo dispositivo entre Debug y TestFlight mezcla los entornos Development y Production de CloudKit."
+    },
+    {
+      "level": "medio",
+      "text": "Cuota de Google Books (~1.000/día): la importación de Goodreads con enriquecimiento gasta 1 petición por libro."
+    },
+    {
+      "level": "medio",
+      "text": "Las consultas por ISBN de Google Books devuelven 0 resultados; el enriquecimiento de Goodreads no aporta nada hoy."
+    },
+    {
+      "level": "bajo",
+      "text": "El Worker no tiene rate limit propio."
+    },
+    {
+      "level": "bajo",
+      "text": "PendingItemEntity existe en el esquema pero la interfaz no la usa; su tipo no se crea en CloudKit hasta que haya un registro."
+    },
+    {
+      "level": "bajo",
+      "text": "Sin tests de vistas ni de ViewModels; la cobertura es solo de reglas puras y del Worker."
+    }
+  ],
+  "roadmap": [
+    {
+      "status": "pendiente",
+      "text": "Eventos sync_ok (import/export correctos) para medir la latencia de la sincronización."
+    },
+    {
+      "status": "pendiente",
+      "text": "Bundle id propio para Debug (com.trackhobbies.app.dev) para no mezclar entornos."
+    },
+    {
+      "status": "pendiente",
+      "text": "Decidir qué hacer con PendingItemEntity (usarla o retirarla antes de desplegar más esquema)."
+    },
+    {
+      "status": "pendiente",
+      "text": "Buscar páginas para libros añadidos a mano (ruta nueva del Worker)."
+    },
+    {
+      "status": "pendiente",
+      "text": "Revisar las insights de PostHog cuando haya datos de la build nueva."
+    },
+    {
+      "status": "planeado",
+      "text": "Exportación a Notion."
+    },
+    {
+      "status": "hecho",
+      "text": "Sincronización CloudKit, analytics opt-in, libros vía Worker, icono, seguimiento de páginas controlado."
+    }
+  ],
+  "events": [
+    {
+      "time": "—",
+      "message": "Reparado el servidor MobileBuildMCP (caché corrupta de npx)."
+    },
+    {
+      "time": "—",
+      "message": "Creadas 9 insights y 1 alerta en el dashboard de PostHog existente."
+    },
+    {
+      "time": "—",
+      "message": "Esquema de CloudKit desplegado a Production y Worker desplegado con las rutas de libros (acciones del usuario)."
+    }
+  ],
+  "stats": {
+    "swiftFilesApp": 29,
+    "swiftLinesApp": 4434,
+    "swiftFilesTests": 1,
+    "workerLines": 141,
+    "appTests": 3,
+    "workerTests": 9,
+    "strings": 190,
+    "commitsTotal": 46,
+    "commitsToday": 19
+  },
+  "timeline": [
+    {
+      "hash": "35288f5",
+      "time": "09:38",
+      "message": "chore: remove dead code and untrack generated files",
+      "area": "Mantenimiento"
+    },
+    {
+      "hash": "0b8f865",
+      "time": "09:38",
+      "message": "fix: version the SwiftData schema and stop crashing on store failure",
+      "area": "Persistencia"
+    },
+    {
+      "hash": "58fa43f",
+      "time": "09:38",
+      "message": "feat: async search with visible errors, debounce and IGDB client",
+      "area": "Búsqueda"
+    },
+    {
+      "hash": "e03c2d7",
+      "time": "09:38",
+      "message": "feat: add Cloudflare Worker proxy for IGDB game search",
+      "area": "Backend"
+    },
+    {
+      "hash": "3c5241e",
+      "time": "09:38",
+      "message": "docs: correct stale claims in CLAUDE.md and README",
+      "area": "Documentación"
+    },
+    {
+      "hash": "3537350",
+      "time": "09:38",
+      "message": "chore: regenerate Xcode project with xcodegen",
+      "area": "Build"
+    },
+    {
+      "hash": "72cb1cd",
+      "time": "11:49",
+      "message": "feat: confirm before deleting a book, series or game",
+      "area": "Seguridad de datos"
+    },
+    {
+      "hash": "c5507df",
+      "time": "11:56",
+      "message": "feat: confirm before changes that erase user data in detail view",
+      "area": "Seguridad de datos"
+    },
+    {
+      "hash": "2ff23b7",
+      "time": "13:00",
+      "message": "feat: accessibility pass for VoiceOver and Dynamic Type",
+      "area": "Accesibilidad"
+    },
+    {
+      "hash": "c9d566e",
+      "time": "13:14",
+      "message": "feat: localize the app in Spanish and English",
+      "area": "Localización"
+    },
+    {
+      "hash": "b353b78",
+      "time": "13:43",
+      "message": "fix: use own Google Books API key to avoid shared anonymous quota 429",
+      "area": "Búsqueda"
+    },
+    {
+      "hash": "1ebf761",
+      "time": "14:10",
+      "message": "feat: sync data with CloudKit (private DB)",
+      "area": "Sincronización"
+    },
+    {
+      "hash": "259e815",
+      "time": "14:45",
+      "message": "feat: add app icon",
+      "area": "Diseño"
+    },
+    {
+      "hash": "1008fe9",
+      "time": "14:45",
+      "message": "feat: opt-in PostHog analytics",
+      "area": "Analytics"
+    },
+    {
+      "hash": "c57b7a9",
+      "time": "16:21",
+      "message": "feat: route book search through the Cloudflare Worker",
+      "area": "Backend"
+    },
+    {
+      "hash": "d80fb09",
+      "time": "16:26",
+      "message": "fix: stop false 'completed' when typing total pages",
+      "area": "Seguimiento"
+    },
+    {
+      "hash": "67b9beb",
+      "time": "16:43",
+      "message": "feat: track status changes and edits (privacy-safe)",
+      "area": "Analytics"
+    },
+    {
+      "hash": "70b53a9",
+      "time": "16:43",
+      "message": "fix: add aps-environment entitlement so CloudKit sync gets pushes",
+      "area": "Sincronización"
+    },
+    {
+      "hash": "b166107",
+      "time": "16:56",
+      "message": "feat: show iCloud sync status and report sync errors",
+      "area": "Sincronización"
+    }
+  ]
+}</script>
+<!--/DATA-->
+
+<script>
+(function () {
+  "use strict";
+  var D = JSON.parse(document.getElementById("arch-data").textContent);
+  var COLORS = { ui: "var(--ui)", app: "var(--app)", data: "var(--data)", platform: "var(--platform)", backend: "var(--backend)", ext: "var(--ext)" };
+  var GROUP_NAMES = { ui: "Presentación", app: "ViewModels y servicios", data: "Datos y sincronización", platform: "Transversal", backend: "Backend", ext: "Servicios externos" };
+
+  function h(tag, props) {
+    var e = document.createElement(tag);
+    props = props || {};
+    Object.keys(props).forEach(function (k) {
+      if (k === "class") e.className = props[k];
+      else if (k === "style") e.setAttribute("style", props[k]);
+      else if (k.slice(0, 2) === "on") e.addEventListener(k.slice(2), props[k]);
+      else e.setAttribute(k, props[k]);
+    });
+    for (var i = 2; i < arguments.length; i++) add(e, arguments[i]);
+    return e;
+  }
+  function add(parent, c) {
+    if (c == null || c === false) return;
+    if (Array.isArray(c)) { c.forEach(function (x) { add(parent, x); }); return; }
+    parent.appendChild(typeof c === "object" ? c : document.createTextNode(String(c)));
+  }
+  function svg(tag, props) {
+    var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.keys(props || {}).forEach(function (k) { e.setAttribute(k, props[k]); });
+    for (var i = 2; i < arguments.length; i++) add(e, arguments[i]);
+    return e;
+  }
+  function section(id, title, sub, body) {
+    return h("section", { id: id }, h("h2", {}, title), sub ? h("p", { class: "sub" }, sub) : null, body);
+  }
+  function table(headers, rows) {
+    return h("div", { class: "tablewrap" }, h("table", {},
+      h("thead", {}, h("tr", {}, headers.map(function (x) { return h("th", {}, x); }))),
+      h("tbody", {}, rows.map(function (r) { return h("tr", {}, r.map(function (c) { return h("td", {}, c); })); }))));
+  }
+  function code(t) { return h("code", {}, t); }
+  function fmt(n) { return n.toLocaleString("es-ES"); }
+
+  /* ---------- diagram ---------- */
+  function diagram() {
+    var nodes = {}; D.diagram.nodes.forEach(function (n) { nodes[n.id] = n; });
+    var maxX = 0, maxY = 0;
+    D.diagram.nodes.forEach(function (n) { maxX = Math.max(maxX, n.x + n.w); maxY = Math.max(maxY, n.y + n.h); });
+    var s = svg("svg", { viewBox: "0 0 " + (maxX + 20) + " " + (maxY + 20), role: "img", "aria-label": "Diagrama de la arquitectura de TrackHobbies" });
+    s.appendChild(svg("defs", {}, svg("marker", { id: "arrow", viewBox: "0 0 10 10", refX: "9", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" },
+      svg("path", { d: "M0 0 L10 5 L0 10 z", fill: "var(--muted)" }))));
+    function anchor(a, b) {
+      var ac = { x: a.x + a.w / 2, y: a.y + a.h / 2 }, bc = { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+      var dx = bc.x - ac.x, dy = bc.y - ac.y;
+      if (Math.abs(dx) * 0.55 >= Math.abs(dy)) {
+        return dx > 0 ? { p: { x: a.x + a.w, y: ac.y }, q: { x: b.x, y: bc.y } } : { p: { x: a.x, y: ac.y }, q: { x: b.x + b.w, y: bc.y } };
+      }
+      return dy > 0 ? { p: { x: ac.x, y: a.y + a.h }, q: { x: bc.x, y: b.y } } : { p: { x: ac.x, y: a.y }, q: { x: bc.x, y: b.y + b.h } };
+    }
+    D.diagram.edges.forEach(function (e) {
+      var a = anchor(nodes[e.from], nodes[e.to]);
+      s.appendChild(svg("line", { x1: a.p.x, y1: a.p.y, x2: a.q.x, y2: a.q.y, stroke: "var(--muted)", "stroke-width": "1.5", "marker-end": "url(#arrow)" }));
+      if (e.label) {
+        var mx = (a.p.x + a.q.x) / 2, my = (a.p.y + a.q.y) / 2;
+        s.appendChild(svg("text", { x: mx, y: my - 6, "text-anchor": "middle", "font-size": "11.5", fill: "var(--muted)", stroke: "var(--surface)", "stroke-width": "4", "paint-order": "stroke" }, e.label));
+      }
+    });
+    D.diagram.nodes.forEach(function (n) {
+      var c = COLORS[n.group] || "var(--accent)";
+      s.appendChild(svg("rect", { x: n.x, y: n.y, width: n.w, height: n.h, rx: "10", fill: "var(--surface)", stroke: c, "stroke-width": "2" }));
+      s.appendChild(svg("rect", { x: n.x, y: n.y, width: "6", height: n.h, rx: "3", fill: c }));
+      s.appendChild(svg("text", { x: n.x + 16, y: n.y + 26, "font-size": "14", "font-weight": "700", fill: "var(--text)" }, n.label));
+      s.appendChild(svg("text", { x: n.x + 16, y: n.y + 46, "font-size": "11.5", fill: "var(--muted)" }, n.sub));
+    });
+    var legend = h("div", { class: "legend" }, Object.keys(GROUP_NAMES).map(function (g) {
+      return h("span", {}, h("i", { class: "dot", style: "--layer:" + COLORS[g] }), GROUP_NAMES[g]);
+    }));
+    return h("div", { class: "card" }, s, legend);
+  }
+
+  /* ---------- sections ---------- */
+  function kpis() {
+    var s = D.stats;
+    var items = [
+      [fmt(s.swiftFilesApp), "archivos Swift (app)"], [fmt(s.swiftLinesApp), "líneas Swift (app)"], [fmt(s.workerLines), "líneas del Worker"],
+      [s.appTests + " + " + s.workerTests, "tests (app + Worker)"], [fmt(s.strings), "textos localizados (es/en)"], [s.commitsToday + " / " + s.commitsTotal, "commits hoy / total"]
+    ];
+    return h("div", { class: "grid g4" }, items.map(function (i) { return h("div", { class: "card kpi" }, h("div", { class: "n" }, i[0]), h("div", { class: "l" }, i[1])); }));
+  }
+
+  function layers() {
+    var max = 0; D.layers.forEach(function (l) { l.modules.forEach(function (m) { max = Math.max(max, m.lines); }); });
+    return h("div", { class: "grid" }, D.layers.map(function (l) {
+      var total = l.modules.reduce(function (a, m) { return a + m.lines; }, 0);
+      return h("div", { class: "card", style: "--layer:" + (COLORS[l.id] || "var(--accent)") },
+        h("div", { class: "layer-head" }, h("i", { class: "dot" }), h("h3", {}, l.name), h("span", { class: "chip" }, fmt(total) + " líneas")),
+        h("p", { class: "sub", style: "margin:0 0 8px" }, l.description),
+        table(["Módulo", "Responsabilidad", "Tamaño"], l.modules.map(function (m) {
+          return [
+            h("div", {}, h("b", {}, m.name), h("details", {}, h("summary", {}, m.files.length + (m.files.length === 1 ? " archivo" : " archivos")), h("ul", {}, m.files.map(function (f) { return h("li", {}, code(f)); })))),
+            m.role,
+            h("div", {}, h("span", { class: "mono" }, fmt(m.lines)), h("div", { class: "bar" }, h("i", { style: "width:" + Math.max(3, Math.round(m.lines / max * 100)) + "%" })))
+          ];
+        })));
+    }));
+  }
+
+  function dataModel() {
+    var m = D.dataModel;
+    return h("div", { class: "grid" },
+      h("div", { class: "grid g2" }, m.entities.map(function (e) {
+        return h("div", { class: "card" }, h("h3", {}, e.name), h("p", { class: "sub", style: "margin:0" }, e.description), h("ul", { class: "fields mono" }, e.fields.map(function (f) { return h("li", {}, f); })));
+      })),
+      h("div", { class: "grid g2" },
+        h("div", { class: "card" }, h("h3", {}, "Migraciones · esquema actual " + m.schemaVersion),
+          m.migrations.map(function (x) { return h("div", {}, h("p", { style: "margin:4px 0" }, h("b", {}, x.from + " → " + x.to), " ", h("span", { class: "chip" }, x.kind)), h("ul", { class: "plain" }, x.changes.map(function (c) { return h("li", {}, c); }))); }),
+          h("p", { class: "sub", style: "margin:8px 0 0" }, "Almacén: ", code(m.store))),
+        h("div", { class: "card" }, h("h3", {}, "Reglas para cambiar el modelo"), h("ul", { class: "plain" }, m.rules.map(function (r) { return h("li", {}, r); })))));
+  }
+
+  function sync() {
+    var s = D.sync;
+    return h("div", { class: "grid" },
+      h("div", { class: "grid g2" },
+        h("div", { class: "card" }, h("h3", {}, "Configuración"),
+          h("ul", { class: "plain" },
+            h("li", {}, "Contenedor: ", code(s.container)), h("li", {}, "Base: " + s.database), h("li", {}, "Biblioteca: " + s.library), h("li", {}, code(s.background)),
+            s.entitlements.map(function (x) { return h("li", {}, code(x)); }))),
+        h("div", { class: "card" }, h("h3", {}, "Entornos de CloudKit"),
+          table(["Entorno", "Quién lo usa", "Nota"], s.environments.map(function (e) { return [h("b", {}, e.name), e.used_by, e.note]; })),
+          h("p", { class: "sub", style: "margin:10px 0 0" }, "No alternes un mismo dispositivo entre Debug y TestFlight: cada uno mira un entorno distinto."))),
+      h("div", { class: "card" }, h("h3", {}, "Diagnóstico integrado"), h("ul", { class: "plain" }, s.diagnostics.map(function (x) { return h("li", {}, x); }))),
+      h("div", { class: "callout" }, h("b", {}, "Incidente: " + s.incident.title),
+        h("p", { style: "margin:4px 0" }, h("b", { style: "display:inline" }, "Síntoma: "), s.incident.symptom),
+        h("p", { style: "margin:4px 0" }, h("b", { style: "display:inline" }, "Causa: "), s.incident.cause),
+        h("p", { style: "margin:4px 0" }, h("b", { style: "display:inline" }, "Resolución: "), s.incident.fix)));
+  }
+
+  function services() {
+    return h("div", { class: "card" }, table(["Servicio", "Ruta", "Autenticación", "Caché", "Límite gratis", "Notas"],
+      D.externalServices.map(function (s) { return [h("b", {}, s.name), s.via, s.auth, s.cache, s.limit, s.notes]; })));
+  }
+
+  function worker() {
+    var w = D.worker;
+    return h("div", { class: "grid g2" },
+      h("div", { class: "card" }, h("h3", {}, "Rutas · " + w.name),
+        table(["Método", "Ruta", "Descripción"], w.routes.map(function (r) { return [h("span", { class: "badge b-hecho" }, r.method), code(r.path), r.desc]; })),
+        h("p", { class: "sub", style: "margin:10px 0 0" }, w.headers.join(" · "))),
+      h("div", { class: "card" }, h("h3", {}, "Secretos y despliegue"),
+        h("div", { class: "chips", style: "margin:6px 0" }, w.secrets.map(function (s) { return h("span", { class: "chip mono" }, s); })),
+        h("p", { class: "sub", style: "margin:8px 0 4px" }, "Errores"),
+        h("ul", { class: "plain" }, Object.keys(w.errors).map(function (k) { return h("li", {}, h("b", {}, k), ": " + w.errors[k]); })),
+        h("p", { class: "sub", style: "margin:8px 0 0" }, "Despliegue: ", code(w.deploy))));
+  }
+
+  function analytics() {
+    var a = D.analytics;
+    return h("div", { class: "grid" },
+      h("div", { class: "grid g2" },
+        h("div", { class: "card" }, h("h3", {}, a.provider), h("p", { class: "sub", style: "margin:0 0 6px" }, a.consent), h("ul", { class: "plain" }, a.rules.map(function (r) { return h("li", {}, r); }))),
+        h("div", { class: "card" }, h("h3", {}, "Dashboard y alerta"),
+          h("p", { style: "margin:4px 0" }, h("a", { href: a.dashboard.url, target: "_blank", rel: "noopener" }, a.dashboard.name), " (id " + a.dashboard.id + ")"),
+          h("p", { class: "sub", style: "margin:0 0 6px" }, a.dashboard.note), h("p", { style: "margin:0" }, a.alert))),
+      h("div", { class: "card" }, table(["Evento", "Propiedades", "Qué responde"], a.events.map(function (e) { return [code(e.name), e.props, e.answers]; }))));
+  }
+
+  function config() {
+    return h("div", { class: "card" }, table(["Clave", "Dónde vive", "¿En el repo?", "Para qué"],
+      D.config.map(function (c) { return [code(c.key), c.where, h("span", { class: "badge " + (c.committed ? "b-si" : "b-no") }, c.committed ? "sí (plantilla)" : "no"), c.purpose]; })));
+  }
+
+  function flows() {
+    return h("div", { class: "grid g2" }, D.flows.map(function (f) {
+      return h("div", { class: "card" }, h("h3", {}, f.name), h("ol", { class: "steps" }, f.steps.map(function (s) { return h("li", {}, s); })));
+    }));
+  }
+
+  function quality() {
+    var q = D.quality;
+    return h("div", { class: "grid g2" },
+      h("div", { class: "card" }, h("h3", {}, "Tests"), table(["Suite", "Tipo", "Nº", "Cubre"], q.tests.map(function (t) { return [code(t.suite), t.kind, t.count, t.covers]; }))),
+      h("div", { class: "card" }, h("h3", {}, "Prácticas"), h("ul", { class: "plain" }, q.practices.map(function (p) { return h("li", {}, p); }))));
+  }
+
+  function risks() {
+    return h("div", { class: "card" }, table(["Nivel", "Riesgo"], D.risks.map(function (r) { return [h("span", { class: "badge b-" + r.level }, r.level), r.text]; })));
+  }
+
+  var AREA_COLORS = { "Sincronización": "var(--data)", "Analytics": "var(--platform)", "Backend": "var(--backend)", "Búsqueda": "var(--app)", "Persistencia": "var(--data)" };
+  function today() {
+    var items = D.timeline.map(function (t) {
+      return h("li", {}, h("div", { class: "t" }, t.time + " · ", code(t.hash)), h("div", {}, t.message, h("span", { class: "tag", style: "border-color:" + (AREA_COLORS[t.area] || "var(--line)") }, t.area)));
+    });
+    var ev = D.events.map(function (e) { return h("li", {}, h("div", { class: "t" }, "fuera de git"), h("div", {}, e.message)); });
+    return h("ul", { class: "timeline card" }, items, ev);
+  }
+
+  function roadmap() {
+    var order = ["pendiente", "planeado", "hecho"];
+    return h("div", { class: "grid g2" }, order.map(function (st) {
+      var xs = D.roadmap.filter(function (r) { return r.status === st; });
+      if (!xs.length) return null;
+      return h("div", { class: "card" }, h("h3", {}, h("span", { class: "badge b-" + st }, st)), h("ul", { class: "plain" }, xs.map(function (r) { return h("li", {}, r.text); })));
+    }));
+  }
+
+  /* ---------- page ---------- */
+  var m = D.meta;
+  var sections = [
+    ["resumen", "Resumen", kpis, null],
+    ["arquitectura", "Arquitectura", diagram, "Quién habla con quién. Las claves de terceros viven solo en el Worker; SwiftData se espeja en CloudKit."],
+    ["capas", "Capas y módulos", layers, "Tamaños calculados desde los archivos reales en la fecha de generación."],
+    ["datos", "Modelo de datos", dataModel, null],
+    ["sync", "Sincronización iCloud", sync, null],
+    ["servicios", "Servicios externos y límites", services, "Los límites son de memoria; compruébalos antes de depender de ellos."],
+    ["worker", "Cloudflare Worker", worker, null],
+    ["analytics", "Analytics (PostHog)", analytics, null],
+    ["config", "Configuración y secretos", config, null],
+    ["flujos", "Flujos principales", flows, null],
+    ["calidad", "Calidad", quality, null],
+    ["riesgos", "Riesgos conocidos", risks, null],
+    ["hoy", "Lo hecho hoy · " + m.generated, today, "Commits del día (hora local) y acciones fuera de git."],
+    ["manana", "Pendiente y siguientes pasos", roadmap, null]
+  ];
+
+  var app = document.getElementById("app");
+  app.textContent = "";
+  var themeBtn = h("button", { type: "button", "aria-label": "Cambiar tema", onclick: function () {
+    var root = document.documentElement;
+    var dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+  } }, "Tema");
+  app.appendChild(h("header", { class: "top" },
+    h("h1", {}, m.name + " · Arquitectura"), h("p", { class: "tagline" }, m.tagline),
+    h("div", { class: "chips" }, [m.platforms.join(" + "), "iOS " + m.minIOS + "+", m.language, m.pattern, m.buildSystem, "v" + m.version, m.localizations.join(" / ")].map(function (c) { return h("span", { class: "chip" }, c); }))));
+  app.appendChild(h("nav", {}, sections.map(function (s) { return h("a", { href: "#" + s[0] }, s[1]); }), themeBtn));
+  sections.forEach(function (s) { app.appendChild(section(s[0], s[1], s[3], s[2]())); });
+  app.appendChild(h("footer", {}, "Generado el " + m.generated + " desde architecture.json · ", code("python3 Docs/architecture/build.py"), " para volver a incrustar los datos."));
+})();
+</script>
+</body>
+</html>

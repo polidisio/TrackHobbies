@@ -5,7 +5,7 @@
 - **Platform**: iPhone + iPad (SwiftUI)
 - **Language**: Swift 5.9+
 - **Architecture**: MVVM with services layer
-- **Persistence**: CloudKit + local storage (Core Data planned)
+- **Persistence**: SwiftData synced with CloudKit (private DB, schema V2); see `lessons.md`
 
 ---
 

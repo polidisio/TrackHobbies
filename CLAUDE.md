@@ -33,23 +33,22 @@ open TrackHobbies.xcodeproj
 
 ```
 TrackHobbies/
-├── AppMain.swift           # App entry point
-├── BookStore.swift         # Book-specific logic
-├── ContentView.swift       # Main container with tabs
-├── Models/                # SwiftData entities + enums
-├── Services/              # API services
-│   ├── GoogleBooksService.swift
-│   ├── GoodreadsImporter.swift
-│   ├── TVMazeService.swift
-│   ├── GameSearchService.swift
-│   └── HTTP.swift
-├── Utils/
-│   ├── CSVExporter.swift
+├── AppMain.swift           # Entrada: Analytics + SyncMonitor + contenedor
+├── BookStore.swift         # DataStore, SchemaV1/V2 y plan de migración
+├── ContentView.swift       # TabView (Libros, Series, Juegos, Stats) + consentimiento
+├── Models/                 # Enums + ResourceEntity / PendingItemEntity (SwiftData)
+├── ViewModels/             # Searchable + Books/Series/Games
+├── Views/                  # Listados, detalle, Stats, SyncStatusView, consentimiento…
+├── Services/               # HTTP, GoogleBooks (vía Worker), GameSearch (vía Worker), TVMaze, Goodreads
+├── Utils/                  # Analytics, SyncMonitor, PageTracking, CSVExporter
 ├── Theme/
-├── Views/
-├── ViewModels/
-├── Assets.xcodeproj
+├── Tests/                  # XCTest (PageTracking)
+├── worker/                 # Cloudflare Worker: /games/search, /books/search, /books/isbn (+ tests node)
+├── Config/                 # App.xcconfig, Secrets.example.xcconfig (Secrets.xcconfig ignorado)
+├── Docs/                   # DIARIO.md, ANALYTICS.md, architecture/ (dashboard HTML + JSON)
+├── PrivacyInfo.xcprivacy
 ├── project.yml
+├── lessons.md              # Errores y cómo evitarlos
 ├── AGENTS.md
 ├── README.md
 └── CLAUDE.md
@@ -77,8 +76,10 @@ TrackHobbies/
 - **Services:** External API clients
 
 ### CloudKit Sync
-- Container: `iCloud.com.trackhobbies.app`
-- Services: CloudKit
+- Container: `iCloud.com.trackhobbies.app` (base privada), esquema SwiftData V2
+- Builds de Xcode → entorno Development; TestFlight/App Store → **Production** (esquema desplegado a mano desde el CloudKit Console)
+- Requiere `aps-environment` + `remote-notification`; estado y errores visibles en Estadísticas (`SyncMonitor`)
+- Ver `lessons.md` antes de tocar modelos o entitlements
 
 ## Important Rules
 
@@ -93,6 +94,7 @@ TrackHobbies/
 
 ## Resources
 
+- Diario de desarrollo: `Docs/DIARIO.md` · Arquitectura: `Docs/architecture/architecture.html` · Lecciones: `lessons.md`
 - Token optimization tips: `shared/claude-optimization-tips.md` (Obsidian Vault)
 
 ---

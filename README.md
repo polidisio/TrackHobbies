@@ -13,6 +13,11 @@ Resumen
 - Localización: UI en español e inglés (`Localizable.xcstrings`).
 - Analytics opt-in con PostHog (`Docs/ANALYTICS.md`): solo uso anónimo, nunca contenido.
 
+Documentación
+- Diario de desarrollo: `Docs/DIARIO.md`.
+- Arquitectura (dashboard): `Docs/architecture/architecture.html` y `architecture.json`.
+- Analytics: `Docs/ANALYTICS.md`. Lecciones aprendidas: `lessons.md`.
+
 Estructura de archivos propuesta (inicio)
 - AppMain.swift: punto de entrada de la app SwiftUI.
 - Models.swift: definiciones de modelos y tipos de dominio.
