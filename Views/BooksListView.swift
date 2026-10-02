@@ -454,8 +454,7 @@ struct BookSearchView: View {
     @ObservedObject var viewModel: BooksViewModel
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
-    @State private var manualTitle = ""
-    @State private var manualAuthor = ""
+    @State private var draft = ManualDraft()
     @State private var showingManualEntry = false
 
     var body: some View {
@@ -480,14 +479,14 @@ struct BookSearchView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
-                        if showingManualEntry && !manualTitle.isEmpty {
-                            viewModel.addBook(title: manualTitle, author: manualAuthor.isEmpty ? nil : manualAuthor, context: modelContext)
+                        if showingManualEntry && draft.isValid {
+                            draft.insert(type: .book, context: modelContext)
                             isPresented = false
                         } else {
                             showingManualEntry.toggle()
                         }
                     }
-                    .disabled(showingManualEntry && manualTitle.isEmpty)
+                    .disabled(showingManualEntry && !draft.isValid)
                 }
             }
         }
@@ -543,12 +542,7 @@ struct BookSearchView: View {
     }
 
     private var manualEntrySection: some View {
-        Form {
-            Section("Información del libro") {
-                TextField("Título", text: $manualTitle)
-                TextField("Autor (opcional)", text: $manualAuthor)
-            }
-        }
+        ManualEntryForm(type: .book, draft: $draft)
     }
 }
 
@@ -769,7 +763,7 @@ struct ResourceThumbnail: View {
     let color: Color
 
     var body: some View {
-        AsyncImage(url: URL(string: url ?? "")) { phase in
+        CoverImage(url: url) { phase in
             switch phase {
             case .success(let image):
                 image

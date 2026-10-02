@@ -155,7 +155,7 @@ struct ResourceDetailView: View {
 
     private var headerSection: some View {
         VStack(spacing: 16) {
-            AsyncImage(url: URL(string: resource.imageURL ?? "")) { phase in
+            CoverImage(url: resource.imageURL) { phase in
                 switch phase {
                 case .success(let image):
                     image

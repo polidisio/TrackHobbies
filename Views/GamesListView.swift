@@ -309,7 +309,7 @@ struct GameSearchView: View {
     @ObservedObject var viewModel: GamesViewModel
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
-    @State private var manualTitle = ""
+    @State private var draft = ManualDraft()
     @State private var showingManualEntry = false
 
     var body: some View {
@@ -334,14 +334,14 @@ struct GameSearchView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
-                        if showingManualEntry && !manualTitle.isEmpty {
-                            viewModel.addGame(title: manualTitle, context: modelContext)
+                        if showingManualEntry && draft.isValid {
+                            draft.insert(type: .game, context: modelContext)
                             isPresented = false
                         } else {
                             showingManualEntry.toggle()
                         }
                     }
-                    .disabled(showingManualEntry && manualTitle.isEmpty)
+                    .disabled(showingManualEntry && !draft.isValid)
                 }
             }
         }
@@ -399,11 +399,7 @@ struct GameSearchView: View {
     }
 
     private var manualEntrySection: some View {
-        Form {
-            Section("Información del juego") {
-                TextField("Título", text: $manualTitle)
-            }
-        }
+        ManualEntryForm(type: .game, draft: $draft)
     }
 }
 

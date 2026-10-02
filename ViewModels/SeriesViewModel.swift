@@ -47,22 +47,4 @@ final class SeriesViewModel: ObservableObject, Searchable {
             try? context.save()
         }
     }
-    
-    func addSeries(title: String, summary: String? = nil, context: ModelContext) {
-        let serie = ResourceEntity(
-            type: .series,
-            title: title,
-            summary: summary,
-            status: .notStarted
-        )
-        
-        context.insert(serie)
-        Analytics.track("resource_added", ["type": "series", "source": "manual"])
-        
-        do {
-            try context.save()
-        } catch {
-            print("Error saving series: \(error)")
-        }
-    }
 }

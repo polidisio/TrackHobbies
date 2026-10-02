@@ -54,21 +54,4 @@ final class GamesViewModel: ObservableObject, Searchable {
             print("Error saving game: \(error)")
         }
     }
-    
-    func addGame(title: String, context: ModelContext) {
-        let game = ResourceEntity(
-            type: .game,
-            title: title,
-            status: .notStarted
-        )
-        
-        context.insert(game)
-        Analytics.track("resource_added", ["type": "game", "source": "manual"])
-        
-        do {
-            try context.save()
-        } catch {
-            print("Error saving game: \(error)")
-        }
-    }
 }

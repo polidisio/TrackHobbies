@@ -327,7 +327,7 @@ struct SeriesSearchView: View {
     @ObservedObject var viewModel: SeriesViewModel
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
-    @State private var manualTitle = ""
+    @State private var draft = ManualDraft()
     @State private var showingManualEntry = false
 
     var body: some View {
@@ -352,14 +352,14 @@ struct SeriesSearchView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(showingManualEntry ? "Añadir" : "Manual") {
-                        if showingManualEntry && !manualTitle.isEmpty {
-                            viewModel.addSeries(title: manualTitle, context: modelContext)
+                        if showingManualEntry && draft.isValid {
+                            draft.insert(type: .series, context: modelContext)
                             isPresented = false
                         } else {
                             showingManualEntry.toggle()
                         }
                     }
-                    .disabled(showingManualEntry && manualTitle.isEmpty)
+                    .disabled(showingManualEntry && !draft.isValid)
                 }
             }
         }
@@ -415,11 +415,7 @@ struct SeriesSearchView: View {
     }
 
     private var manualEntrySection: some View {
-        Form {
-            Section("Información de la serie") {
-                TextField("Título", text: $manualTitle)
-            }
-        }
+        ManualEntryForm(type: .series, draft: $draft)
     }
 }
 

@@ -48,17 +48,6 @@ final class BooksViewModel: ObservableObject, Searchable {
         searchResults = []
         searchQuery = ""
     }
-    
-    func addBook(title: String, author: String?, context: ModelContext) {
-        let book = ResourceEntity(
-            type: .book,
-            title: title,
-            authorOrCreator: author,
-            status: .notStarted
-        )
-        context.insert(book)
-        Analytics.track("resource_added", ["type": "book", "source": "manual"])
-    }
 
     func importBooks(_ books: [GoodreadsCSVBook], context: ModelContext, enrichWithGoogleBooks: Bool = false) {
         isImporting = true

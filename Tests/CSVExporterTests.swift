@@ -1,4 +1,6 @@
 import XCTest
+import SwiftData
+import UIKit
 @testable import TrackHobbies
 
 final class CSVExporterTests: XCTestCase {
@@ -53,5 +55,33 @@ final class BookMatchTests: XCTestCase {
     func testPickReturnsNilWhenNothingFits() {
         XCTAssertNil(BookMatch.pick([item("Otro", "Alguien", pages: 10)], title: "Dune", author: "Frank Herbert"))
         XCTAssertNil(BookMatch.pick([item("Dune", "Isaac Asimov", pages: 10)], title: "Dune", author: "Frank Herbert"))
+    }
+}
+
+final class ManualEntryTests: XCTestCase {
+    func testCoverDataURLRoundTripsAndShrinks() throws {
+        let big = UIGraphicsImageRenderer(size: CGSize(width: 2000, height: 3000)).image { ctx in
+            UIColor.red.setFill(); ctx.fill(CGRect(x: 0, y: 0, width: 2000, height: 3000))
+        }
+        let url = try XCTUnwrap(CoverStore.dataURL(from: big.pngData()!))
+        let back = try XCTUnwrap(CoverStore.decode(url))
+        XCTAssertEqual(max(back.size.width, back.size.height), 480, accuracy: 1)
+        XCTAssertLessThan(url.count, 100_000)
+        XCTAssertNil(CoverStore.decode("https://x/y.jpg"))
+    }
+
+    @MainActor
+    func testDraftBuildsEntityPerType() throws {
+        let container = try ModelContainer(for: ResourceEntity.self, PendingItemEntity.self,
+                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        var d = ManualDraft(title: "  Dark  ", status: .inProgress, pages: "99", seasons: "3", episodes: "26")
+        let s = d.insert(type: .series, context: container.mainContext)
+        XCTAssertEqual(s.title, "Dark")
+        XCTAssertEqual(s.totalSeasons, 3)
+        XCTAssertNil(s.totalPages) // las páginas no aplican a series
+        XCTAssertNotNil(s.startDate)
+        d.status = .completed
+        XCTAssertNotNil(d.insert(type: .book, context: container.mainContext).endDate)
+        XCTAssertFalse(ManualDraft(title: "  ").isValid)
     }
 }
