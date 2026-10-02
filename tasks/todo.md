@@ -9,7 +9,7 @@ Actualizado 2026-10-02. Orden por valor/riesgo.
 
 ## Para retomar
 - [x] 4. Evento `sync_ok` (kind + duration_ms) en `SyncMonitor`. Falta: insight en el dashboard de PostHog (id 989027) cuando haya datos.
-- [x] 5. Páginas para libros a mano: botón «Buscar páginas» en el detalle (sin ruta nueva en el Worker: reusa `/books/search` por título+autor).
+- [x] 5. Páginas para libros a mano: botón «Buscar páginas» en el detalle. Probado con el MCP y el Worker real (Hyperion → 642 págs. + portada).
 - [x] 6. Enriquecimiento Goodreads por título + autor (`BookMatch`).
 - [x] 7. Backup JSON completo (Estadísticas → Copia de seguridad): exporta/restaura todos los campos y el `id`; solo añade.
 - [ ] 8. Higiene git: versionar `Package.resolved`, ignorar reordenado de `Localizable.xcstrings`.

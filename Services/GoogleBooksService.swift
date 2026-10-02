@@ -19,7 +19,14 @@ final class GoogleBooksService {
     private init() {}
 
     func search(title: String) async throws -> [GoogleBookItem] {
-        try await URLSession.shared.worker(BookSearchResponse.self, path: "/books/search", query: ["q": title]).results
+        func fetch() async throws -> [GoogleBookItem] {
+            try await URLSession.shared.worker(BookSearchResponse.self, path: "/books/search", query: ["q": title]).results
+        }
+        // Google Books da 502/503 sueltos (el Worker no reintenta): un segundo intento lo suele resolver.
+        do { return try await fetch() } catch SearchError.server {
+            try await Task.sleep(for: .milliseconds(600))
+            return try await fetch()
+        }
     }
 
     /// Ediciones de un libro por título y autor (los `isbn:` de Google devuelven 0 resultados).

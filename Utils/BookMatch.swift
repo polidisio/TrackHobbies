@@ -17,11 +17,11 @@ enum BookMatch {
     }
 
     /// Consulta para `/books/search` (el Worker corta a 100 caracteres).
+    /// Texto plano a propósito: con esta clave de Google Books los operadores (`intitle:`, `inauthor:`, `isbn:`)
+    /// devuelven 0 resultados; el filtrado fino lo hace `pick`.
     static func query(title: String, author: String?) -> String {
-        func clean(_ s: String) -> String { s.replacingOccurrences(of: "\"", with: "") }
-        var q = "intitle:\"\(String(clean(cleanTitle(title)).prefix(60)))\""
-        if let author, !author.isEmpty { q += " inauthor:\"\(String(clean(author).prefix(30)))\"" }
-        return q
+        let q = [cleanTitle(title), author ?? ""].filter { !$0.isEmpty }.joined(separator: " ")
+        return String(q.replacingOccurrences(of: "\"", with: "").prefix(100))
     }
 
     /// Mejor resultado, o `nil` si ninguno encaja (mejor sin datos que con los de otro libro).

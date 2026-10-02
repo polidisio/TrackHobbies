@@ -16,3 +16,7 @@ Qué salió mal, por qué y cómo evitarlo (ver `CLAUDE.md` → Self-Improvement
 8. **`ENABLE_TESTABILITY` venía en NO también en Debug** (XcodeGen sin presets): `@testable import` no compilaba. Fijado en `project.yml`.
 9. **MobileBuildMCP:** `ARCHS=arm64` en los defaults de la sesión cuando se añaden paquetes SPM; si `npx` falla con `Cannot find module`, borrar su entrada de `~/.npm/_npx`.
 10. **Las cuotas gratis son de memoria.** Verificarlas antes de depender de ellas (Google Books ~1.000/día, IGDB ~4/s, Workers 100.000/día) y vigilar `search_error` con `rateLimited` (alerta en PostHog).
+11. **Los operadores de Google Books no funcionan con esta clave.** `intitle:`, `inauthor:` e `isbn:` devuelven 0 resultados; el texto plano sí. Probar la consulta real con `curl` contra el Worker antes de darla por buena (`BookMatch.query` ya usa texto plano). Además Google da 502/503 sueltos: `GoogleBooksService.search` reintenta una vez.
+12. **Probar en el simulador iOS 27, no en el iPhone 17 Pro (iOS 26.2):** `xcodebuild test` y `simctl install` se cuelgan allí. El flujo `ui-automation` de MobileBuildMCP se activa en `.mobilebuildmcp/config.yaml` y exige reconectar el MCP (`/mcp`).
+13. **El autocorrector estropea títulos y autores** («Dune» → «Dime»). `.autocorrectionDisabled()` en los campos de nombres propios.
+

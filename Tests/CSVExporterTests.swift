@@ -52,6 +52,12 @@ final class BookMatchTests: XCTestCase {
         XCTAssertEqual(BookMatch.pick(r, title: "Dune (Dune Chronicles, #1)", author: "Frank Herbert")?.numberOfPages, 412)
     }
 
+    func testQueryIsPlainTextWithoutOperators() {
+        XCTAssertEqual(BookMatch.query(title: "Hyperion (Hyperion Cantos, #1)", author: "Dan Simmons"), "Hyperion Dan Simmons")
+        XCTAssertEqual(BookMatch.query(title: "Dune", author: nil), "Dune")
+        XCTAssertFalse(BookMatch.query(title: "A \"B\"", author: "C").contains(":"))
+    }
+
     func testPickReturnsNilWhenNothingFits() {
         XCTAssertNil(BookMatch.pick([item("Otro", "Alguien", pages: 10)], title: "Dune", author: "Frank Herbert"))
         XCTAssertNil(BookMatch.pick([item("Dune", "Isaac Asimov", pages: 10)], title: "Dune", author: "Frank Herbert"))
