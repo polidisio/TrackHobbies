@@ -22,6 +22,11 @@ final class GoogleBooksService {
         try await URLSession.shared.worker(BookSearchResponse.self, path: "/books/search", query: ["q": title]).results
     }
 
+    /// Ediciones de un libro por título y autor (los `isbn:` de Google devuelven 0 resultados).
+    func searchEditions(title: String, author: String?) async throws -> [GoogleBookItem] {
+        try await search(title: BookMatch.query(title: title, author: author))
+    }
+
     func searchByISBN(_ isbn: String) async throws -> GoogleBookItem? {
         try await URLSession.shared.worker(BookSearchResponse.self, path: "/books/isbn", query: ["isbn": isbn]).results.first
     }

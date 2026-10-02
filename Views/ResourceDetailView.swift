@@ -8,6 +8,7 @@ struct ResourceDetailView: View {
     @State private var showTotalEditor = false
     @State private var totalDraft = ""
     @State private var totalError: String?
+    @State private var showEditionPicker = false
     @State private var lastUpdatedOnOpen: Date?
 
     /// Cambio que borraría datos del usuario y espera su confirmación.
@@ -64,6 +65,9 @@ struct ResourceDetailView: View {
             Button(change.confirmLabel, role: .destructive) { change.apply() }
         } message: { change in
             Text(change.message)
+        }
+        .sheet(isPresented: $showEditionPicker) {
+            EditionPickerView(title: resource.title, author: resource.authorOrCreator) { apply(edition: $0) }
         }
         .alert("Total de páginas", isPresented: $showTotalEditor) {
             TextField("Páginas", text: $totalDraft)
@@ -229,6 +233,22 @@ struct ResourceDetailView: View {
         resource.lastUpdated = Date()
     }
 
+    /// Aplica la edición elegida; rellena solo lo que falta (no pisa datos del usuario).
+    private func apply(edition: GoogleBookItem) {
+        if let pages = edition.numberOfPages {
+            if case .failure(.belowCurrent(let current)) = PageTracking.validateTotal(String(pages), currentPage: resource.currentPage) {
+                totalError = String(localized: "El total no puede ser menor que la página actual (\(current)).")
+            } else {
+                resource.totalPages = pages
+                totalError = nil
+            }
+        }
+        if resource.imageURL == nil { resource.imageURL = edition.coverURL }
+        if resource.summary?.isEmpty ?? true { resource.summary = edition.summary }
+        if resource.externalId == nil { resource.externalId = edition.externalId }
+        resource.lastUpdated = Date()
+    }
+
     private func saveTotal() {
         switch PageTracking.validateTotal(totalDraft, currentPage: resource.currentPage) {
         case .success(let total):
@@ -296,6 +316,11 @@ struct ResourceDetailView: View {
                             .buttonStyle(.plain)
                             .accessibilityLabel(resource.totalPages == nil ? "Añadir total de páginas" : "Editar total de páginas")
                         }
+                    }
+
+                    if resource.totalPages == nil {
+                        Button("Buscar páginas") { showEditionPicker = true }
+                            .font(.subheadline)
                     }
 
                     if let totalError {

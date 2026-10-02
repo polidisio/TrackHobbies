@@ -258,7 +258,7 @@ struct BooksListView: View {
                         .tint(AppTheme.accent)
 
                         if enrichWithGoogleBooks {
-                            Text("Se usará el ISBN para buscar información adicional")
+                            Text("Se buscará cada libro por título y autor")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }

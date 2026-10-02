@@ -31,3 +31,27 @@ final class CSVExporterTests: XCTestCase {
         XCTAssertNotNil(back[0].startDate)
     }
 }
+
+final class BookMatchTests: XCTestCase {
+    private func item(_ title: String, _ author: String, pages: Int? = nil, cover: String? = nil) -> GoogleBookItem {
+        GoogleBookItem(title: title, author: author, coverURL: cover, externalId: UUID().uuidString, numberOfPages: pages, summary: nil)
+    }
+
+    func testCleanTitleDropsSeries() {
+        XCTAssertEqual(BookMatch.cleanTitle("The Hobbit (The Lord of the Rings, #0)"), "The Hobbit")
+        XCTAssertEqual(BookMatch.cleanTitle("Dune"), "Dune")
+    }
+
+    func testPickMatchesTitleAndAuthorAndPrefersPagesAndCover() {
+        let r = [item("Dune Messiah", "Frank Herbert", pages: 300),
+                 item("Otro libro", "Alguien", pages: 100, cover: "c"),
+                 item("Dune", "Frank Herbert"),
+                 item("Dune", "Frank Herbert", pages: 412, cover: "c")]
+        XCTAssertEqual(BookMatch.pick(r, title: "Dune (Dune Chronicles, #1)", author: "Frank Herbert")?.numberOfPages, 412)
+    }
+
+    func testPickReturnsNilWhenNothingFits() {
+        XCTAssertNil(BookMatch.pick([item("Otro", "Alguien", pages: 10)], title: "Dune", author: "Frank Herbert"))
+        XCTAssertNil(BookMatch.pick([item("Dune", "Isaac Asimov", pages: 10)], title: "Dune", author: "Frank Herbert"))
+    }
+}

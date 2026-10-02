@@ -9,8 +9,8 @@ Actualizado 2026-10-02. Orden por valor/riesgo.
 
 ## Para retomar
 - [x] 4. Evento `sync_ok` (kind + duration_ms) en `SyncMonitor`. Falta: insight en el dashboard de PostHog (id 989027) cuando haya datos.
-- [ ] 5. Páginas para libros añadidos a mano (ruta nueva del Worker, elegir edición).
-- [ ] 6. Enriquecimiento Goodreads por título + autor (Google devuelve 0 con `isbn:`).
+- [x] 5. Páginas para libros a mano: botón «Buscar páginas» en el detalle (sin ruta nueva en el Worker: reusa `/books/search` por título+autor).
+- [x] 6. Enriquecimiento Goodreads por título + autor (`BookMatch`).
 - [ ] 7. Backup JSON completo (alternativa barata a Notion).
 - [ ] 8. Higiene git: versionar `Package.resolved`, ignorar reordenado de `Localizable.xcstrings`.
 - [ ] 9. Importar CSV propio: aviso de cuántos se añadieron/omitidos.

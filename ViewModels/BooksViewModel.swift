@@ -71,9 +71,10 @@ final class BooksViewModel: ObservableObject, Searchable {
             var enrich = enrichWithGoogleBooks
             for (index, book) in books.enumerated() {
                 let entity = GoodreadsImporter.mapToResourceEntity(book)
-                if enrich, let isbn = book.isbn13 ?? book.isbn {
+                if enrich {
                     do {
-                        if let gb = try await GoogleBooksService.shared.searchByISBN(isbn) {
+                        let found = try await GoogleBooksService.shared.searchEditions(title: book.title, author: book.author)
+                        if let gb = BookMatch.pick(found, title: book.title, author: book.author) {
                             entity.imageURL = gb.coverURL
                             if entity.summary?.isEmpty ?? true { entity.summary = gb.summary }
                             if entity.totalPages == nil { entity.totalPages = gb.numberOfPages }

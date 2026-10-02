@@ -986,6 +986,56 @@
         }
       }
     },
+    "Buscar páginas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find pages"
+          }
+        }
+      }
+    },
+    "Elegir edición" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose edition"
+          }
+        }
+      }
+    },
+    "No se encontraron ediciones con páginas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No editions with page counts found."
+          }
+        }
+      }
+    },
+    "%@ · %lld págs." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %lld pages"
+          }
+        }
+      }
+    },
+    "Se buscará cada libro por título y autor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each book will be looked up by title and author"
+          }
+        }
+      }
+    },
     "Fecha" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1666,16 +1716,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Its progress, rating and comment will be lost. This can’t be undone."
-          }
-        }
-      }
-    },
-    "Se usará el ISBN para buscar información adicional" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The ISBN will be used to look up extra information"
           }
         }
       }
