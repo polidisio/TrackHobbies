@@ -28,6 +28,7 @@
 		82F092660366F376438B4D93 /* SearchErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44A0FC5EE0FA9B7A32FB7AB /* SearchErrorView.swift */; };
 		85A74B858CEDA56AD4D35657 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2C9D8C66708F148E1C28EB36 /* PrivacyInfo.xcprivacy */; };
 		86FC04BEB4191B0486B895BD /* GoogleBooksService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */; };
+		905FE285B190BAC67907C998 /* DemoSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E711C60061ADB162A5A455 /* DemoSeed.swift */; };
 		9426FD087631573B7DA50700 /* GoodreadsImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C484E15F699ECB438BACC547 /* GoodreadsImporter.swift */; };
 		97763C2BA611E6AB54D9122C /* PageTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE605D320412D12A2745A07 /* PageTracking.swift */; };
 		9A0F054C6140DB1E5BCD25A4 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = CB63841A9A13EB7A46D5CDA9 /* PostHog */; };
@@ -102,6 +103,7 @@
 		B0943B922500B4A7858940E9 /* PersistenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceModels.swift; sourceTree = "<group>"; };
 		B2B760085F429CAFB6CC01CB /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
 		B44A0FC5EE0FA9B7A32FB7AB /* SearchErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchErrorView.swift; sourceTree = "<group>"; };
+		B5E711C60061ADB162A5A455 /* DemoSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSeed.swift; sourceTree = "<group>"; };
 		B83D451D0D651DF7C97B8086 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		BAFFC2856CB419C01FDE9EBB /* BookMatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMatch.swift; sourceTree = "<group>"; };
 		C484E15F699ECB438BACC547 /* GoodreadsImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodreadsImporter.swift; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 				4522E34DF55AB3224898D049 /* Analytics.swift */,
 				BAFFC2856CB419C01FDE9EBB /* BookMatch.swift */,
 				A5614B28A7A2090611799F9C /* CSVExporter.swift */,
+				B5E711C60061ADB162A5A455 /* DemoSeed.swift */,
 				8EE605D320412D12A2745A07 /* PageTracking.swift */,
 				3C4555CED2905B72ABD64C5B /* SyncMonitor.swift */,
 			);
@@ -396,6 +399,7 @@
 				C6EFE14361478A49BCE2CA84 /* CSVImporter.swift in Sources */,
 				B586A6E520A9008E5553006D /* ConfirmDelete.swift in Sources */,
 				BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */,
+				905FE285B190BAC67907C998 /* DemoSeed.swift in Sources */,
 				C9A1C4CB9E46F714D12D7EE1 /* EditionPickerView.swift in Sources */,
 				9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */,
 				B8F05714BB01F2754D342AC2 /* GameSearchService.swift in Sources */,
@@ -507,6 +511,8 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

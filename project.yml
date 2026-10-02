@@ -11,6 +11,9 @@ settings:
   configs:
     Debug:
       ENABLE_TESTABILITY: YES
+      # XcodeGen sin presets no define DEBUG: sin esto `#if DEBUG` nunca se cumple.
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone"
   base:
     PRODUCT_NAME: "$(TARGET_NAME)"
     SWIFT_VERSION: "5.9"

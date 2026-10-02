@@ -23,4 +23,7 @@ Qué salió mal, por qué y cómo evitarlo (ver `CLAUDE.md` → Self-Improvement
 15. **El `.xcodeproj` está en git y no se regenera solo.** Tras añadir/borrar archivos, ejecutar `xcodegen generate` y commitear `project.pbxproj`; si no, un clon limpio no compila. Antes de subirlo, buscar en el diff los valores de `Config/Secrets.xcconfig` (Team ID, tokens, claves).
 16. **«Failed to establish communication with the test runner (Channel disconnected)»** tras muchas sesiones en el mismo simulador: `xcrun simctl shutdown` + `boot` del simulador y repetir. No es un fallo del código.
 17. **PostHog: el proyecto es compartido y las builds Debug llevan el mismo `$app_name`.** El dashboard 989027 filtra `$app_namespace = com.trackhobbies.app` para excluir `.dev`; los insights nuevos filtran `$app_name` y `$app_namespace`.
+18. **XcodeGen sin presets tampoco define `DEBUG`:** `#if DEBUG` no se cumplía en ninguna build (ni el aviso de `Analytics`). Ahora `project.yml` pone `SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG` solo en Debug; comprobar con `strings` que Release no lleva código de Debug.
+19. **El Worker de Cloudflare devuelve 403 a `urllib` de Python** (User-Agent). Con `curl`, o enviando un `User-Agent` normal, responde bien.
+20. **Capturas de App Store:** ver `AppStore/README.md` (datos de ejemplo con `-SeedDemo`, tamaños exactos 1320×2868 y 2064×2752).
 

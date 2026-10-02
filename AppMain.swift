@@ -4,6 +4,9 @@ import SwiftData
 @main
 struct TrackHobbiesApp: App {
     init() {
+        #if DEBUG
+        DemoSeed.runIfRequested()
+        #endif
         Analytics.setup()
         SyncMonitor.shared.start()
     }

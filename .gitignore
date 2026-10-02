@@ -9,3 +9,6 @@ worker/node_modules/
 worker/.wrangler/
 .dev.vars
 Config/Secrets.xcconfig
+
+# Capturas de App Store (regenerables, ver AppStore/README.md)
+AppStore/Screenshots/
