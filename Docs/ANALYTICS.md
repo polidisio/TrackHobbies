@@ -48,3 +48,12 @@ Las builds Debug usan el bundle id `com.trackhobbies.app.dev` y llevan el mismo 
 
 Insights de sincronización e importación (2026-10-02): «Sincronización: correctas frente a errores», «Latencia de sync: lado receptor (import)», «Errores de sincronización por código», «Importaciones por origen» y «Exportaciones por formato».
 
+## Alertas
+
+| Alerta | Insight | Condición | Frecuencia |
+|--------|---------|-----------|------------|
+| Búsquedas con cuota agotada | `rateLimited` (FUqQygLq) | más de 20 al día | diaria |
+| Errores de sincronización de iCloud (2026-10-02) | «Sincronización: correctas frente a errores» (D8GO6qbU), serie *Errores* | más de 3 al día, solo días completos | diaria, por correo |
+
+Comprueba solo la app real (`com.trackhobbies.app`): las builds `.dev` quedan fuera.
+
