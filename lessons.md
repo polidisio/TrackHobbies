@@ -20,4 +20,5 @@ Qué salió mal, por qué y cómo evitarlo (ver `CLAUDE.md` → Self-Improvement
 12. **Probar en el simulador iOS 27, no en el iPhone 17 Pro (iOS 26.2):** `xcodebuild test` y `simctl install` se cuelgan allí. El flujo `ui-automation` de MobileBuildMCP se activa en `.mobilebuildmcp/config.yaml` y exige reconectar el MCP (`/mcp`).
 13. **El autocorrector estropea títulos y autores** («Dune» → «Dime»). `.autocorrectionDisabled()` en los campos de nombres propios.
 14. **No partir un CSV por líneas.** Las reseñas de Goodreads llevan saltos de línea y comillas dentro del campo; usar `CSVImporter.parseRows` (RFC 4180). En Goodreads, `My Rating` 0 = sin puntuar (→ `nil`), el ISBN viene como `="…"` y los saltos de la reseña como `<br/>`.
+15. **El `.xcodeproj` está en git y no se regenera solo.** Tras añadir/borrar archivos, ejecutar `xcodegen generate` y commitear `project.pbxproj`; si no, un clon limpio no compila. Antes de subirlo, buscar en el diff los valores de `Config/Secrets.xcconfig` (Team ID, tokens, claves).
 

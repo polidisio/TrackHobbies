@@ -12,10 +12,11 @@
 		0970F9167F4BD4E46CAEAF70 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3295D07AF8A533E7C592F7DF /* Localizable.xcstrings */; };
 		0C0D86C253E7FF6974A0DD0F /* AnalyticsConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B105831B2FE8C29F0ACDD49 /* AnalyticsConsentView.swift */; };
 		0D0FA0B548FE03A9FEA0B9F7 /* PersistenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0943B922500B4A7858940E9 /* PersistenceModels.swift */; };
-		0D89DE1831A02DBF39DD170F /* ExportCSVView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9898F8ECED671B6173932D24 /* ExportCSVView.swift */; };
 		1377446252E04497E8B4DAA9 /* GamesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0EA95A31022D1EC1054E3 /* GamesViewModel.swift */; };
 		25989F1B8477E0FD4759236D /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522E34DF55AB3224898D049 /* Analytics.swift */; };
+		3383473C314533952130A0F8 /* CSVExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7EBDCB3FE3EE53FD8B13DF /* CSVExporterTests.swift */; };
 		391A3147AFCFD73A1D07E728 /* BooksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4DB05985D411C8630D894E /* BooksViewModel.swift */; };
+		3B91C26B5E27DCD9823E124F /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B760085F429CAFB6CC01CB /* Backup.swift */; };
 		5450C5B8BC5E1EBA0BD073B3 /* PageTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA397381A25072FE3EF0393D /* PageTrackingTests.swift */; };
 		617DFFD816B7CB79B2E5EB40 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83D451D0D651DF7C97B8086 /* StatsView.swift */; };
 		65E9720D89AC26C312F6C4A8 /* SeriesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */; };
@@ -31,9 +32,13 @@
 		97763C2BA611E6AB54D9122C /* PageTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE605D320412D12A2745A07 /* PageTracking.swift */; };
 		9A0F054C6140DB1E5BCD25A4 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = CB63841A9A13EB7A46D5CDA9 /* PostHog */; };
 		9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6F3E46BC82D75258505DD8 /* Enums.swift */; };
+		AD1C1385FF53326C7F2CED92 /* ManualEntryForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185632FBEAB96D1BB0AC04D5 /* ManualEntryForm.swift */; };
 		B586A6E520A9008E5553006D /* ConfirmDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9BB53418ADA8CC451F38BE /* ConfirmDelete.swift */; };
+		B8C32055D0BA98C399FF2A3C /* BookMatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAFFC2856CB419C01FDE9EBB /* BookMatch.swift */; };
 		B8F05714BB01F2754D342AC2 /* GameSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669A4F271D657C1DBE1BF1DF /* GameSearchService.swift */; };
 		BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E2B31E64D28666005361AC /* ContentView.swift */; };
+		C6EFE14361478A49BCE2CA84 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D22C98E0B3043328A8B191 /* CSVImporter.swift */; };
+		C9A1C4CB9E46F714D12D7EE1 /* EditionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB94E3E0AFB5C6C2C295D9D /* EditionPickerView.swift */; };
 		DA49E9B8C7B150C407F43A0B /* SeriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A895F8F404163A29E1FD657C /* SeriesViewModel.swift */; };
 		E2ED6D0FD8E20F6C6BB99A0E /* BookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E6567FB320A5958549B53A /* BookStore.swift */; };
 		E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F5971818241D6508505936 /* BooksListView.swift */; };
@@ -56,6 +61,8 @@
 /* Begin PBXFileReference section */
 		13126788DA7403E0C607C55F /* TrackHobbies.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TrackHobbies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13566F73768D24EF1344E7EB /* wrangler.toml */ = {isa = PBXFileReference; path = wrangler.toml; sourceTree = "<group>"; };
+		185632FBEAB96D1BB0AC04D5 /* ManualEntryForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualEntryForm.swift; sourceTree = "<group>"; };
+		21D22C98E0B3043328A8B191 /* CSVImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
 		28D453C5A1873F779D55CCB4 /* TVMazeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMazeService.swift; sourceTree = "<group>"; };
 		28F5971818241D6508505936 /* BooksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksListView.swift; sourceTree = "<group>"; };
 		2C9D8C66708F148E1C28EB36 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -69,12 +76,14 @@
 		4339CA264C5FE4D871B7ECD6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		444FCCCB5D4C3277B27FA971 /* books.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = books.js; sourceTree = "<group>"; };
 		4522E34DF55AB3224898D049 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		4AB94E3E0AFB5C6C2C295D9D /* EditionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditionPickerView.swift; sourceTree = "<group>"; };
 		5CAE49158C0DD5F632CA638F /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.example.xcconfig; sourceTree = "<group>"; };
 		5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksService.swift; sourceTree = "<group>"; };
 		61E2B31E64D28666005361AC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		64D0826BCD7DA51729D6F3C8 /* worker.test.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = worker.test.js; sourceTree = "<group>"; };
 		669A4F271D657C1DBE1BF1DF /* GameSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSearchService.swift; sourceTree = "<group>"; };
 		6A9BB53418ADA8CC451F38BE /* ConfirmDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmDelete.swift; sourceTree = "<group>"; };
+		6C7EBDCB3FE3EE53FD8B13DF /* CSVExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExporterTests.swift; sourceTree = "<group>"; };
 		6D6F3E46BC82D75258505DD8 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		6E4DB05985D411C8630D894E /* BooksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksViewModel.swift; sourceTree = "<group>"; };
 		6FAD522156108FA8AC2873AD /* TrackHobbiesTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrackHobbiesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,13 +96,14 @@
 		90280001697AD7730CB4C6F8 /* Searchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Searchable.swift; sourceTree = "<group>"; };
 		94FF4E1E9FF81517BCD15AB8 /* package.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
 		96CDDA91E398FEA6932455C9 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
-		9898F8ECED671B6173932D24 /* ExportCSVView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportCSVView.swift; sourceTree = "<group>"; };
 		A5614B28A7A2090611799F9C /* CSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
 		A895F8F404163A29E1FD657C /* SeriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesViewModel.swift; sourceTree = "<group>"; };
 		A9FFF53B5CD669BC2702846A /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		B0943B922500B4A7858940E9 /* PersistenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceModels.swift; sourceTree = "<group>"; };
+		B2B760085F429CAFB6CC01CB /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
 		B44A0FC5EE0FA9B7A32FB7AB /* SearchErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchErrorView.swift; sourceTree = "<group>"; };
 		B83D451D0D651DF7C97B8086 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		BAFFC2856CB419C01FDE9EBB /* BookMatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMatch.swift; sourceTree = "<group>"; };
 		C484E15F699ECB438BACC547 /* GoodreadsImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodreadsImporter.swift; sourceTree = "<group>"; };
 		C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesListView.swift; sourceTree = "<group>"; };
 		D5D8BB962E021677671C54C7 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
@@ -167,8 +177,9 @@
 				7B105831B2FE8C29F0ACDD49 /* AnalyticsConsentView.swift */,
 				28F5971818241D6508505936 /* BooksListView.swift */,
 				6A9BB53418ADA8CC451F38BE /* ConfirmDelete.swift */,
-				9898F8ECED671B6173932D24 /* ExportCSVView.swift */,
+				4AB94E3E0AFB5C6C2C295D9D /* EditionPickerView.swift */,
 				C5CF3BDFB3CD6BC1A57DD280 /* GamesListView.swift */,
+				185632FBEAB96D1BB0AC04D5 /* ManualEntryForm.swift */,
 				FD6F50F0932D624A16148084 /* ResourceDetailView.swift */,
 				B44A0FC5EE0FA9B7A32FB7AB /* SearchErrorView.swift */,
 				FA7B19B1719E73DA6F0E2693 /* SeriesListView.swift */,
@@ -181,6 +192,7 @@
 		8D34B3DF276A7D424A6A419D /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				6C7EBDCB3FE3EE53FD8B13DF /* CSVExporterTests.swift */,
 				74E34312BE003E8C9332C8D8 /* Info.plist */,
 				DA397381A25072FE3EF0393D /* PageTrackingTests.swift */,
 			);
@@ -213,6 +225,8 @@
 		A211DDD4130EA251F539B033 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				B2B760085F429CAFB6CC01CB /* Backup.swift */,
+				21D22C98E0B3043328A8B191 /* CSVImporter.swift */,
 				669A4F271D657C1DBE1BF1DF /* GameSearchService.swift */,
 				C484E15F699ECB438BACC547 /* GoodreadsImporter.swift */,
 				5D7E8EF43FD9BCA43F87231F /* GoogleBooksService.swift */,
@@ -252,6 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				4522E34DF55AB3224898D049 /* Analytics.swift */,
+				BAFFC2856CB419C01FDE9EBB /* BookMatch.swift */,
 				A5614B28A7A2090611799F9C /* CSVExporter.swift */,
 				8EE605D320412D12A2745A07 /* PageTracking.swift */,
 				3C4555CED2905B72ABD64C5B /* SyncMonitor.swift */,
@@ -372,20 +387,24 @@
 				0C0D86C253E7FF6974A0DD0F /* AnalyticsConsentView.swift in Sources */,
 				0197958054C4C81249FF47FC /* AppMain.swift in Sources */,
 				79E99E27DC8B9F880E02F6C4 /* AppTheme.swift in Sources */,
+				3B91C26B5E27DCD9823E124F /* Backup.swift in Sources */,
+				B8C32055D0BA98C399FF2A3C /* BookMatch.swift in Sources */,
 				E2ED6D0FD8E20F6C6BB99A0E /* BookStore.swift in Sources */,
 				E4CF1A309B94EC197FCF6D0E /* BooksListView.swift in Sources */,
 				391A3147AFCFD73A1D07E728 /* BooksViewModel.swift in Sources */,
 				7E56D230D9E9943C9D30FC7A /* CSVExporter.swift in Sources */,
+				C6EFE14361478A49BCE2CA84 /* CSVImporter.swift in Sources */,
 				B586A6E520A9008E5553006D /* ConfirmDelete.swift in Sources */,
 				BD55826A3275BCC69EFD96F8 /* ContentView.swift in Sources */,
+				C9A1C4CB9E46F714D12D7EE1 /* EditionPickerView.swift in Sources */,
 				9B758A6E3B3317850C3F04DD /* Enums.swift in Sources */,
-				0D89DE1831A02DBF39DD170F /* ExportCSVView.swift in Sources */,
 				B8F05714BB01F2754D342AC2 /* GameSearchService.swift in Sources */,
 				E9A34AE83D6FB87C70BEECAB /* GamesListView.swift in Sources */,
 				1377446252E04497E8B4DAA9 /* GamesViewModel.swift in Sources */,
 				9426FD087631573B7DA50700 /* GoodreadsImporter.swift in Sources */,
 				86FC04BEB4191B0486B895BD /* GoogleBooksService.swift in Sources */,
 				F080DD30E6363CC37BB7B79C /* HTTP.swift in Sources */,
+				AD1C1385FF53326C7F2CED92 /* ManualEntryForm.swift in Sources */,
 				97763C2BA611E6AB54D9122C /* PageTracking.swift in Sources */,
 				0D0FA0B548FE03A9FEA0B9F7 /* PersistenceModels.swift in Sources */,
 				026F588017B6D8E3F82084DC /* ResourceDetailView.swift in Sources */,
@@ -404,6 +423,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3383473C314533952130A0F8 /* CSVExporterTests.swift in Sources */,
 				5450C5B8BC5E1EBA0BD073B3 /* PageTrackingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -436,7 +456,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TrackHobbies.entitlements;
 				INFOPLIST_FILE = Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.trackhobbies.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trackhobbies.app.dev;
 			};
 			name = Debug;
 		};
@@ -466,6 +486,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -481,6 +502,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";

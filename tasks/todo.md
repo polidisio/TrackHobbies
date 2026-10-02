@@ -12,7 +12,7 @@ Actualizado 2026-10-02. Orden por valor/riesgo.
 - [x] 5. Páginas para libros a mano: botón «Buscar páginas» en el detalle. Probado con el MCP y el Worker real (Hyperion → 642 págs. + portada).
 - [x] 6. Enriquecimiento Goodreads por título + autor (`BookMatch`).
 - [x] 7. Backup JSON completo (Estadísticas → Copia de seguridad): exporta/restaura todos los campos y el `id`; solo añade.
-- [ ] 8. Higiene git: versionar `Package.resolved`, ignorar reordenado de `Localizable.xcstrings`.
+- [x] 8. Git: `Package.resolved` versionado y `project.pbxproj` regenerado (el de git no tenía los archivos nuevos). `Localizable.xcstrings`: NO commitear la copia de trabajo (Xcode la reordena y marca como `stale` cadenas en uso); añadir entradas sobre la versión de HEAD (lección 7).
 - [x] 9. Aviso de importación (añadidos/omitidos) en CSV propio, Goodreads y copia JSON; errores visibles en vez de `print`.
 - [ ] 10. Revisar insights de PostHog con datos reales.
 - [ ] Notion export (planeada).
