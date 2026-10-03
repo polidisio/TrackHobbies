@@ -130,7 +130,7 @@ enum CoverStore {
     /// Reduce a 480 px por el lado largo y JPEG 0.7: cabe de sobra en un campo de CloudKit.
     static func dataURL(from data: Data, maxSide: CGFloat = 480) -> String? {
         guard let image = UIImage(data: data) else { return nil }
-        let scale = min(1, maxSide / max(image.size.width, image.size.height))
+        let scale = min(maxSide / max(image.size.width, image.size.height), 1.0)
         let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
         // scale 1: por defecto el renderer usa la de la pantalla (3x) y la imagen saldría 3 veces más grande.
         let format = UIGraphicsImageRendererFormat()
