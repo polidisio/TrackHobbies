@@ -573,7 +573,7 @@ struct ResourceDetailView: View {
                 }
             }
 
-            if let hours = resource.timeSpentHours, hours > 0, resource.resourceType != .game || resource.progressStatus != .inProgress {
+            if let hours = resource.timeSpentHours, (hours > 0 && resource.resourceType != .game) || resource.progressStatus != .inProgress {
                 DetailCard {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Tiempo dedicado")
