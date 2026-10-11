@@ -1,18 +1,51 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
-    "%@" : {
-
-    },
-    "%@ %@" : {
+    "¿Cambiar el modo de seguimiento?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@"
+            "value" : "Change tracking mode?"
           }
         }
       }
+    },
+    "¿Deseas enriquecer los datos con portadas y descripciones de Google Books?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enrich the data with covers and descriptions from Google Books?"
+          }
+        }
+      }
+    },
+    "¿Eliminar «%@»?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete “%@”?"
+          }
+        }
+      }
+    },
+    "¿Sacar de «Completado»?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from “Completed”?"
+          }
+        }
+      }
+    },
+    "%@" : {
+
     },
     "%@ - %@" : {
       "localizations" : {
@@ -20,6 +53,37 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ - %@"
+          }
+        }
+      }
+    },
+    "%@ · %@ págs." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ págs."
+          }
+        }
+      }
+    },
+    "%@ · %lld págs." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %lld pages"
+          }
+        }
+      }
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ %@"
           }
         }
       }
@@ -39,9 +103,6 @@
 
     },
     "%@ elementos en tu colección" : {
-
-    },
-    "%@ libros" : {
 
     },
     "%@ resultados" : {
@@ -319,12 +380,133 @@
         }
       }
     },
+    "activos" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "active"
+          }
+        }
+      }
+    },
     "Ahora no" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not now"
+          }
+        }
+      }
+    },
+    "Añadidos: %lld. Omitidos (ya existían): %lld." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added: %lld. Skipped (already existed): %lld."
+          }
+        }
+      }
+    },
+    "Añadir" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        }
+      }
+    },
+    "Añadir «%@»" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add “%@”"
+          }
+        }
+      }
+    },
+    "Añadir juego" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add game"
+          }
+        }
+      }
+    },
+    "Añadir Juego" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Game"
+          }
+        }
+      }
+    },
+    "Añadir libro" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add book"
+          }
+        }
+      }
+    },
+    "Añadir Libro" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Book"
+          }
+        }
+      }
+    },
+    "Añadir serie" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add series"
+          }
+        }
+      }
+    },
+    "Añadir Serie" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Series"
+          }
+        }
+      }
+    },
+    "Añadir total de páginas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add total pages"
           }
         }
       }
@@ -383,105 +565,6 @@
         }
       }
     },
-    "Añadir" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add"
-          }
-        }
-      }
-    },
-    "Añadir Juego" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Game"
-          }
-        }
-      }
-    },
-    "Añadir Libro" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Book"
-          }
-        }
-      }
-    },
-    "Añadir Serie" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Series"
-          }
-        }
-      }
-    },
-    "Añadir juego" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add game"
-          }
-        }
-      }
-    },
-    "Añadir libro" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add book"
-          }
-        }
-      }
-    },
-    "Añadir serie" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add series"
-          }
-        }
-      }
-    },
-    "Añadir total de páginas" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add total pages"
-          }
-        }
-      }
-    },
-    "Añadir «%@»" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add “%@”"
-          }
-        }
-      }
-    },
     "Buscando..." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -489,6 +572,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Searching…"
+          }
+        }
+      }
+    },
+    "Buscar páginas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find pages"
           }
         }
       }
@@ -525,12 +619,23 @@
         }
       }
     },
-    "CSV listo para exportar" : {
+    "Cámbialo solo si tu edición tiene otro número de páginas." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CSV ready to export"
+            "value" : "Change it only if your edition has a different page count."
+          }
+        }
+      }
+    },
+    "Cambiar portada" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change cover"
           }
         }
       }
@@ -685,6 +790,7 @@
       }
     },
     "Comprobando iCloud…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -694,12 +800,33 @@
         }
       }
     },
-    "Cámbialo solo si tu edición tiene otro número de páginas." : {
+    "Copia de seguridad" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change it only if your edition has a different page count."
+            "value" : "Backup"
+          }
+        }
+      }
+    },
+    "Créditos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credits"
+          }
+        }
+      }
+    },
+    "CSV listo para exportar" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CSV ready to export"
           }
         }
       }
@@ -771,6 +898,39 @@
         }
       }
     },
+    "El archivo no es un CSV exportado desde TrackHobbies." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a CSV exported from TrackHobbies."
+          }
+        }
+      }
+    },
+    "El archivo no es una copia de seguridad de TrackHobbies." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a TrackHobbies backup."
+          }
+        }
+      }
+    },
+    "el porcentaje (%lld%%)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the percentage (%lld%%)"
+          }
+        }
+      }
+    },
     "El servicio no responde ahora mismo. Inténtalo más tarde." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -793,6 +953,17 @@
         }
       }
     },
+    "el total de páginas (%lld)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the total pages (%lld)"
+          }
+        }
+      }
+    },
     "El total no puede ser menor que la página actual (%lld)." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -800,6 +971,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The total can't be lower than the current page (%lld)."
+          }
+        }
+      }
+    },
+    "Elegir edición" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose edition"
           }
         }
       }
@@ -833,6 +1015,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Got it"
+          }
+        }
+      }
+    },
+    "Episodios" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodes"
           }
         }
       }
@@ -880,6 +1073,17 @@
         }
       }
     },
+    "Estadísticas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistics"
+          }
+        }
+      }
+    },
     "Estado" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -892,22 +1096,12 @@
       }
     },
     "Estado de iCloud desconocido" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unknown iCloud status"
-          }
-        }
-      }
-    },
-    "Estadísticas" : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Statistics"
+            "value" : "Unknown iCloud status"
           }
         }
       }
@@ -934,17 +1128,6 @@
         }
       }
     },
-    "Exportar CSV" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Export CSV"
-          }
-        }
-      }
-    },
     "Exportar a CSV" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -956,167 +1139,8 @@
         }
       }
     },
-    "Importar CSV" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import CSV"
-          }
-        }
-      }
-    },
-    "No se pudo importar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn't import"
-          }
-        }
-      }
-    },
-    "El archivo no es un CSV exportado desde TrackHobbies." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The file is not a CSV exported from TrackHobbies."
-          }
-        }
-      }
-    },
-    "Buscar páginas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Find pages"
-          }
-        }
-      }
-    },
-    "Elegir edición" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choose edition"
-          }
-        }
-      }
-    },
-    "No se encontraron ediciones con páginas." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No editions with page counts found."
-          }
-        }
-      }
-    },
-    "%@ · %lld págs." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · %lld pages"
-          }
-        }
-      }
-    },
-    "Se buscará cada libro por título y autor" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Each book will be looked up by title and author"
-          }
-        }
-      }
-    },
-    "Información" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Information"
-          }
-        }
-      }
-    },
-    "Más datos (opcional)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "More details (optional)"
-          }
-        }
-      }
-    },
-    "Temporadas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seasons"
-          }
-        }
-      }
-    },
-    "Episodios" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Episodes"
-          }
-        }
-      }
-    },
-    "Subir portada" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Upload cover"
-          }
-        }
-      }
-    },
-    "Cambiar portada" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change cover"
-          }
-        }
-      }
-    },
-    "Quitar portada" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Remove cover"
-          }
-        }
-      }
-    },
-    "Copia de seguridad" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Backup"
-          }
-        }
-      }
-    },
     "Exportar copia (JSON)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1126,132 +1150,13 @@
         }
       }
     },
-    "Restaurar copia" : {
+    "Exportar CSV" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restore backup"
-          }
-        }
-      }
-    },
-    "Restaurar solo añade lo que falta: no borra ni sobrescribe nada." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restoring only adds what is missing: nothing is deleted or overwritten."
-          }
-        }
-      }
-    },
-    "No se pudo abrir el archivo." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn't open the file."
-          }
-        }
-      }
-    },
-    "El archivo no es una copia de seguridad de TrackHobbies." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The file is not a TrackHobbies backup."
-          }
-        }
-      }
-    },
-    "La copia es de una versión más nueva de TrackHobbies. Actualiza la app." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The backup comes from a newer version of TrackHobbies. Update the app."
-          }
-        }
-      }
-    },
-    "Añadidos: %lld. Omitidos (ya existían): %lld." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Added: %lld. Skipped (already existed): %lld."
-          }
-        }
-      }
-    },
-    "Importación" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import"
-          }
-        }
-      }
-    },
-    "No se pudo leer el archivo." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn't read the file."
-          }
-        }
-      }
-    },
-    "No se encontraron elementos en el archivo. ¿Es un CSV de TrackHobbies o de Goodreads?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No items found in the file. Is it a TrackHobbies or Goodreads CSV?"
-          }
-        }
-      }
-    },
-    "Créditos" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Credits"
-          }
-        }
-      }
-    },
-    "Libros: Google Books" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Books: Google Books"
-          }
-        }
-      }
-    },
-    "Series: datos de TVmaze.com" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Series data: TVmaze.com"
-          }
-        }
-      }
-    },
-    "Juegos: datos de IGDB.com" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Games data: IGDB.com"
+            "value" : "Export CSV"
           }
         }
       }
@@ -1332,6 +1237,16 @@
         }
       }
     },
+    "h" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "h"
+          }
+        }
+      }
+    },
     "Hace 1+ año" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1349,6 +1264,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hours played"
+          }
+        }
+      }
+    },
+    "iCloud activo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud active"
+          }
+        }
+      }
+    },
+    "iCloud no disponible ahora" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud temporarily unavailable"
+          }
+        }
+      }
+    },
+    "iCloud restringido" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud restricted"
+          }
+        }
+      }
+    },
+    "Importación" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import"
           }
         }
       }
@@ -1418,6 +1377,17 @@
         }
       }
     },
+    "Importar CSV" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import CSV"
+          }
+        }
+      }
+    },
     "Importar CSV de Goodreads" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1436,6 +1406,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import from Goodreads"
+          }
+        }
+      }
+    },
+    "Información" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
           }
         }
       }
@@ -1517,6 +1498,17 @@
         }
       }
     },
+    "Juegos: datos de IGDB.com" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Games data: IGDB.com"
+          }
+        }
+      }
+    },
     "La app funciona en modo temporal: lo que añadas no se guardará. Tus datos anteriores siguen en el dispositivo. Cierra la app y vuelve a abrirla; si persiste, actualiza la app." : {
       "localizations" : {
         "en" : {
@@ -1534,6 +1526,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search isn’t configured in this build."
+          }
+        }
+      }
+    },
+    "La copia es de una versión más nueva de TrackHobbies. Actualiza la app." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The backup comes from a newer version of TrackHobbies. Update the app."
+          }
+        }
+      }
+    },
+    "la página actual (%lld)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the current page (%lld)"
           }
         }
       }
@@ -1571,6 +1585,17 @@
         }
       }
     },
+    "Libros: Google Books" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Books: Google Books"
+          }
+        }
+      }
+    },
     "Limpiar filtros" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1600,6 +1625,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mark as completed"
+          }
+        }
+      }
+    },
+    "Más datos (opcional)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More details (optional)"
           }
         }
       }
@@ -1665,6 +1701,27 @@
         }
       }
     },
+    "No se encontraron ediciones con páginas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No editions with page counts found."
+          }
+        }
+      }
+    },
+    "No se encontraron elementos en el archivo. ¿Es un CSV de TrackHobbies o de Goodreads?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No items found in the file. Is it a TrackHobbies or Goodreads CSV?"
+          }
+        }
+      }
+    },
     "No se encontraron resultados" : {
       "localizations" : {
         "en" : {
@@ -1686,12 +1743,46 @@
         }
       }
     },
+    "No se pudo abrir el archivo." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't open the file."
+          }
+        }
+      }
+    },
     "No se pudo comprobar iCloud" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Couldn’t check iCloud"
+          }
+        }
+      }
+    },
+    "No se pudo importar" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't import"
+          }
+        }
+      }
+    },
+    "No se pudo leer el archivo." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't read the file."
           }
         }
       }
@@ -1725,68 +1816,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ratings from %@ to %@ stars"
-          }
-        }
-      }
-    },
-    "Pendiente" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wishlist"
-          }
-        }
-      }
-    },
-    "Pendientes" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wishlist"
-          }
-        }
-      }
-    },
-    "Por estado" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "By status"
-          }
-        }
-      }
-    },
-    "Por porcentaje" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "By percentage"
-          }
-        }
-      }
-    },
-    "Por páginas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "By pages"
-          }
-        }
-      }
-    },
-    "Progreso" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Progress"
           }
         }
       }
@@ -1855,6 +1884,79 @@
         }
       }
     },
+    "Pendiente" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wishlist"
+          }
+        }
+      }
+    },
+    "Pendientes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wishlist"
+          }
+        }
+      }
+    },
+    "Por estado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By status"
+          }
+        }
+      }
+    },
+    "Por páginas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By pages"
+          }
+        }
+      }
+    },
+    "Por porcentaje" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By percentage"
+          }
+        }
+      }
+    },
+    "Progreso" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progress"
+          }
+        }
+      }
+    },
+    "Quitar portada" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove cover"
+          }
+        }
+      }
+    },
     "Rating" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1884,6 +1986,27 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unexpected response from the service."
+          }
+        }
+      }
+    },
+    "Restaurar copia" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore backup"
+          }
+        }
+      }
+    },
+    "Restaurar solo añade lo que falta: no borra ni sobrescribe nada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restoring only adds what is missing: nothing is deleted or overwritten."
           }
         }
       }
@@ -1926,6 +2049,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your rating (%@ out of 5) will be deleted."
+          }
+        }
+      }
+    },
+    "Se buscará cada libro por título y autor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each book will be looked up by title and author"
           }
         }
       }
@@ -1982,6 +2115,17 @@
         }
       }
     },
+    "Series: datos de TVmaze.com" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series data: TVmaze.com"
+          }
+        }
+      }
+    },
     "Sin conexión o conexión muy lenta. Revisa tu red e inténtalo de nuevo." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1994,6 +2138,7 @@
       }
     },
     "Sin cuenta de iCloud" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2056,6 +2201,17 @@
         }
       }
     },
+    "Subir portada" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload cover"
+          }
+        }
+      }
+    },
     "T%@" : {
 
     },
@@ -2112,6 +2268,17 @@
         }
       }
     },
+    "Temporadas" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seasons"
+          }
+        }
+      }
+    },
     "Temporadas vistas" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2151,6 +2318,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Has a review"
+          }
+        }
+      }
+    },
+    "Título" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
           }
         }
       }
@@ -2217,24 +2395,23 @@
         }
       }
     },
-    "Título" : {
-      "extractionState" : "stale",
+    "Última sincronización: %@ (%@)" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Title"
+            "value" : "Last sync: %@ (%@)"
           }
         }
       }
     },
-    "Valoraciones" : {
+    "Últimos 30 días" : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ratings"
+            "value" : "Last 30 days"
           }
         }
       }
@@ -2260,150 +2437,13 @@
         }
       }
     },
-    "activos" : {
+    "Valoraciones" : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "active"
-          }
-        }
-      }
-    },
-    "el porcentaje (%lld%%)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "the percentage (%lld%%)"
-          }
-        }
-      }
-    },
-    "el total de páginas (%lld)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "the total pages (%lld)"
-          }
-        }
-      }
-    },
-    "h" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "h"
-          }
-        }
-      }
-    },
-    "iCloud activo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud active"
-          }
-        }
-      }
-    },
-    "iCloud no disponible ahora" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud temporarily unavailable"
-          }
-        }
-      }
-    },
-    "iCloud restringido" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud restricted"
-          }
-        }
-      }
-    },
-    "la página actual (%lld)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "the current page (%lld)"
-          }
-        }
-      }
-    },
-    "¿Cambiar el modo de seguimiento?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change tracking mode?"
-          }
-        }
-      }
-    },
-    "¿Deseas enriquecer los datos con portadas y descripciones de Google Books?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enrich the data with covers and descriptions from Google Books?"
-          }
-        }
-      }
-    },
-    "¿Eliminar «%@»?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete “%@”?"
-          }
-        }
-      }
-    },
-    "¿Sacar de «Completado»?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Remove from “Completed”?"
-          }
-        }
-      }
-    },
-    "Última sincronización: %@ (%@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last sync: %@ (%@)"
-          }
-        }
-      }
-    },
-    "Últimos 30 días" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last 30 days"
+            "value" : "Ratings"
           }
         }
       }
